@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>布局组件</title>
+    <!-- 引入gridstack样式 -->
+    <link rel="stylesheet" href="/css/gridstack.min.css" />
+    <!-- 引入gridstack组件库 -->
+    <script src="/js/gridstack.all.js"></script>
+</head>
+<body>
+<div id="main">
+    <div style="float: left; width: 9%; height: 400px; border: solid 1px grey; text-align: center">
+        <button style="width: 90%; margin-top: 10px;" onclick="addWidget()">新增</button>
+        <button style="width: 90%; margin-top: 10px;">保存</button>
+    </div>
+    <div style="float: right; width: 90%; padding: 15px 0 15px 0; background-color: #8c939d">
+        <div class="grid-stack" style="min-height: 600px"></div>
+    </div>
+</div>
+</body>
+<style type="text/css">
+    .grid-stack { background: #8c939d; }
+    .grid-stack-item-content { background-color: whitesmoke; }
+</style>
+<script type="text/javascript" src="/js/axios.js"></script>
+<script type="text/javascript" src="/js/request.js"></script>
+<script type="text/javascript">
+    let grid = GridStack.init();
+    function addWidget() {
+        grid.addWidget(widgetHTML(), {minWidth: 3, minHeight: 4});
+    }
+    function borderDisplay(event) {
+        $('.grid-stack-item-content').each((index, item) => {
+            $(item).css('border', '');
+        });
+        $(event).css('border', '3px solid #F08080');
+    }
+    function editTitle(msg) {
+        let text = $(msg).text();
+        $(msg).html("<input type='text' name='album' value='"+ text +"' size=20>");
+        $("input[name='album']").focus();
+        $("input[name='album']").blur(function(){
+            let name = $(this).val();
+            if(name.indexOf(" ") >= 0 || name == ""){
+                $(msg).html("标题");
+            }else{
+                $(msg).html(name);
+            }
+        });
+    }
+    function remove(div) {
+        grid.removeWidget(div.parentElement.parentElement);
+    }
+    function widgetHTML() {
+        return '<div><div class="grid-stack-item-content" onclick="borderDisplay(this)"><div ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div><button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button></div></div>';
+    }
+</script>
+</html>
