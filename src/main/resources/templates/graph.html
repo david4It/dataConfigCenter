@@ -12,7 +12,7 @@
 <div id="main">
     <div style="float: left; width: 9%; height: 400px; border: solid 1px grey; text-align: center">
         <button style="width: 90%; margin-top: 10px;" onclick="addWidget()">新增</button>
-        <button style="width: 90%; margin-top: 10px;">保存</button>
+        <button style="width: 90%; margin-top: 10px;" onclick="saveLayout()">保存</button>
     </div>
     <div style="float: right; width: 90%; padding: 15px 0 15px 0; background-color: #8c939d">
         <div class="grid-stack" style="min-height: 600px"></div>
@@ -25,8 +25,10 @@
 </style>
 <script type="text/javascript" src="/js/axios.js"></script>
 <script type="text/javascript" src="/js/request.js"></script>
+<script type="text/javascript" src="/js/global.js"></script>
 <script type="text/javascript">
     let grid = GridStack.init();
+    grid.base = 12;
     function addWidget() {
         grid.addWidget(widgetHTML(), {minWidth: 3, minHeight: 4});
     }
@@ -53,7 +55,35 @@
         grid.removeWidget(div.parentElement.parentElement);
     }
     function widgetHTML() {
-        return '<div><div class="grid-stack-item-content" onclick="borderDisplay(this)"><div ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div><button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button></div></div>';
+        return '<div>' +
+            '<div class="grid-stack-item-content" onclick="borderDisplay(this)">' +
+            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div>' +
+            '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
+            '</div>' +
+            '</div>';
+    }
+    function saveLayout() {
+        let layout = {title: '测试', url: '/index', components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())};
+        $(grid.engine.nodes).each((index, ele) => {
+            layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.base * 100), x: Math.floor(ele.x/grid.base * 100), y: ele.y, type: 'bar', query: 'select * from xxx', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
+        });
+        layout.components.sort((v1,v2) => {
+            return v1.x - v2.x;
+        });
+        layout.components.sort((v1,v2) => {
+            return v1.y - v2.y;
+        });
+        $(layout.components).each((index, ele) => {
+            ele.locationIndex = index;
+        });
+        service.post('/layout/create', layout).then(res => {
+            if (!res.data.success) {
+                return;
+            }
+            debugger
+        }).catch(err => {
+            console.log(err);
+        })
     }
 </script>
 </html>
