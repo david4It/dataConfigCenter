@@ -109,9 +109,9 @@ public class HTMLTemplate {
         htmlContent.append(HTML_TAG_END);
 
         //写入到本地文件
-        ClassPathResource resource = new ClassPathResource("/templates/index2.html");
+        ClassPathResource resource = new ClassPathResource("/templates/");
         try {
-            File file = new File(resource.getURI().getPath());
+            File file = new File(resource.getURI().getPath() + "index2.html");
             if (file.exists()) {
                 Files.delete(Paths.get(file.getPath()));
             }
