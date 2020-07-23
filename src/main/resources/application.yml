@@ -2,7 +2,7 @@ server:
   port: 8099
 spring:
   application:
-    name: ������������
+    name: 数据配置中心
   resources:
     static-locations: classpath:/static/
   thymeleaf:
@@ -13,11 +13,23 @@ spring:
     prefix: classpath:/templates/
 
   datasource:
+    # username: root
+    # password: Passw0rd
+    # url: jdbc:mysql://localhost:3306/procurement_statistics?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.201:21563/scsme-daav?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
     username: root
-    password: Passw0rd
-    url: jdbc:mysql://localhost:3306/procurement_statistics?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    password: df34SD#4s
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  ## 设定 flyway 属性
+  flyway:
+    # 启用或禁用 flyway
+    enabled: true
+    # flyway 的 clean 命令会删除指定 schema 下的所有 table, 杀伤力太大了, 应该禁掉.
+    clean-disabled: true #禁用clean操作
+    baseline-on-migrate: true #初始化时如果不存在迁移记录表，默认新建一个
+    out-of-order: false #防止开发环境下漏掉没来得及apply的文件，产品环境最好设为false
+    locations: classpath:/db/migration
 #logging:
 #  config: classpath:config/logback.xml
 #  level:
