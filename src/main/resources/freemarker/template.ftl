@@ -53,7 +53,7 @@
 
     <div class="data_main">
         <div id="layout" style="position: relative">
-            ${body}
+            <#include "layout.ftl">
         </div>
     </div>
 </div>
