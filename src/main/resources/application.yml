@@ -34,3 +34,12 @@ spring:
 #  config: classpath:config/logback.xml
 #  level:
 #    com.zfcg.datadisplay.zfcg.mapper: DEBUG
+
+  freemarker:
+    template-loader-path: classpath:/templates/freemarker/
+    #关闭缓存，及时刷新，上线生产环境需要修改为true
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    suffix: .ftl
