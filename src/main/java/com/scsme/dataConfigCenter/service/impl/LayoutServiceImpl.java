@@ -6,7 +6,7 @@ import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.LayoutService;
-import com.scsme.dataConfigCenter.util.HTMLCreationUtil;
+import com.scsme.dataConfigCenter.executor.HTMLCreationExecutor;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class LayoutServiceImpl implements LayoutService {
                 List<Component> components = layout.transComponents(layoutId);
                 Boolean result = componentMapper.batchInsert(components);
                 if (result) {
-                    HTMLCreationUtil.generatedHTMLFile(layout);
+                    HTMLCreationExecutor.generatedHTMLFile(layout);
                     return true;
                 }
             }
