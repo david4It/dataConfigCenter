@@ -45,8 +45,8 @@ public class HTMLTemplateUtil {
     }
 
     public static void addContent(StringBuilder s, ComponentVO vo){
-        String divHTML = "            <div style=\"width: $0%; height: $1px; border: solid 1px red; position: absolute; top: $2px; left: $3%\">\n" +
-                "                <div style=\"background-color: white; padding: 10px; width: 100%; height: 100%\"></div>\n" +
+        String divHTML = "            <div style=\"width: $0%; height: $1px; position: absolute; top: $2px; left: $3%; padding: 15px;\">\n" +
+                "                <dv-border-box-8></dv-border-box-8>" +
                 "            </div>";
         divHTML = divHTML.replace("$0", vo.getWidth() + "");
         divHTML = divHTML.replace("$1", (vo.getHeight() * 100) + "");

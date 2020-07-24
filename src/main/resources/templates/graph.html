@@ -5,6 +5,7 @@
     <title>布局组件</title>
     <!-- 引入gridstack样式 -->
     <link rel="stylesheet" href="/css/framework/gridstack.min.css" />
+    <link rel="stylesheet" href="/css/framework/gridstack-extra.css"/>
     <!-- 引入gridstack组件库 -->
     <script src="/js/framework/gridstack.all.js"></script>
 </head>
@@ -15,7 +16,7 @@
         <button style="width: 90%; margin-top: 10px;" onclick="saveLayout()">保存</button>
     </div>
     <div style="float: right; width: 90%; padding: 15px 0 15px 0; background-color: #8c939d">
-        <div class="grid-stack" style="min-height: 600px"></div>
+        <div class="grid-stack grid-stack-10" style="min-height: 600px"></div>
     </div>
 </div>
 </body>
@@ -27,8 +28,7 @@
 <script type="text/javascript" src="/js/pages/request.js"></script>
 <script type="text/javascript" src="/js/pages/global.js"></script>
 <script type="text/javascript">
-    let grid = GridStack.init();
-    grid.base = 12;
+    let grid = GridStack.init({column: 10});
     function addWidget() {
         grid.addWidget(widgetHTML(), {minWidth: 3, minHeight: 4});
     }
@@ -65,7 +65,7 @@
     function saveLayout() {
         let layout = {title: '测试', url: '/index', components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())};
         $(grid.engine.nodes).each((index, ele) => {
-            layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.base * 100), x: Math.floor(ele.x/grid.base * 100), y: ele.y, type: 'bar', query: 'select * from xxx', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
+            layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.column() * 100), x: Math.floor(ele.x/grid.column() * 100), y: ele.y, type: 'bar', query: 'select * from xxx', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
         });
         layout.components.sort((v1,v2) => {
             return v1.x - v2.x;

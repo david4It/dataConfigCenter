@@ -8,7 +8,8 @@
     <link href="/css/framework/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/pages/base.css">
     <link rel="stylesheet" href="/css/pages/index.css">
-
+    <script type="text/javascript" src="/js/framework/vue.js"></script>
+    <script src="/js/framework/datav.min.vue.js"></script>
     <style>
         .t_title{
             width: 100%;
@@ -58,11 +59,16 @@
 </div>
 
 </body>
-<script>
+<script type="text/javascript">
     function size(){
         let lastDiv = $("#layout").children("div:last-child");
         $(".data_main").height(lastDiv.height() + lastDiv.position().top);
     }
+</script>
+<script type="text/javascript">
+    let app = new Vue({
+        el: '#layout'
+    })
 </script>
 <script src="/js/framework/jquery-2.2.1.min.js"></script>
 <script src="/js/framework/bootstrap.min.js"></script>
