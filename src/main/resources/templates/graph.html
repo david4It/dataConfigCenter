@@ -44,7 +44,7 @@
         $("input[name='album']").focus();
         $("input[name='album']").blur(function(){
             let name = $(this).val();
-            if(name.indexOf(" ") >= 0 || name == ""){
+            if(name.indexOf(" ") >= 0 || name === ""){
                 $(msg).html("标题");
             }else{
                 $(msg).html(name);
@@ -63,7 +63,7 @@
             '</div>';
     }
     function saveLayout() {
-        let layout = {title: '测试', url: '/index', components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())};
+        let layout = {title: '测试', url: '/index', components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
         $(grid.engine.nodes).each((index, ele) => {
             layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.column() * 100), x: Math.floor(ele.x/grid.column() * 100), y: ele.y, type: 'bar', query: 'select * from xxx', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
         });

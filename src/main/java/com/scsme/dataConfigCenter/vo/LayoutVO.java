@@ -12,11 +12,22 @@ public class LayoutVO extends Layout {
     private List<ComponentVO> components = new ArrayList<>();
     public Layout transLayout() {
         Layout layout = new Layout();
+        layout.setEnabled(this.getEnabled());
         layout.setUrl(this.getUrl());
         layout.setCreateTime(this.getCreateTime());
         layout.setTitle(this.getTitle());
         layout.setLastUpdateTime(this.getLastUpdateTime());
         return layout;
+    }
+
+    public LayoutVO convert(Layout layout) {
+        this.setId(layout.getId());
+        this.setEnabled(layout.getEnabled());
+        this.setCreateTime(layout.getCreateTime());
+        this.setLastUpdateTime(layout.getLastUpdateTime());
+        this.setTitle(layout.getTitle());
+        this.setUrl(layout.getUrl());
+        return this;
     }
 
     public List<Component> transComponents(Long layoutId) {
@@ -25,5 +36,19 @@ public class LayoutVO extends Layout {
             list.add(c.trans(layoutId));
         });
         return list;
+    }
+
+    public List<Component> transComponents() {
+        List<Component> list = new ArrayList<>();
+        components.forEach((c) -> {
+            list.add(c.trans());
+        });
+        return list;
+    }
+
+    public void convertComponents(List<Component> components) {
+        components.forEach((c) -> {
+            components.add(new ComponentVO().convert(c));
+        });
     }
 }

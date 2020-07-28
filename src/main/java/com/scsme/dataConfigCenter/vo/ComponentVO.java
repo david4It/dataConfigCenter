@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 public class ComponentVO extends Component {
-    public Component trans(Long layoutId){
+    public Component trans(){
         Component component = new Component();
-        component.setLayoutId(layoutId);
+        component.setLayoutId(this.getLayoutId());
         component.setType(this.getType());
         component.setTitle(this.getTitle());
         component.setQuery(this.getQuery());
@@ -21,5 +21,28 @@ public class ComponentVO extends Component {
         component.setCreateTime(this.getCreateTime());
         component.setLastUpdateTime(this.getLastUpdateTime());
         return component;
+    }
+
+    public Component trans(Long layoutId){
+        Component component = trans();
+        component.setLayoutId(layoutId);
+        return component;
+    }
+
+    public ComponentVO convert(Component component) {
+        this.setId(component.getId());
+        this.setLayoutId(component.getLayoutId());
+        this.setType(component.getType());
+        this.setTitle(component.getTitle());
+        this.setQuery(component.getQuery());
+        this.setLink(component.getLink());
+        this.setParams(component.getParams());
+        this.setLocationIndex(component.getLocationIndex());
+        this.setX(component.getX());
+        this.setY(component.getY());
+        this.setWidth(component.getWidth());
+        this.setHeight(component.getHeight());
+        this.setCreateTime(component.getCreateTime());
+        return this;
     }
 }

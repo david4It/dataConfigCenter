@@ -1,5 +1,6 @@
 package com.scsme.dataConfigCenter.controller;
 
+import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/layout")
 @Slf4j
@@ -19,7 +22,7 @@ public class LayoutController {
     @Autowired
     LayoutService layoutService;
     @PostMapping("/create")
-    public Result<Boolean> createLayout(@RequestBody LayoutVO layout) {
+    public Result<Boolean> create(@RequestBody LayoutVO layout) {
         Result<Boolean> result = new Result<>();
         try {
             Boolean saved = layoutService.saveLayout(layout);
@@ -30,6 +33,48 @@ public class LayoutController {
             }
         } catch (Exception e) {
             result.error500("保存布局失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/list")
+    public Result<List<LayoutVO>> list(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                     @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+        Result<List<LayoutVO>> result = new Result<>();
+        try {
+            List<LayoutVO> list = layoutService.list(result, pageNo, pageSize);
+            result.setResult(list);
+            result.success("查询布局列表数据成功！");
+        } catch (Exception e) {
+            result.error500("查询布局列表数据失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/edit")
+    public Result<LayoutVO> edit(@RequestParam(name="id") Long id) {
+        Result<LayoutVO> result = new Result<>();
+        try {
+            LayoutVO vo= layoutService.queryLayout(id);
+            result.setResult(vo);
+            result.success("查询布局数据成功！");
+        } catch (Exception e) {
+            result.error500("查询布局数据失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
+    @PostMapping("/update")
+    public Result<Boolean> update(@RequestBody LayoutVO layout) {
+        Result<Boolean> result = new Result<>();
+        try {
+
+            result.success("更新布局数据成功！");
+        } catch (Exception e) {
+            result.error500("更新布局数据失败！");
             log.error(e.getLocalizedMessage());
         }
         return result;
