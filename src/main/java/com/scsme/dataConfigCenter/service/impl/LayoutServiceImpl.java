@@ -42,6 +42,21 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
+    public List<LayoutVO> enabledLayouts() {
+        QueryWrapper<Layout> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("enabled", "Y");
+        List<Layout> layouts = layoutMapper.selectList(queryWrapper);
+        List<LayoutVO> results = new ArrayList<>();
+        layouts.forEach(layout -> {
+            List<Component> componentList = componentService.componentList(layout.getId());
+            LayoutVO vo = new LayoutVO().convert(layout);
+            vo.convertComponents(componentList);
+            results.add(vo);
+        });
+        return results;
+    }
+
+    @Override
     public LayoutVO queryLayout(Long id) {
         Layout layout = layoutMapper.selectById(id);
         List<Component> componentList = componentService.componentList(id);

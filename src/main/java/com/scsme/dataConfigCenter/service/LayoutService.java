@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface LayoutService {
     List<LayoutVO> list(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize);
+    List<LayoutVO> enabledLayouts();
     LayoutVO queryLayout(Long id);
     Boolean saveLayout(LayoutVO layout);
     Boolean updateLayout(LayoutVO layout);

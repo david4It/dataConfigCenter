@@ -22,10 +22,13 @@ public class HTMLTemplateUtil {
     private static final String TEMPLATES_DIR = "/templates/";
     private static final String FREEMARKER_DIR = "/freemarker/";
 
-    public static void generatedHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
-        List<ComponentVO> components = layout.getComponents();
+    public static void generatedHTMLFile(LayoutVO layout) {
+        generatedHTMLFile(layout, null);
+    }
 
+    public static void generatedHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
         //写入到本地文件
+        List<ComponentVO> components = layout.getComponents();
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
         try {
             configuration.setDirectoryForTemplateLoading(new File(new ClassPathResource(FREEMARKER_DIR).getURI().getPath()));
@@ -38,8 +41,10 @@ public class HTMLTemplateUtil {
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
                 template.process(dataMap, out);
             }
-            layout.setFile(Files.readAllBytes(Paths.get(file.getPath())));
-            layoutMapper.updateById(layout);
+            if (layoutMapper != null) {
+                layout.setFile(Files.readAllBytes(Paths.get(file.getPath())));
+                layoutMapper.updateById(layout);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

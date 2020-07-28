@@ -48,7 +48,7 @@ public class LayoutVO extends Layout {
 
     public void convertComponents(List<Component> components) {
         components.forEach((c) -> {
-            components.add(new ComponentVO().convert(c));
+            this.components.add(new ComponentVO().convert(c));
         });
     }
 }
