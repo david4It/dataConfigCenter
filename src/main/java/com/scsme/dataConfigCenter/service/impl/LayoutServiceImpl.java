@@ -70,12 +70,14 @@ public class LayoutServiceImpl implements LayoutService {
         Layout beSave = layout.transLayout();
         int insert = layoutMapper.insert(beSave);
         if (insert > 0) {
-            Layout saved = getLayout(beSave.getUrl());
-            if (saved != null) {
-                List<Component> components = layout.transComponents(saved.getId());
+            Layout savedLayout = getLayout(beSave.getUrl());
+            if (savedLayout != null) {
+                List<Component> components = layout.transComponents(savedLayout.getId());
                 Boolean result = componentService.saveComponents(components);
                 if (result) {
-                    HTMLCreationExecutor.generatedHTMLFile(layout.convert(saved), layoutMapper);
+                    List<Component> savedComponents = componentService.componentList(savedLayout.getId());
+                    layout.convert(savedLayout).convertComponents(savedComponents);
+                    HTMLCreationExecutor.generatedHTMLFile(layout, layoutMapper);
                     return true;
                 }
             }
