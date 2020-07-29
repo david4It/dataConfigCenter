@@ -18,6 +18,7 @@ public class ComponentVO extends Component {
         component.setY(this.getY());
         component.setWidth(this.getWidth());
         component.setHeight(this.getHeight());
+        component.setConfigJson(this.getConfigJson());
         component.setCreateTime(this.getCreateTime());
         component.setLastUpdateTime(this.getLastUpdateTime());
         return component;
@@ -42,6 +43,7 @@ public class ComponentVO extends Component {
         this.setY(component.getY());
         this.setWidth(component.getWidth());
         this.setHeight(component.getHeight());
+        this.setConfigJson(component.getConfigJson());
         this.setCreateTime(component.getCreateTime());
         return this;
     }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/framework/gridstack-extra.css"/>
     <!-- 引入gridstack组件库 -->
     <script src="/js/framework/gridstack.all.js"></script>
+    <link rel="shortcut icon" href="/img/favicon.ico">
 </head>
 <body>
 <div id="main">
@@ -65,7 +66,7 @@
     function saveLayout() {
         let layout = {title: '测试', url: '/index', components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
         $(grid.engine.nodes).each((index, ele) => {
-            layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.column() * 100), x: Math.floor(ele.x/grid.column() * 100), y: ele.y, type: 'bar', query: 'select * from xxx', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
+            layout.components.push({configJson: '{"title":{"text": "2020年度"},"series":{"name":"总金额"}}', height: ele.height, width: Math.floor(ele.width/grid.column() * 100), x: Math.floor(ele.x/grid.column() * 100), y: ele.y, type: 'line', query: 'SELECT FORMAT( SUM( plc_bgt_amount ), 2 ) AS \'一般公共预算\', FORMAT( SUM( gov_fund_bgt_amount ), 2 ) AS \'政府性基金预算\', FORMAT( SUM( other_fund_amount ), 2 ) AS \'其他预算\' FROM budget WHERE area = \'city\' GROUP BY year ORDER BY year DESC LIMIT 1', params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date())})
         });
         layout.components.sort((v1,v2) => {
             return v1.x - v2.x;
