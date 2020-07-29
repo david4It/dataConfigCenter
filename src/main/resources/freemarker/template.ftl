@@ -84,7 +84,12 @@
         },
         methods: {
             <#list components as vo>
-                <#include "line.ftl">
+                <#switch vo.getType()>
+                    <#case "bar"><#include "bar.ftl"><#break>
+                    <#case "line"><#include "line.ftl"><#break>
+                    <#case "pie"><#include "pie.ftl"><#break>
+                    <#case "radar"><#include "radar.ftl"><#break>
+                </#switch>
             </#list>
         }
     })
