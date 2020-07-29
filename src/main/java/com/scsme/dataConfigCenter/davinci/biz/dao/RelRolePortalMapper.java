@@ -23,11 +23,12 @@ import com.scsme.dataConfigCenter.davinci.biz.model.RelRolePortal;
 import com.scsme.dataConfigCenter.davinci.core.model.RoleDisableViz;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
-
+@Mapper
 public interface RelRolePortalMapper {
 
     int insert(RelRolePortal record);

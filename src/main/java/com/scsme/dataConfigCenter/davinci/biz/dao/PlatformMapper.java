@@ -20,11 +20,12 @@
 package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.Platform;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Component;
 
-@Component
+@Mapper
 public interface PlatformMapper {
 
     @Select("select * from platform where code = #{code}")

@@ -20,15 +20,12 @@
 package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.MemDashboardWidget;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Mapper
 public interface MemDashboardWidgetMapper {
     int insert(MemDashboardWidget memDashboardWidget);
 

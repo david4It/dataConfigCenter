@@ -23,14 +23,11 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.UserMaxProjectPermi
 import com.scsme.dataConfigCenter.davinci.biz.dto.roleDto.RoleBaseInfo;
 import com.scsme.dataConfigCenter.davinci.biz.dto.roleDto.RoleWithProjectPermission;
 import com.scsme.dataConfigCenter.davinci.biz.model.RelRoleProject;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Set;
-
+@Mapper
 public interface RelRoleProjectMapper {
 
     int insert(RelRoleProject record);

@@ -24,16 +24,13 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewWithProjectAndSour
 import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewWithSource;
 import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewWithSourceBaseInfo;
 import com.scsme.dataConfigCenter.davinci.biz.model.View;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
-@Component
+@Mapper
 public interface ViewMapper {
 
     int insert(View view);

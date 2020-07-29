@@ -23,16 +23,13 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.shareDto.ShareWidget;
 import com.scsme.dataConfigCenter.davinci.biz.dto.widgetDto.WidgetWithRelationDashboardId;
 import com.scsme.dataConfigCenter.davinci.biz.dto.widgetDto.WidgetWithVizId;
 import com.scsme.dataConfigCenter.davinci.biz.model.Widget;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
-@Component
+@Mapper
 public interface WidgetMapper {
     int insert(Widget widget);
 

@@ -21,21 +21,20 @@ package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dto.organizationDto.OrganizationInfo;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectDetail;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectWithCreateBy;
+import com.scsme.dataConfigCenter.davinci.biz.model.Dashboard;
 import com.scsme.dataConfigCenter.davinci.biz.model.Project;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
-@Component
-public interface ProjectMapper {
+@Mapper
+public interface ProjectMapper extends BaseMapper<Project> {
 
 
     List<ProjectWithCreateBy> getProejctsByUser(@Param("userId") Long userId);

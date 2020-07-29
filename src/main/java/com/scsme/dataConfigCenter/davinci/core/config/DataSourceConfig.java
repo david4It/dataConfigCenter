@@ -34,10 +34,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Slf4j
+/*@Slf4j
 @Configuration
-@MapperScan("com.scsme.dataConfigCenter.davinci.biz.dao")
-@EnableTransactionManagement
+@MapperScan({"com.scsme.*.dao","com.zipon.tpf.dao"})
+@EnableTransactionManagement*/
 public class DataSourceConfig {
 
     @Autowired
@@ -50,7 +50,7 @@ public class DataSourceConfig {
     private PageInterceptor pageInterceptor;
 
     @Bean
-    @ConfigurationProperties(prefix = "mybatis.configuration")
+    @ConfigurationProperties(prefix = "mybatis-plus.configuration")
     public org.apache.ibatis.session.Configuration globalConfiguration() {
         return new org.apache.ibatis.session.Configuration();
     }
@@ -61,8 +61,8 @@ public class DataSourceConfig {
         sqlSessionFactoryBean.setDataSource(druidDataSource);
         sqlSessionFactoryBean.setConfiguration(globalConfiguration());
         sqlSessionFactoryBean.setPlugins(new Interceptor[]{pageInterceptor});
-        sqlSessionFactoryBean.setTypeAliasesPackage(environment.getProperty("mybatis.type-aliases-package"));
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(environment.getProperty("mybatis.mapper-locations")));
+        sqlSessionFactoryBean.setTypeAliasesPackage(environment.getProperty("mybatis-plus.type-aliases-package"));
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(environment.getProperty("mybatis-plus.mapper-locations")));
         return sqlSessionFactoryBean.getObject();
     }
 

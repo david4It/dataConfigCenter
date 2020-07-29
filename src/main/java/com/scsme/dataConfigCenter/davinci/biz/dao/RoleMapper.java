@@ -21,13 +21,10 @@ package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 import com.scsme.dataConfigCenter.davinci.biz.dto.roleDto.RoleBaseInfo;
 import com.scsme.dataConfigCenter.davinci.biz.model.Role;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
-
+@Mapper
 public interface RoleMapper {
     int insert(Role record);
 

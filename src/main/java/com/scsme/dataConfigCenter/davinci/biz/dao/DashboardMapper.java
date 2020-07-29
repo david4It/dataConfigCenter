@@ -20,19 +20,16 @@
 package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dto.dashboardDto.DashboardWithPortal;
 import com.scsme.dataConfigCenter.davinci.biz.model.Dashboard;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Set;
 
-@Component
-public interface DashboardMapper {
+@Mapper
+public interface DashboardMapper  extends BaseMapper<Dashboard> {
 
     int insert(Dashboard dashboard);
 

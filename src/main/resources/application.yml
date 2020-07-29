@@ -39,7 +39,7 @@ spring:
   ## 设定 flyway 属性
   flyway:
     # 启用或禁用 flyway
-    enabled: false
+    enabled: true
     # flyway 的 clean 命令会删除指定 schema 下的所有 table, 杀伤力太大了, 应该禁掉.
     clean-disabled: true #禁用clean操作
     baseline-on-migrate: true #初始化时如果不存在迁移记录表，默认新建一个
@@ -123,13 +123,21 @@ pagehelper:
   helperDialect: mysql
   params: count=countSql
 
-mybatis:
+mybatis-plus:
   mapper-locations: classpath:mybatis/mapper/*Mapper.xml
-  config-locations: classpath:mybatis/mybatis-config.xml
   type-aliases-package: com.scsme.dataConfigCenter.davinci.biz.model
   configuration:
     map-underscore-to-camel-case: true
     use-generated-keys: true
+
+#逻辑删除的状态
+#mybatis-plus:
+#  mapper-locations: classpath:mybatis/mapper/*Mapper.xml
+#  type-aliases-package: com.scsme.dataConfigCenter.mapper
+#  global-config:
+#    db-config:
+#      logic-delete-value: 1
+#      logic-not-delete-value: 0
 
 mapper:
   identity: MYSQL

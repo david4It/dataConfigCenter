@@ -20,12 +20,13 @@ package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.RelRoleDashboardWidget;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 import java.util.Set;
-
+@Mapper
 public interface RelRoleDashboardWidgetMapper {
 
     int insertBatch(List<RelRoleDashboardWidget> list);

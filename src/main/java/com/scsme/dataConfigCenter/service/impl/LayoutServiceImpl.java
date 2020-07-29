@@ -3,6 +3,7 @@ package com.scsme.dataConfigCenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.scsme.dataConfigCenter.davinci.biz.dao.DashboardMapper;
 import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
@@ -22,6 +23,8 @@ import java.util.List;
 @Service
 @Transactional
 public class LayoutServiceImpl implements LayoutService {
+    @Autowired
+    DashboardMapper dashboardMapper;
     @Autowired
     LayoutMapper layoutMapper;
     @Autowired

@@ -21,11 +21,12 @@ package com.scsme.dataConfigCenter.davinci.biz.dao;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.DownloadRecord;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
-
+@Mapper
 public interface DownloadRecordMapper {
 
     int insert(DownloadRecord downloadRecord);
