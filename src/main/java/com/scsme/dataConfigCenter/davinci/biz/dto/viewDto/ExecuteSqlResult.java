@@ -20,7 +20,7 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.viewDto;
 
 import com.scsme.dataConfigCenter.davinci.core.model.core.Paginate;
-import edp.core.model.QueryColumn;
+import com.scsme.dataConfigCenter.davinci.core.model.core.QueryColumn;
 import lombok.Data;
 
 import java.util.List;

@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
-import edp.core.model.QueryColumn;
+import com.scsme.dataConfigCenter.davinci.core.model.core.QueryColumn;
 import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewExecuteParam;
 
 import java.io.Serializable;

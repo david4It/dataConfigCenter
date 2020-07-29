@@ -21,7 +21,6 @@ package com.scsme.dataConfigCenter.davinci.core.utils.front;
 
 import com.alibaba.druid.util.StringUtils;
 import com.scsme.dataConfigCenter.davinci.core.model.SqlEntity;
-import com.sun.tools.javac.util.ListBuffer;
 import com.scsme.dataConfigCenter.davinci.core.exception.ServerException;
 import com.scsme.dataConfigCenter.davinci.core.utils.CollectionUtils;
 import com.scsme.dataConfigCenter.davinci.core.utils.SqlUtils;
@@ -33,6 +32,7 @@ import com.scsme.dataConfigCenter.davinci.core.enums.SystemVariableEnum;
 import com.scsme.dataConfigCenter.davinci.biz.model.SqlVariable;
 import com.scsme.dataConfigCenter.davinci.biz.model.SqlVariableChannel;
 import com.scsme.dataConfigCenter.davinci.biz.model.User;
+import com.sun.tools.javac.util.ListBuffer;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -47,7 +47,6 @@ import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import static com.scsme.dataConfigCenter.davinci.core.common.Constants.*;
 import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.NEW_LINE_CHAR;
 import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.SPACE;

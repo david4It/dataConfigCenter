@@ -20,17 +20,17 @@
 package com.scsme.dataConfigCenter.davinci.core.enums;
 
 public enum CheckEntityEnum {
-    USER("user", "userService", "edp.davinci.model.User"),
-    PROJECT("project", "projectService", "edp.davinci.model.Project"),
-    ORGANIZATION("organization", "organizationService", "edp.davinci.model.Organization"),
-    SOURCE("source", "sourceService", "edp.davinci.model.Source"),
-    VIEW("view", "viewService", "edp.davinci.model.View"),
-    WIDGET("widget", "widgetService", "edp.davinci.model.Widget"),
-    DISPLAY("display", "displayService", "edp.davinci.model.Display"),
-    DISPLAYSLIDE("displaySlide", "displaySlideService", "edp.davinci.model.DisplaySlide"),
-    DASHBOARD("dashboard", "dashboardService", "edp.davinci.model.Dashboard"),
-    DASHBOARDPORTAL("dashboardPortal", "dashboardPortalService", "edp.davinci.model.DashboardPortal"),
-    CRONJOB("cronJob", "cronJobService", "edp.davinci.model.CronJob");
+    USER("user", "userService", "com.scsme.dataConfigCenter.davinci.biz.model.User"),
+    PROJECT("project", "projectService", "com.scsme.dataConfigCenter.davinci.biz.model.Project"),
+    ORGANIZATION("organization", "organizationService", "com.scsme.dataConfigCenter.davinci.biz.model.Organization"),
+    SOURCE("source", "sourceService", "com.scsme.dataConfigCenter.davinci.biz.model.Source"),
+    VIEW("view", "viewService", "com.scsme.dataConfigCenter.davinci.biz.model.View"),
+    WIDGET("widget", "widgetService", "com.scsme.dataConfigCenter.davinci.biz.model.Widget"),
+    DISPLAY("display", "displayService", "com.scsme.dataConfigCenter.davinci.biz.model.Display"),
+    DISPLAYSLIDE("displaySlide", "displaySlideService", "com.scsme.dataConfigCenter.davinci.biz.model.DisplaySlide"),
+    DASHBOARD("dashboard", "dashboardService", "com.scsme.dataConfigCenter.davinci.biz.model.Dashboard"),
+    DASHBOARDPORTAL("dashboardPortal", "dashboardPortalService", "com.scsme.dataConfigCenter.davinci.biz.model.DashboardPortal"),
+    CRONJOB("cronJob", "cronJobService", "com.scsme.dataConfigCenter.davinci.biz.model.CronJob");
 
     private String source;
     private String service;

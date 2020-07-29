@@ -20,13 +20,14 @@
 package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
 import com.google.common.base.Stopwatch;
-import edp.core.model.QueryColumn;
+
+import com.scsme.dataConfigCenter.davinci.core.model.core.QueryColumn;
 import com.scsme.dataConfigCenter.davinci.core.utils.CollectionUtils;
 import com.scsme.dataConfigCenter.davinci.core.utils.MD5Util;
 import com.scsme.dataConfigCenter.davinci.core.utils.SqlUtils;
 import com.scsme.dataConfigCenter.davinci.core.enums.ActionEnum;
-import edp.davinci.core.utils.SqlParseUtils;
-import com.scsme.dataConfigCenter.davinci.biz.dto.cronJobDto.MsgMailExcel;
+import com.scsme.dataConfigCenter.davinci.core.utils.front.SqlParseUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -36,7 +37,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static edp.core.consts.Consts.QUERY_META_SQL;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.QUERY_META_SQL;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -113,9 +115,9 @@ public class SheetWorker<T> extends AbstractSheetWriter implements Callable {
             super.refreshHeightWidth(context);
         } catch (Exception e) {
             if (context.getWrapper().getAction() == ActionEnum.MAIL) {
-                MsgMailExcel msg = (MsgMailExcel) context.getWrapper().getMsg();
+              /*  MsgMailExcel msg = (MsgMailExcel) context.getWrapper().getMsg();
                 msg.setDate(new Date());
-                msg.setException(e);
+                msg.setException(e);*/
             }
             if (context.getCustomLogger() != null) {
                 context.getCustomLogger().error("Task({}) sheet worker(name:{}, sheetNo: {}, sheetName:{}) error, md5={}, error={}",

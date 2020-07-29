@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
-import static edp.core.consts.Consts.PATTERN_EMAIL_FORMAT;
-import static edp.davinci.core.common.Constants.EMAIL_DEFAULT_TEMPLATE;
+import static com.scsme.dataConfigCenter.davinci.core.common.Constants.EMAIL_DEFAULT_TEMPLATE;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.PATTERN_EMAIL_FORMAT;
 
 @Component
 @Slf4j

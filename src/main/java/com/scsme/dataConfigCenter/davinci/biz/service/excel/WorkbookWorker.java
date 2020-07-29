@@ -21,20 +21,20 @@ package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-import com.scsme.dataConfigCenter.davinci.core.utils.CollectionUtils;
-import com.scsme.dataConfigCenter.davinci.core.utils.FileUtils;
-import com.scsme.dataConfigCenter.davinci.core.utils.SqlUtils;
-import edp.davinci.common.utils.ScriptUtiils;
-import edp.davinci.core.config.SpringContextHolder;
-import com.scsme.dataConfigCenter.davinci.core.enums.ActionEnum;
-import com.scsme.dataConfigCenter.davinci.core.enums.FileTypeEnum;
-import edp.davinci.core.model.ExcelHeader;
-import edp.davinci.core.utils.ExcelUtils;
 import com.scsme.dataConfigCenter.davinci.biz.dao.ViewMapper;
-import com.scsme.dataConfigCenter.davinci.biz.dto.cronJobDto.MsgMailExcel;
 import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewExecuteParam;
 import com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewWithProjectAndSource;
-import edp.davinci.service.ViewService;
+import com.scsme.dataConfigCenter.davinci.biz.service.ViewService;
+import com.scsme.dataConfigCenter.davinci.core.config.SpringContextHolder;
+import com.scsme.dataConfigCenter.davinci.core.enums.ActionEnum;
+import com.scsme.dataConfigCenter.davinci.core.enums.FileTypeEnum;
+import com.scsme.dataConfigCenter.davinci.core.model.ExcelHeader;
+import com.scsme.dataConfigCenter.davinci.core.utils.CollectionUtils;
+import com.scsme.dataConfigCenter.davinci.core.utils.FileUtils;
+import com.scsme.dataConfigCenter.davinci.core.utils.ScriptUtiils;
+import com.scsme.dataConfigCenter.davinci.core.utils.SqlUtils;
+
+import com.scsme.dataConfigCenter.davinci.core.utils.front.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -113,8 +113,8 @@ public class WorkbookWorker<T> extends MsgNotifier implements Callable {
                     context.getCustomLogger().error("Task({}) workbook worker error, e={}", context.getTaskKey(), e.getMessage());
                 }
                 if (wrapper.getAction() == ActionEnum.MAIL) {
-                    MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
-                    msg.setException(new TimeoutException("Get data timeout"));
+                  /*  MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
+                    msg.setException(new TimeoutException("Get data timeout"));*/
                     super.tell(wrapper);
                 }
                 return (T) filePath;
@@ -140,8 +140,8 @@ public class WorkbookWorker<T> extends MsgNotifier implements Callable {
                 context.getCustomLogger().error("Task({}) workbook worker error, e={}", context.getTaskKey(), e.getMessage());
             }
             if (wrapper.getAction() == ActionEnum.MAIL) {
-                MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
-                msg.setException(e);
+              /*  MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
+                msg.setException(e);*/
             }
             super.tell(wrapper);
             if (StringUtils.isNotEmpty(filePath)) {

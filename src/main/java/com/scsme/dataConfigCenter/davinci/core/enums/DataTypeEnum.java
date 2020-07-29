@@ -20,7 +20,7 @@
 package com.scsme.dataConfigCenter.davinci.core.enums;
 
 import com.scsme.dataConfigCenter.davinci.core.consts.Consts;
-import edp.core.exception.SourceException;
+import com.scsme.dataConfigCenter.davinci.core.exception.SourceException;
 
 public enum DataTypeEnum {
 

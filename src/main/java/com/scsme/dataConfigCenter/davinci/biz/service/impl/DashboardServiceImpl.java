@@ -21,6 +21,8 @@ package com.scsme.dataConfigCenter.davinci.biz.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
+import com.scsme.dataConfigCenter.davinci.biz.service.DashboardService;
+import com.scsme.dataConfigCenter.davinci.biz.service.ShareService;
 import com.scsme.dataConfigCenter.davinci.core.exception.NotFoundException;
 import com.scsme.dataConfigCenter.davinci.core.exception.ServerException;
 import com.scsme.dataConfigCenter.davinci.core.exception.UnAuthorizedExecption;
@@ -38,8 +40,7 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.dashboardDto.*;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectPermission;
 import com.scsme.dataConfigCenter.davinci.biz.dto.roleDto.VizVisibility;
 import com.scsme.dataConfigCenter.davinci.biz.model.*;
-import edp.davinci.service.DashboardService;
-import edp.davinci.service.ShareService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static edp.core.consts.Consts.COMMA;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
 
 @Slf4j
 @Service("dashboardService")

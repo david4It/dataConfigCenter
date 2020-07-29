@@ -20,17 +20,10 @@
 package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
 import com.alibaba.druid.util.StringUtils;
-/*import edp.core.enums.SqlTypeEnum;
-import edp.core.model.QueryColumn;
-import com.scsme.dataConfigCenter.davinci.core.utils.CollectionUtils;
-import com.scsme.dataConfigCenter.davinci.core.enums.NumericUnitEnum;
-import edp.davinci.core.model.ExcelHeader;
-import edp.davinci.core.model.FieldCurrency;
-import edp.davinci.core.model.FieldNumeric;
-import edp.davinci.core.utils.ExcelUtils;
-import com.scsme.dataConfigCenter.davinci.biz.dto.poiDto.PoiInfo;*/
+
 import com.scsme.dataConfigCenter.davinci.biz.dto.poiDto.PoiInfo;
 import com.scsme.dataConfigCenter.davinci.core.enums.NumericUnitEnum;
+import com.scsme.dataConfigCenter.davinci.core.enums.SqlTypeEnum;
 import com.scsme.dataConfigCenter.davinci.core.model.ExcelHeader;
 import com.scsme.dataConfigCenter.davinci.core.model.FieldCurrency;
 import com.scsme.dataConfigCenter.davinci.core.model.FieldNumeric;
@@ -43,7 +36,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
 
 /**
  * Created by IntelliJ IDEA.

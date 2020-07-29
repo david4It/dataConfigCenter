@@ -26,7 +26,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
-import static edp.core.consts.Consts.*;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
+
 
 @Component
 public class ServerUtils {

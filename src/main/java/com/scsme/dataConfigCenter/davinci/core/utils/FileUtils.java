@@ -36,8 +36,7 @@ import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static edp.core.consts.Consts.*;
-
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
 
 @Component
 public class FileUtils {

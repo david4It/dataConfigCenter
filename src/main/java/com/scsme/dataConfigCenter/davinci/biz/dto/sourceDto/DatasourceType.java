@@ -20,12 +20,13 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.sourceDto;
 
 import com.scsme.dataConfigCenter.davinci.core.consts.Consts;
-import edp.core.enums.DataTypeEnum;
+
+import com.scsme.dataConfigCenter.davinci.core.enums.DataTypeEnum;
 import lombok.Getter;
 
 import java.util.List;
 
-import static edp.core.consts.Consts.ORACLE_JDBC_PREFIX;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.ORACLE_JDBC_PREFIX;
 
 @Getter
 public class DatasourceType {

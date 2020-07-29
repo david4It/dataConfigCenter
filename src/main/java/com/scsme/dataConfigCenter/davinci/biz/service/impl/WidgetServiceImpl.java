@@ -72,6 +72,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.scsme.dataConfigCenter.davinci.core.utils.ScriptUtiils.getExecuptParamScriptEngine;
+import static com.scsme.dataConfigCenter.davinci.core.utils.ScriptUtiils.getViewExecuteParam;
 import static org.elasticsearch.geometry.utils.WellKnownText.EMPTY;
 
 

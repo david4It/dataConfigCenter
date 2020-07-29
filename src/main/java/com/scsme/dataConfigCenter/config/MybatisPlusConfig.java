@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan("com.scsme.dataConfigCenter.mapper")
+@MapperScan("com.scsme.*.mapper")
 public class MybatisPlusConfig {
 
     @Bean

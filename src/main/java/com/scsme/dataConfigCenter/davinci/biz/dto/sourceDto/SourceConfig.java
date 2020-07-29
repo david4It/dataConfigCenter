@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.dto.sourceDto;
 
-import edp.core.model.Dict;
+import com.scsme.dataConfigCenter.davinci.core.model.core.Dict;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

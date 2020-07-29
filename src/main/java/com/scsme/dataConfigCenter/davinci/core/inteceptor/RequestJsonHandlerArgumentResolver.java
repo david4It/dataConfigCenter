@@ -20,7 +20,7 @@
 package com.scsme.dataConfigCenter.davinci.core.inteceptor;
 
 import com.alibaba.fastjson.JSONObject;
-import edp.core.annotation.JsonParam;
+import com.scsme.dataConfigCenter.davinci.core.annotation.JsonParam;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

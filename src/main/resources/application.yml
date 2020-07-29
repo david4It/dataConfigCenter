@@ -1,5 +1,7 @@
 server:
-  port: 8099
+  protocol: http
+  address: 127.0.0.1
+  port: 8089
 spring:
   application:
     name: 数据配置中心
@@ -13,14 +15,27 @@ spring:
     prefix: classpath:/templates/
 
   datasource:
-    username: root
-    password: Passw0rd
-    url: jdbc:mysql://localhost:3306/procurement_statistics?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-#    url: jdbc:mysql://192.168.1.201:21563/scsme-daav?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
 #    username: root
-#    password: df34SD#4s
+#    password: Passw0rd
+#    url: jdbc:mysql://localhost:3306/procurement_statistics?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.201:21563/scsme-daav?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
+    username: root
+    password: df34SD#4s
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+    initial-size: 2
+    min-idle: 1
+    max-wait: 60000
+    max-active: 10
+    time-between-eviction-runs-millis: 30000
+    min-evictable-idle-time-millis: 300000
+    test-while-idle: true
+    test-on-borrow: false
+    test-on-return: false
+    filters: stat
+    break-after-acquire-failure: true
+    connection-error-retry-attempts: 3
+    validation-query: SELECT 1
   ## 设定 flyway 属性
   flyway:
     # 启用或禁用 flyway
@@ -43,3 +58,90 @@ spring:
     check-template-location: true
     content-type: text/html
     suffix: .ftl
+  mail:
+    host: smtp.163.com
+    port: 25
+    username: xuelangice
+    fromAddress: xuelangice@163.com
+    password: 182414
+    nickname:
+
+    properties:
+      smtp:
+        starttls:
+          enable: true
+          required: true
+        auth: true
+      mail:
+        smtp:
+          ssl:
+            enable: false
+
+  ldap:
+    urls:
+    username:
+    password:
+    base:
+    domainName:    # domainName 指 企业邮箱后缀，如企业邮箱为：xxx@example.com, 这里值为 '@example.com'
+
+  security:
+    oauth2:
+      enable: false
+  ## redis config
+  ## please choose either of the two ways
+  redis:
+    isEnable: false
+
+    ## standalone config
+    host: 127.0.0.1
+    port: 6379
+
+    ## cluster config
+    #  cluster:
+    #       nodes:
+
+    password:
+    database: 0
+    timeout: 1000
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /api-doc
+
+
+pagehelper:
+  supportMethodsArguments: true
+  reasonable: true
+  returnPageInfo: check
+  helperDialect: mysql
+  params: count=countSql
+
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*Mapper.xml
+  config-locations: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.scsme.dataConfigCenter.davinci.biz.model
+  configuration:
+    map-underscore-to-camel-case: true
+    use-generated-keys: true
+
+mapper:
+  identity: MYSQL
+  not-empty: false
+  mappers: com.scsme.dataConfigCenter.davinci.biz.dao
+
+sql_template_delimiter: $
+custom-datasource-driver-path: ${DAVINCI3_HOME}/config/datasource_driver.yml
+
+DAVINCI3_HOME: E:/home/davinci
+file:
+  userfiles-path: ${DAVINCI3_HOME}/userfiles/
+  web_resources: ${DAVINCI3_HOME}/davinci-ui/
+  phantomJs-path: ${DAVINCI3_HOME}/bin/phantom.js
+  base-path: ${DAVINCI3_HOME}/lib/

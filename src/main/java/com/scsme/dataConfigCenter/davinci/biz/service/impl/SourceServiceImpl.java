@@ -21,24 +21,6 @@ package com.scsme.dataConfigCenter.davinci.biz.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import edp.core.common.jdbc.JdbcDataSource;
-import edp.core.enums.DataTypeEnum;
-import com.scsme.dataConfigCenter.davinci.core.exception.NotFoundException;
-import com.scsme.dataConfigCenter.davinci.core.exception.ServerException;
-import edp.core.exception.SourceException;
-import com.scsme.dataConfigCenter.davinci.core.exception.UnAuthorizedExecption;
-import com.scsme.dataConfigCenter.davinci.core.model.core.DBTables;
-import edp.core.model.JdbcSourceInfo;
-import edp.core.model.JdbcSourceInfo.JdbcSourceInfoBuilder;
-import edp.core.model.QueryColumn;
-import com.scsme.dataConfigCenter.davinci.core.model.core.TableInfo;
-import com.scsme.dataConfigCenter.davinci.core.utils.*;
-import com.scsme.dataConfigCenter.davinci.core.common.Constants;
-import com.scsme.dataConfigCenter.davinci.core.enums.*;
-import edp.davinci.core.model.DataUploadEntity;
-import edp.davinci.core.model.RedisMessageEntity;
-import edp.davinci.core.utils.CsvUtils;
-import edp.davinci.core.utils.ExcelUtils;
 import com.scsme.dataConfigCenter.davinci.biz.dao.SourceMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dao.ViewMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectDetail;
@@ -47,9 +29,26 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.sourceDto.*;
 import com.scsme.dataConfigCenter.davinci.biz.model.Source;
 import com.scsme.dataConfigCenter.davinci.biz.model.User;
 import com.scsme.dataConfigCenter.davinci.biz.model.View;
-import edp.davinci.runner.LoadSupportDataSourceRunner;
+import com.scsme.dataConfigCenter.davinci.biz.runner.LoadSupportDataSourceRunner;
 import com.scsme.dataConfigCenter.davinci.biz.service.ProjectService;
-import edp.davinci.service.SourceService;
+import com.scsme.dataConfigCenter.davinci.biz.service.SourceService;
+import com.scsme.dataConfigCenter.davinci.core.common.Constants;
+import com.scsme.dataConfigCenter.davinci.core.common.jdbc.JdbcDataSource;
+import com.scsme.dataConfigCenter.davinci.core.enums.*;
+import com.scsme.dataConfigCenter.davinci.core.exception.NotFoundException;
+import com.scsme.dataConfigCenter.davinci.core.exception.ServerException;
+import com.scsme.dataConfigCenter.davinci.core.exception.SourceException;
+import com.scsme.dataConfigCenter.davinci.core.exception.UnAuthorizedExecption;
+import com.scsme.dataConfigCenter.davinci.core.model.DataUploadEntity;
+import com.scsme.dataConfigCenter.davinci.core.model.RedisMessageEntity;
+import com.scsme.dataConfigCenter.davinci.core.model.core.DBTables;
+import com.scsme.dataConfigCenter.davinci.core.model.core.JdbcSourceInfo;
+import com.scsme.dataConfigCenter.davinci.core.model.core.QueryColumn;
+import com.scsme.dataConfigCenter.davinci.core.model.core.TableInfo;
+import com.scsme.dataConfigCenter.davinci.core.utils.*;
+
+import com.scsme.dataConfigCenter.davinci.core.utils.front.CsvUtils;
+import com.scsme.dataConfigCenter.davinci.core.utils.front.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +71,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static edp.core.consts.Consts.JDBC_DATASOURCE_DEFAULT_VERSION;
-import static edp.davinci.core.common.Constants.DAVINCI_TOPIC_CHANNEL;
+import static com.scsme.dataConfigCenter.davinci.core.common.Constants.DAVINCI_TOPIC_CHANNEL;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
 
 @Slf4j
 @Service("sourceService")
@@ -642,7 +641,7 @@ public class SourceServiceImpl extends BaseEntityService implements SourceServic
 			publishReconnect(JSON.toJSONString(map));
 		} else {
 			SourceUtils sourceUtils = new SourceUtils(jdbcDataSource);
-			JdbcSourceInfo jdbcSourceInfo = JdbcSourceInfoBuilder
+			JdbcSourceInfo jdbcSourceInfo = JdbcSourceInfo.JdbcSourceInfoBuilder
 					.aJdbcSourceInfo()
 					.withJdbcUrl(source.getJdbcUrl())
 					.withUsername(source.getUsername())

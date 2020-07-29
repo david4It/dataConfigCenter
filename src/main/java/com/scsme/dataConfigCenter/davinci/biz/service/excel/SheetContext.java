@@ -19,9 +19,9 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
-import edp.core.model.QueryColumn;
+import com.scsme.dataConfigCenter.davinci.core.model.ExcelHeader;
+import com.scsme.dataConfigCenter.davinci.core.model.core.QueryColumn;
 import com.scsme.dataConfigCenter.davinci.core.utils.SqlUtils;
-import edp.davinci.core.model.ExcelHeader;
 import lombok.Data;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;

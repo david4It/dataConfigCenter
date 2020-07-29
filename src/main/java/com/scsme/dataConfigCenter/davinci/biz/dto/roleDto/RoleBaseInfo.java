@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.dto.roleDto;
 
-import edp.davinci.common.model.BaseInfo;
+import com.scsme.dataConfigCenter.davinci.biz.model.common.BaseInfo;
 import lombok.Data;
 
 @Data

@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.core.config;
 
-import edp.davinci.core.service.RedisMessageReceiver;
+import com.scsme.dataConfigCenter.davinci.core.service.RedisMessageReceiver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +33,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import static edp.davinci.core.common.Constants.DAVINCI_TOPIC_CHANNEL;
+import static com.scsme.dataConfigCenter.davinci.core.common.Constants.DAVINCI_TOPIC_CHANNEL;
 
 @Slf4j
 @Configuration

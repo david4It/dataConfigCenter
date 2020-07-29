@@ -20,10 +20,11 @@
 package com.scsme.dataConfigCenter.davinci.core.common.quartz;
 
 import com.alibaba.druid.util.StringUtils;
-import edp.core.model.ScheduleJob;
+
+import com.scsme.dataConfigCenter.davinci.core.model.core.ScheduleJob;
 import com.scsme.dataConfigCenter.davinci.core.utils.DateUtils;
 import com.scsme.dataConfigCenter.davinci.core.utils.QuartzHandler;
-import edp.davinci.core.config.SpringContextHolder;
+import com.scsme.dataConfigCenter.davinci.core.config.SpringContextHolder;
 import com.scsme.dataConfigCenter.davinci.core.enums.LogNameEnum;
 import com.scsme.dataConfigCenter.davinci.biz.service.excel.ExecutorUtil;
 import lombok.extern.slf4j.Slf4j;

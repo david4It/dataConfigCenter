@@ -20,12 +20,10 @@
 package com.scsme.dataConfigCenter.davinci.biz.service.excel;
 
 
-import edp.davinci.core.config.SpringContextHolder;
+import com.scsme.dataConfigCenter.davinci.core.config.SpringContextHolder;
 import com.scsme.dataConfigCenter.davinci.core.enums.DownloadTaskStatus;
-import com.scsme.dataConfigCenter.davinci.biz.dao.CronJobMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dao.DownloadRecordMapper;
 import com.scsme.dataConfigCenter.davinci.biz.dao.ShareDownloadRecordMapper;
-import com.scsme.dataConfigCenter.davinci.biz.dto.cronJobDto.MsgMailExcel;
 import com.scsme.dataConfigCenter.davinci.biz.model.DownloadRecord;
 import com.scsme.dataConfigCenter.davinci.biz.model.ShareDownloadRecord;
 import lombok.extern.slf4j.Slf4j;
@@ -63,13 +61,13 @@ public abstract class MsgNotifier {
                 log.info("DownloadAction record is updated status=" + record.getStatus());
                 break;
             case MAIL:
-                MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
+               /* MsgMailExcel msg = (MsgMailExcel) wrapper.getMsg();
                 if (msg.getException() != null) {
                     ((CronJobMapper) SpringContextHolder.getBean(CronJobMapper.class)).updateExecLog(msg.getId(), msg.toString());
                     log.error("Cronjob({}) send mail error:{}, xUUID:{}", msg.getId(), msg.getException().getMessage(), wrapper.getxUUID());
                 } else {
                     log.info("Cronjob({}) send mail finish, xUUID:{}", msg.getId(), wrapper.getxUUID());
-                }
+                }*/
                 break;
 
             case SHAREDOWNLOAD:

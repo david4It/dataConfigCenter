@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static edp.core.consts.Consts.*;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
+import static org.elasticsearch.geometry.utils.WellKnownText.EMPTY;
+
 
 @Data
 public class ViewExecuteParam {

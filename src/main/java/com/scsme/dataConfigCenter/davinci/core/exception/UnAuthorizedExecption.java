@@ -19,7 +19,8 @@
 
 package com.scsme.dataConfigCenter.davinci.core.exception;
 
-import edp.core.enums.HttpCodeEnum;
+
+import com.scsme.dataConfigCenter.davinci.core.enums.HttpCodeEnum;
 
 public class UnAuthorizedExecption extends RuntimeException {
 

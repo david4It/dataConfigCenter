@@ -19,10 +19,11 @@
 
 package com.scsme.dataConfigCenter.davinci.core.utils;
 
-import edp.core.common.quartz.QuartzJobExecutor;
+
+import com.scsme.dataConfigCenter.davinci.core.common.quartz.QuartzJobExecutor;
 import com.scsme.dataConfigCenter.davinci.core.consts.Consts;
 import com.scsme.dataConfigCenter.davinci.core.exception.ServerException;
-import edp.core.model.ScheduleJob;
+import com.scsme.dataConfigCenter.davinci.core.model.core.ScheduleJob;
 import com.scsme.dataConfigCenter.davinci.core.enums.LogNameEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;

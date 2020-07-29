@@ -1,6 +1,5 @@
 package com.scsme.dataConfigCenter.config;
 
-import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.util.HTMLTemplateUtil;
 import com.scsme.dataConfigCenter.vo.LayoutVO;

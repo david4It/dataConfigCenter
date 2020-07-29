@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.core.common.quartz;
 
-import edp.core.model.ScheduleJob;
+import com.scsme.dataConfigCenter.davinci.core.model.core.ScheduleJob;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
