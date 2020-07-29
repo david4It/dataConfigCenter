@@ -3,13 +3,15 @@
     padding: 0;
     font-family: PingFangSC-Light, 微软雅黑;
 }
-body,html{
+html,body{
     width: 100%;
-    height: auto;
+    margin: 0;
+    padding: 0;
+    height: 100%;
     color:#333;
     /* overflow: hidden;*/
     background: url('../../img/true.png') no-repeat;
-    background-size: 100% 100%;
+    background-size: 100%;
 }
 /*各浏览器显示不同，去掉蓝色边框*/
 fieldset, img, input, button {

@@ -42,7 +42,7 @@
         }
     </style>
 </head>
-<body onload="size()">
+<body>
 
 <!--header-->
 <div class="header">
@@ -67,12 +67,6 @@
 </div>
 
 </body>
-<script type="text/javascript">
-    function size(){
-        let lastDiv = $("#layout").children("div:last-child");
-        $(".data_main").height(lastDiv.height() + lastDiv.position().top);
-    }
-</script>
 <script type="text/javascript">
     let app = new Vue({
         el: '#layout',
