@@ -94,6 +94,7 @@
                     <#case "pie"><#include "pie.ftl"><#break>
                     <#case "radar"><#include "radar.ftl"><#break>
                     <#case "table"><#include "table.ftl"><#break>
+                    <#case "map"><#include "map.ftl"><#break>
                 </#switch>
             </#list>
         }
