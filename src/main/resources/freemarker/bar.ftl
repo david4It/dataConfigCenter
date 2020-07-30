@@ -69,6 +69,9 @@
                     if (result.configJson) {
                         mergeRecursive(option, result.configJson);
                     }
+                    $('${'#component_' + vo.getLocationIndex()}').parent().parent().css("display", "block");
+                    $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
+                    myChart.resize();
                     myChart.setOption(option);
                     myChart.on("click", (param) => {
                         console.log(param);
