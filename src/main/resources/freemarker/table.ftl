@@ -14,6 +14,7 @@
                     mergeRecursive(config, result.configJson);
                 }
                 this.tableConfig = config;
+                this.tableKey = 'changed';
                 $('${'#component_' + vo.getLocationIndex()}').parent().parent().css("display", "block");
                 $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
             } else {

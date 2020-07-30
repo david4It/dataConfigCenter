@@ -77,7 +77,8 @@
     let app = new Vue({
         el: '#layout',
         data: {
-          tableConfig: {}
+          tableConfig: {},
+          tableKey: ''
         },
         created() {
             //初始化方法
