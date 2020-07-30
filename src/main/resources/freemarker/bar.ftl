@@ -1,3 +1,4 @@
+        //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-bar
         component_${vo.getLocationIndex()}() {
             axios.get("/statistics/common", {params: {componentId: ${vo.getId()}}}).then((res) => {
                 // 基于准备好的dom，初始化echarts实例

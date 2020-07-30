@@ -13,9 +13,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -48,8 +51,7 @@ public class GraphicalDataUtil {
     }
 
     private enum Graphical {
-        BAR("bar"),PIE("pie"), LINE("line"), TABLE_STATIC("table_static"),
-            TABLE_ROLL("table_roll"), RADAR("radar");
+        BAR("bar"),PIE("pie"), LINE("line"), TABLE("table"), RADAR("radar");
 
         Graphical(String value) {
             this.value = value;
@@ -141,8 +143,8 @@ public class GraphicalDataUtil {
                     result.put(RADAR_INDICATOR, radarIndicatorData);
                     result.put(SERIES_DATA, radarSeriesData);
                     break;
-                case TABLE_ROLL: case TABLE_STATIC:
-                    List<String> tableLegendData = new ArrayList<>();
+                case TABLE:
+                    Set<String> tableLegendData = new LinkedHashSet<>();
                     List<List<String>> tableSeriesData = new ArrayList<>();
                     while (resultSet.next()) {
                         ResultSetMetaData metaData = resultSet.getMetaData();

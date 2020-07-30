@@ -40,6 +40,12 @@
             color: #fff;
             cursor: pointer;
         }
+        .dv-scroll-board .header{
+            height: auto!important;
+            width: auto!important;
+            min-width: auto!important;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +76,9 @@
 <script type="text/javascript">
     let app = new Vue({
         el: '#layout',
+        data: {
+          tableConfig: {}
+        },
         created() {
             //初始化方法
             <#list components as vo>
@@ -83,6 +92,7 @@
                     <#case "line"><#include "line.ftl"><#break>
                     <#case "pie"><#include "pie.ftl"><#break>
                     <#case "radar"><#include "radar.ftl"><#break>
+                    <#case "table"><#include "table.ftl"><#break>
                 </#switch>
             </#list>
         }
