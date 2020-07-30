@@ -13,6 +13,8 @@ spring:
     check-template-location: false
     enabled: true
     prefix: classpath:/templates/
+    mode: HTML5
+    suffix: .html
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -85,6 +87,14 @@ spring:
     domainName:    # domainName 指 企业邮箱后缀，如企业邮箱为：xxx@example.com, 这里值为 '@example.com'
 
   security:
+    user:
+      name: user
+      password: 123
+    basic:
+      enabled: false
+    management:
+      security:
+        enabled: false
     oauth2:
       enable: false
   ## redis config
@@ -153,3 +163,9 @@ file:
   web_resources: ${DAVINCI3_HOME}/davinci-ui/
   phantomJs-path: ${DAVINCI3_HOME}/bin/phantom.js
   base-path: ${DAVINCI3_HOME}/lib/
+## jwt is one of the important configuration of the application
+## jwt config cannot be null or empty
+jwtToken:
+  secret: secret
+  timeout: 1800000
+  algorithm: HS512

@@ -8,9 +8,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Configuration
+/*@Configuration
 @Conditional(value = OAuth2EnableCondition.class)
-@EnableWebSecurity
+@EnableWebSecurity*/
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
