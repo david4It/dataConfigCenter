@@ -161,7 +161,7 @@ public class ResultMap extends HashMap<String, Object> {
 
     public ResultMap payloads(Collection list) {
         this.put("data", null == list ? new List[0] : list);
-        this.put("count", list.size());
+        this.put("count", null == list ? 0 : list.size());
         return this;
     }
 

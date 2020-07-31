@@ -24,7 +24,7 @@
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        insert into `view`
+        insert into `daav_view`
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `name`,
             `project_id`,
@@ -73,7 +73,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        insert into `view`
+        insert into `daav_view`
         (`id`,`name`,description, source_id, `project_id`, `sql`, `model`,`variable`,`config`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">
@@ -92,7 +92,7 @@
     </insert>
 
     <select id="selectByWidgetIds" resultType="com.scsme.dataConfigCenter.davinci.biz.model.View">
-        select * from `view` where id in
+        select * from `daav_view` where id in
         (
         select view_id from daav_widget where
         <if test="widgetIds != null and widgetIds.size > 0">
@@ -124,7 +124,7 @@
                s.`project_id`  'daav_source.projectId',
                s.`type`        'daav_source.type'
         FROM `view` v
-                 LEFT JOIN project p on p.id = v.project_id
+                 LEFT JOIN daav_project p on p.id = v.project_id
                  LEFT JOIN daav_source s on s.id = v.source_id
     </sql>
 

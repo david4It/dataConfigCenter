@@ -70,7 +70,9 @@ public class SourceController extends BaseController {
     @GetMapping
     public ResponseEntity getSources(@RequestParam Long projectId,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(projectId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid project id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -92,7 +94,9 @@ public class SourceController extends BaseController {
     @GetMapping("/{id}")
     public ResponseEntity getSourceDetail(@PathVariable Long id,
                                           @ApiIgnore @CurrentUser User user,
-                                          HttpServletRequest request) {
+                                          HttpServletRequest request,
+                                          @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid project id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -116,7 +120,9 @@ public class SourceController extends BaseController {
     public ResponseEntity createSource(@Valid @RequestBody SourceCreate source,
                                        @ApiIgnore BindingResult bindingResult,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -144,8 +150,9 @@ public class SourceController extends BaseController {
                                        @Valid @RequestBody SourceInfo source,
                                        @ApiIgnore BindingResult bindingResult,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
-
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -173,7 +180,9 @@ public class SourceController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSource(@PathVariable Long id,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid source id");
@@ -224,7 +233,9 @@ public class SourceController extends BaseController {
     public ResponseEntity reconnect(@PathVariable Long id,
                                     @RequestBody DbBaseInfo dbBaseInfo,
                                     @ApiIgnore @CurrentUser User user,
-                                    HttpServletRequest request) {
+                                    HttpServletRequest request,
+                                    @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         sourceService.reconnect(id, dbBaseInfo, user);
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request));
     }
@@ -246,7 +257,9 @@ public class SourceController extends BaseController {
                                         @Valid @RequestBody UploadMeta uploadMeta,
                                         @ApiIgnore BindingResult bindingResult,
                                         @ApiIgnore @CurrentUser User user,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid source id");
@@ -281,7 +294,9 @@ public class SourceController extends BaseController {
                                      @ApiIgnore BindingResult bindingResult,
                                      @RequestParam("file") MultipartFile file,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid source id");
@@ -315,7 +330,9 @@ public class SourceController extends BaseController {
     @GetMapping("/{id}/databases")
     public ResponseEntity getSourceDbs(@PathVariable Long id,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Inavlid source id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -339,7 +356,9 @@ public class SourceController extends BaseController {
     public ResponseEntity getSourceTables(@PathVariable Long id,
                                           @RequestParam(name = "dbName") String dbName,
                                           @ApiIgnore @CurrentUser User user,
-                                          HttpServletRequest request) {
+                                          HttpServletRequest request,
+                                          @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Inavlid source id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -367,7 +386,9 @@ public class SourceController extends BaseController {
                                           @RequestParam(name = "dbName") String dbName,
                                           @RequestParam(name = "tableName") String tableName,
                                           @ApiIgnore @CurrentUser User user,
-                                          HttpServletRequest request) {
+                                          HttpServletRequest request,
+                                          @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Inavlid source id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -398,7 +419,9 @@ public class SourceController extends BaseController {
      */
     @ApiOperation(value = "get jdbc datasources")
     @GetMapping("/jdbc/datasources")
-    public ResponseEntity getJdbcDataSources(@ApiIgnore @CurrentUser User user, HttpServletRequest request) {
+    public ResponseEntity getJdbcDataSources(@ApiIgnore @CurrentUser User user, HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         List<DatasourceType> list = sourceService.getDatasources();
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payloads(list));
     }
