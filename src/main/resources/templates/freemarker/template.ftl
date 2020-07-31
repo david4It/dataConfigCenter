@@ -5,19 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>政府采购大数据平台</title>
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link href="/css/framework/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/pages/base.css">
-    <link rel="stylesheet" href="/css/pages/index.css">
-    <script type="text/javascript" src="/js/framework/vue.js"></script>
-    <script src="/js/framework/datav.min.vue.js"></script>
-    <script src="/js/framework/jquery-2.2.1.min.js"></script>
-    <script src="/js/framework/bootstrap.min.js"></script>
-    <script src="/js/framework/common.js"></script>
-    <script src="/js/framework/echarts.min.js"></script>
-    <script src="/js/framework/axios.js"></script>
-    <script src="/js/pages/china.js"></script>
-    <script src="/js/pages/global.js"></script>
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+    <link href="/static/css/framework/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/pages/base.css">
+    <link rel="stylesheet" href="/static/css/pages/index.css">
+    <script type="text/javascript" src="/static/js/framework/vue.js"></script>
+    <script src="/static/js/framework/datav.min.vue.js"></script>
+    <script src="/static/js/framework/jquery-2.2.1.min.js"></script>
+    <script src="/static/js/framework/bootstrap.min.js"></script>
+    <script src="/static/js/framework/common.js"></script>
+    <script src="/static/js/framework/echarts.min.js"></script>
+    <script src="/static/js/framework/axios.js"></script>
+    <script src="/static/js/pages/china.js"></script>
+    <script src="/static/js/pages/global.js"></script>
     <style>
         .t_title{
             width: 100%;

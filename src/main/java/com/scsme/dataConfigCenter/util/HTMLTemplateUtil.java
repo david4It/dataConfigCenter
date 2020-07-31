@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class HTMLTemplateUtil {
     private static final String TEMPLATES_DIR = "/templates/";
-    private static final String FREEMARKER_DIR = "/freemarker/";
+    private static final String FREEMARKER_DIR = "/templates/freemarker/";
 
     public static void generatedHTMLFile(LayoutVO layout) {
         generatedHTMLFile(layout, null);
