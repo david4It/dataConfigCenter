@@ -35,7 +35,7 @@ public interface ViewMapper {
 
     int insert(View view);
 
-    @Select({"select id from `view` where project_id = #{projectId} and `name` = #{name}"})
+    @Select({"select id from `daav_view` where project_id = #{projectId} and `name` = #{name}"})
     Long getByNameWithProjectId(@Param("name") String name, @Param("projectId") Long projectId);
 
 
@@ -45,15 +45,15 @@ public interface ViewMapper {
 
 
 
-    @Delete({"delete from `view` where id = #{id}"})
+    @Delete({"delete from `daav_view` where id = #{id}"})
     int deleteById(Long id);
 
-    @Select({"select * from `view` where id = #{id}"})
+    @Select({"select * from `daav_view` where id = #{id}"})
     View getById(Long id);
 
 
     @Update({
-            "update `view`",
+            "update `daav_view`",
             "set `name` = #{name,jdbcType=VARCHAR},",
             "`description` = #{description,jdbcType=VARCHAR},",
             "`project_id` = #{projectId,jdbcType=BIGINT},",
@@ -68,12 +68,12 @@ public interface ViewMapper {
     })
     int update(View view);
 
-    @Select({"select * from `view` where source_id = #{sourceId}"})
+    @Select({"select * from `daav_view` where source_id = #{sourceId}"})
     List<View> getBySourceId(@Param("sourceId") Long sourceId);
 
     @Select({
             "select v.*,",
-            "s.id as 'source.id', s.`name` as 'source.name' from `view` v ",
+            "s.id as 'source.id', s.`name` as 'source.name' from `daav_view` v ",
             "left join source s on s.id = v.source_id ",
             "where v.id = #{id}"
     })
@@ -82,7 +82,7 @@ public interface ViewMapper {
 
     @Select({
             "select v.id, v.`name`, v.`description`, s.name as 'sourceName'",
-            "from `view` v ",
+            "from `daav_view` v ",
             "left join source s on s.id = v.source_id ",
             "where v.project_id = #{projectId}"
     })
@@ -91,7 +91,7 @@ public interface ViewMapper {
 
     int insertBatch(@Param("list") List<View> sourceList);
 
-    @Delete({"delete from `view` where project_id = #{projectId}"})
+    @Delete({"delete from `daav_view` where project_id = #{projectId}"})
     int deleteByPorject(@Param("projectId") Long projectId);
 
     @Select({
@@ -103,7 +103,7 @@ public interface ViewMapper {
             "	s.`config` 'source.config',",
             "	s.`project_id` 'source.projectId',",
             "	s.`type` 'source.type'",
-            "FROM `view` v",
+            "FROM `daav_view` v",
             "	LEFT JOIN project p on p.id = v.project_id",
             "	LEFT JOIN source s on s.id = v.source_id",
             "WHERE v.id = #{id}",

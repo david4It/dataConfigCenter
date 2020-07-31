@@ -50,19 +50,19 @@
         <result column="createBy.username" property="createBy.username" />
         <result column="createBy.avatar" property="createBy.avatar" />
 
-        <result column="organization.name" property="organization.name" />
-        <result column="organization.description" property="organization.description" />
-        <result column="organization.avatar" property="organization.avatar" />
-        <result column="organization.userId" property="organization.userId" />
-        <result column="organization.projectNum" property="organization.projectNum" />
-        <result column="organization.memberNum" property="organization.memberNum" />
-        <result column="organization.roleNum" property="organization.roleNum" />
-        <result column="organization.allowCreateProject" property="organization.allowCreateProject" />
-        <result column="organization.memberPermission" property="organization.memberPermission" />
-        <result column="organization.createTime" property="organization.createTime" />
-        <result column="organization.createBy" property="organization.createBy" />
-        <result column="organization.updateTime" property="organization.updateTime" />
-        <result column="organization.updateBy" property="organization.updateBy" />
+        <result column="daav_tenant.name" property="daav_tenant.name" />
+        <result column="daav_tenant.description" property="daav_tenant.description" />
+        <result column="daav_tenant.avatar" property="daav_tenant.avatar" />
+        <result column="daav_tenant.userId" property="daav_tenant.userId" />
+        <result column="daav_tenant.projectNum" property="daav_tenant.projectNum" />
+        <result column="daav_tenant.memberNum" property="daav_tenant.memberNum" />
+        <result column="daav_tenant.roleNum" property="daav_tenant.roleNum" />
+        <result column="daav_tenant.allowCreateProject" property="daav_tenant.allowCreateProject" />
+        <result column="daav_tenant.memberPermission" property="daav_tenant.memberPermission" />
+        <result column="daav_tenant.createTime" property="daav_tenant.createTime" />
+        <result column="daav_tenant.createBy" property="daav_tenant.createBy" />
+        <result column="daav_tenant.updateTime" property="daav_tenant.updateTime" />
+        <result column="daav_tenant.updateBy" property="daav_tenant.updateBy" />
 
         <result column="name" property="name" />
         <result column="description" property="description" />
@@ -81,11 +81,11 @@
         <result property="config" column="config" typeHandler="com.scsme.dataConfigCenter.davinci.core.handler.JsonTypeHandler"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.Project">
+    <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.DaavProject">
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        insert project
+        insert daav_project
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `name`,
             <if test="description != null">
@@ -123,70 +123,70 @@
 
     <delete id="deleteBeforOrgRole">
         delete
-        from rel_role_project
+        from daav_rel_role_project
         where project_id = #{projectId}
-          and role_id in (select id from role where org_id = #{orgId});
+          and role_id in (select id from daav_role where org_id = #{orgId});
 
         delete
-        from rel_role_dashboard_widget
-        where role_id in (select id from role where org_id = #{orgId})
+        from daav_rel_role_dashboard_widget
+        where role_id in (select id from daav_role where org_id = #{orgId})
           and mem_dashboard_widget_id in (
             select id
-            from mem_dashboard_widget
+            from daav_mem_dashboard_widget
             where dashboard_id in (
                 select d.id
-                from dashboard d
-                         inner join dashboard_portal dp on dp.id = d.dashboard_portal_id
+                from daav_dashboard d
+                         inner join daav_dashboard_portal dp on dp.id = d.dashboard_portal_id
                 where dp.project_id = #{projectId}
             )
         );
 
         delete
-        from rel_role_dashboard
-        where role_id in (select id from role where org_id = #{orgId})
+        from daav_rel_role_dashboard
+        where role_id in (select id from daav_role where org_id = #{orgId})
           and dashboard_id in (
             select d.id
-            from dashboard d
-                     inner join dashboard_portal dp on dp.id = d.dashboard_portal_id
+            from daav_dashboard d
+                     inner join daav_dashboard_portal dp on dp.id = d.dashboard_portal_id
             where dp.project_id = #{projectId}
         );
 
 
         delete
-        from rel_role_portal
-        where role_id in (select id from role where org_id = #{orgId})
-          and portal_id in (select id from dashboard_portal where project_id = #{projectId});
+        from daav_rel_role_portal
+        where role_id in (select id from daav_role where org_id = #{orgId})
+          and portal_id in (select id from daav_dashboard_portal where project_id = #{projectId});
 
         delete
-        from rel_role_display_slide_widget
-        where role_id in (select id from role where org_id = #{orgId})
+        from daav_rel_role_display_slide_widget
+        where role_id in (select id from daav_role where org_id = #{orgId})
           and mem_display_slide_widget_id in (select m.id
-                                              from mem_display_slide_widget m
-                                                       right join display_slide s on s.id = m.display_slide_id
-                                                       right join display d on d.id = s.display_id
+                                              from daav_mem_display_slide_widget m
+                                                       right join daav_display_slide s on s.id = m.display_slide_id
+                                                       right join daav_display d on d.id = s.display_id
                                               where d.project_id = #{projectId});
 
 
         delete
-        from rel_role_slide
-        where role_id in (select id from role where org_id = #{orgId})
+        from daav_rel_role_slide
+        where role_id in (select id from daav_role where org_id = #{orgId})
           and slide_id in (select s.id
-                           from display_slide s
-                                    right join display d on d.id = s.display_id and d.project_id = #{projectId});
+                           from daav_display_slide s
+                                    right join daav_display d on d.id = s.display_id and d.project_id = #{projectId});
 
         delete
-        from rel_role_display
-        where role_id in (select id from role where org_id = #{orgId})
-          and display_id in (select id from display where project_id = #{projectId});
+        from daav_rel_role_display
+        where role_id in (select id from daav_role where org_id = #{orgId})
+          and display_id in (select id from daav_display where project_id = #{projectId});
 
 
         delete
-        from rel_role_view
-        where role_id in (select id from role where org_id = #{orgId})
+        from daav_rel_role_view
+        where role_id in (select id from daav_role where org_id = #{orgId})
           and view_id in (select id from view where project_id = #{projectId});
 
         delete
-        from rel_project_admin
+        from daav_rel_project_admin
         where project_id = #{projectId};
 
 
@@ -199,23 +199,23 @@
         u.`id` as 'createBy.id',
         IF(u.`name` is NULL, u.`username`, u.`name`) as 'createBy.username',
         u.`avatar` as 'createBy.avatar'
-        from project p
-        left join `user` u on u.`id` = p.`user_id`
-        left join star s on (s.target_id = p.id and s.`target` = 'project' and s.user_id = #{userId})
+        from daav_project p
+        left join `daav_user` u on u.`id` = p.`user_id`
+        left join daav_star s on (s.target_id = p.id and s.`target` = 'daav_project' and s.user_id = #{userId})
         where p.id in (
         <!-- 当前用户是project的创建者或管理员 -->
         select DISTINCT p.id
-        from project p
-        left join rel_project_admin rpa on rpa.project_id = p.id
+        from daav_project p
+        left join daav_rel_project_admin rpa on rpa.project_id = p.id
         where p.user_id = #{userId} or rpa.user_id = #{userId}
 
         union all
 
         <!-- 当前用户权限关联的project -->
         select DISTINCT p.id
-        from project p
-        left join rel_role_project rrp on rrp.project_id = p.id
-        left join rel_role_user rru on rru.role_id = rrp.role_id
+        from daav_project p
+        left join daav_rel_role_project rrp on rrp.project_id = p.id
+        left join daav_rel_role_user rru on rru.role_id = rrp.role_id
         where rru.user_id = #{userId}
 
 
@@ -223,9 +223,9 @@
 
         <!--当前用户是project所在org的owner-->
         select DISTINCT p.id
-        from project p
-        left join rel_user_organization ruo on ruo.org_id = p.org_id
-        left join organization o on o.id = p.org_id
+        from daav_project p
+        left join daav_rel_user_tenant ruo on ruo.org_id = p.org_id
+        left join daav_tenant o on o.id = p.org_id
         where o.user_id = #{userId}
 
         union all
@@ -233,9 +233,9 @@
         <!--当前org 下project对普通成员可见-->
 
         select DISTINCT p.id
-        from project p
-        left join rel_user_organization ruo on ruo.org_id = p.org_id
-        left join organization o on o.id = p.org_id
+        from daav_project p
+        left join daav_rel_user_tenant ruo on ruo.org_id = p.org_id
+        left join daav_tenant o on o.id = p.org_id
         where ruo.user_id = #{userId} and (ruo.role = 1 or (p.visibility = 1 and o.member_permission = 1))
         )
     </sql>
@@ -277,7 +277,7 @@
     <select id="getFavoriteProjects" resultType="com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectWithCreateBy">
         select t.* from (
         <include refid="selectProjectByUserBaseSql"></include>
-        ) t LEFT JOIN favorite f on t.id = f.project_id
+        ) t LEFT JOIN daav_favorite f on t.id = f.project_id
         where f.user_id = #{userId}
         order by t.id
     </select>
@@ -285,15 +285,15 @@
 
     <select id="getProjectIdsByAdmin" resultType="java.lang.Long">
         select p.id
-        from project p
-                 left join rel_project_admin rpa on rpa.project_id = p.id
+        from daav_project p
+                 left join daav_rel_project_admin rpa on rpa.project_id = p.id
         where p.user_id = #{userId}
            or rpa.user_id = #{userId}
         union
         select p.id
-        from project p
-                 left join rel_user_organization ruo on ruo.org_id = p.org_id
-                 left join organization o on o.id = p.org_id
+        from daav_project p
+                 left join daav_rel_user_tenant ruo on ruo.org_id = p.org_id
+                 left join daav_tenant o on o.id = p.org_id
         where o.user_id = #{userId}
            or (ruo.user_id = #{userId} and ruo.role > 0)
     </select>
@@ -303,23 +303,23 @@
                u.`id`                                       AS 'createBy.id',
                IF(u.`name` is NULL, u.`username`, u.`name`) AS 'createBy.username',
                u.`avatar`                                   AS 'createBy.avatar',
-               o.`id`                                       AS 'organization.id',
-               o.`name`                                     AS 'organization.name',
-               o.`description`                              AS 'organization.description',
-               o.`avatar`                                   AS 'organization.avatar',
-               o.`user_id`                                  AS 'organization.userId',
-               o.`project_num`                              AS 'organization.projectNum',
-               o.`member_num`                               AS 'organization.memberNum',
-               o.`role_num`                                 AS 'organization.role_num',
-               o.`allow_create_project`                     AS 'organization.allowCreateProject',
-               o.`member_permission`                        AS 'organization.memberPermission',
-               o.`create_time`                              AS 'organization.createTime',
-               o.`create_by`                                AS 'organization.createBy',
-               o.`update_time`                              AS 'organization.updateTime',
-               o.`update_by`                                AS 'organization.updateBy'
-        FROM project p
-                 LEFT JOIN organization o on o.`id` = p.`org_id`
-                 LEFT JOIN `user` u on u.`id` = p.`user_id`
+               o.`id`                                       AS 'daav_tenant.id',
+               o.`name`                                     AS 'daav_tenant.name',
+               o.`description`                              AS 'daav_tenant.description',
+               o.`avatar`                                   AS 'daav_tenant.avatar',
+               o.`user_id`                                  AS 'daav_tenant.userId',
+               o.`project_num`                              AS 'daav_tenant.projectNum',
+               o.`member_num`                               AS 'daav_tenant.memberNum',
+               o.`role_num`                                 AS 'daav_tenant.role_num',
+               o.`allow_create_project`                     AS 'daav_tenant.allowCreateProject',
+               o.`member_permission`                        AS 'daav_tenant.memberPermission',
+               o.`create_time`                              AS 'daav_tenant.createTime',
+               o.`create_by`                                AS 'daav_tenant.createBy',
+               o.`update_time`                              AS 'daav_tenant.updateTime',
+               o.`update_by`                                AS 'daav_tenant.updateBy'
+        FROM daav_project p
+                 LEFT JOIN daav_tenant o on o.`id` = p.`org_id`
+                 LEFT JOIN `daav_user` u on u.`id` = p.`user_id`
         WHERE p.`id` = #{id}
     </select>
 
@@ -329,21 +329,21 @@
                u.`id`                                       AS 'createBy.id',
                IF(u.`name` is NULL, u.`username`, u.`name`) AS 'createBy.username',
                u.`avatar`                                   AS 'createBy.avatar',
-               o.`id`                                       AS 'organization.id',
-               o.`name`                                     AS 'organization.name',
-               o.`description`                              AS 'organization.description',
-               o.`avatar`                                   AS 'organization.avatar',
-               o.`user_id`                                  AS 'organization.userId',
-               o.`project_num`                              AS 'organization.projectNum',
-               o.`member_num`                               AS 'organization.memberNum',
-               o.`role_num`                                 AS 'organization.roleNum',
-               o.`allow_create_project`                     AS 'organization.allowCreateProject',
-               o.`member_permission`                        AS 'organization.memberPermission',
-               o.`create_time`                              AS 'organization.createTime',
-               o.`create_by`                                AS 'organization.createBy',
-               o.`update_time`                              AS 'organization.updateTime',
-               o.`update_by`                                AS 'organization.updateBy'
-        FROM organization o, user u, project p, dashboard_portal dp, dashboard d
+               o.`id`                                       AS 'daav_tenant.id',
+               o.`name`                                     AS 'daav_tenant.name',
+               o.`description`                              AS 'daav_tenant.description',
+               o.`avatar`                                   AS 'daav_tenant.avatar',
+               o.`user_id`                                  AS 'daav_tenant.userId',
+               o.`project_num`                              AS 'daav_tenant.projectNum',
+               o.`member_num`                               AS 'daav_tenant.memberNum',
+               o.`role_num`                                 AS 'daav_tenant.roleNum',
+               o.`allow_create_project`                     AS 'daav_tenant.allowCreateProject',
+               o.`member_permission`                        AS 'daav_tenant.memberPermission',
+               o.`create_time`                              AS 'daav_tenant.createTime',
+               o.`create_by`                                AS 'daav_tenant.createBy',
+               o.`update_time`                              AS 'daav_tenant.updateTime',
+               o.`update_by`                                AS 'daav_tenant.updateBy'
+        FROM daav_tenant o, daav_user u, daav_project p, daav_dashboard_portal dp, daav_dashboard d
         WHERE o.id = p.org_id
         and u.id = p.user_id
         and p.id = dp.project_id

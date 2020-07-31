@@ -34,3 +34,5 @@ CREATE TABLE `component`  (
   `last_update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+alter table daav_user add column `description` varchar(255) comment '备注';

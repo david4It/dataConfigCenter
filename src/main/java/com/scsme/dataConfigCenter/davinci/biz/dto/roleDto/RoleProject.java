@@ -20,16 +20,16 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.roleDto;
 
 import com.alibaba.fastjson.annotation.JSONType;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import com.scsme.dataConfigCenter.davinci.biz.model.RelRoleProject;
 import lombok.Data;
 
 @Data
 @JSONType(ignores = {"projectId", "roleId", "id"})
 public class RoleProject extends RelRoleProject {
-    private Project project;
+    private DaavProject project;
 
-    public RoleProject(Project project) {
+    public RoleProject(DaavProject project) {
         this.project = project;
     }
 

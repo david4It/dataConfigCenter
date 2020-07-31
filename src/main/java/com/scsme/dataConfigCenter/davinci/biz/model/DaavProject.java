@@ -28,7 +28,7 @@ import javax.persistence.Column;
 import java.util.Date;
 
 @Data
-public class Project {
+public class DaavProject {
 
     private Long id;
 
@@ -65,11 +65,11 @@ public class Project {
 
     private JSONObject config = JSON.parseObject("{\"watermark\": {\"isProject\": true,\"isUsername\": true, \"color\": \"#e1e1e1\", \"enable\": true, \"dateFormat\": \"yyyy-MM-dd hh:mm:ss\"}}");
 
-    public Project() {
+    public DaavProject() {
 
     }
 
-    public Project(Long id, Long userId) {
+    public DaavProject(Long id, Long userId) {
 
         this.id = id;
         this.userId = userId;
@@ -78,7 +78,7 @@ public class Project {
 
     @Override
     public String toString() {
-        return "Project{" +
+        return "DaavProject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -93,7 +93,7 @@ public class Project {
     }
 
     public String baseInfoToString() {
-        return "Project{" +
+        return "DaavProject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

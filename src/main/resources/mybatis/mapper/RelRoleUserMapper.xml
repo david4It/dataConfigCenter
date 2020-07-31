@@ -22,9 +22,9 @@
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleUserMapper">
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleUser">
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-            SELECT id from rel_role_user where role_id = #{roleId} and user_id = #{userId}
+            SELECT id from daav_rel_role_user where role_id = #{roleId} and user_id = #{userId}
         </selectKey>
-        insert ignore rel_role_user
+        insert ignore daav_rel_role_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `user_id`,
             `role_id`,
@@ -40,7 +40,7 @@
     </insert>
 
     <insert id="insertBatch">
-        insert ignore rel_role_user
+        insert ignore daav_rel_role_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `user_id`,
             `role_id`,
@@ -59,21 +59,21 @@
     </insert>
 
     <select id="getUserIdsByIdAndMembers" resultType="Long">
-        select user_id from rel_role_user where role_id = #{roleId} and user_id in
+        select user_id from daav_rel_role_user where role_id = #{roleId} and user_id in
         <foreach collection="userList" item="item" index="index" open="(" close=")" separator=",">
             #{item}
         </foreach>
     </select>
 
     <select id="getByIds" resultType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleUser">
-        select * from rel_role_user where user_id in
+        select * from daav_rel_role_user where user_id in
         <foreach collection="userList" item="item" index="index" open="(" close=")" separator=",">
             #{item}
         </foreach>
     </select>
 
     <delete id="deleteByRoleIdAndMemberIds">
-        delete from rel_role_user where role_id = #{roleId}
+        delete from daav_rel_role_user where role_id = #{roleId}
         <if test="userIds != null and userIds.size > 0">
             and user_id in
             <foreach collection="userIds" item="item" index="index" open="(" close=")" separator=",">

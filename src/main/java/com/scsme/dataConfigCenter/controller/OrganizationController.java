@@ -32,6 +32,7 @@ import com.scsme.dataConfigCenter.davinci.biz.service.RoleService;
 import com.scsme.dataConfigCenter.davinci.core.annotation.CurrentUser;
 import com.scsme.dataConfigCenter.davinci.core.common.Constants;
 import com.scsme.dataConfigCenter.davinci.core.common.ResultMap;
+import com.scsme.dataConfigCenter.davinci.core.enums.HttpCodeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -79,11 +80,14 @@ public class OrganizationController extends BaseController {
     public ResponseEntity createOrganization(@Valid @RequestBody OrganizationCreate organizationCreate,
                                              @ApiIgnore BindingResult bindingResult,
                                              @ApiIgnore @CurrentUser User user,
+                                             @CookieValue("uid") String uid,
                                              HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
         }
+
+        user.setId(Long.valueOf(uid));
         OrganizationBaseInfo organization = organizationService.createOrganization(organizationCreate, user);
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payload(organization));
     }
@@ -203,7 +207,9 @@ public class OrganizationController extends BaseController {
      */
     @ApiOperation(value = "get organizations")
     @GetMapping
-    public ResponseEntity getOrganizations(@ApiIgnore @CurrentUser User user, HttpServletRequest request) {
+    public ResponseEntity getOrganizations(@ApiIgnore @CurrentUser User user, HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         List<OrganizationInfo> organizations = organizationService.getOrganizations(user);
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payloads(organizations));
     }
@@ -231,7 +237,7 @@ public class OrganizationController extends BaseController {
         }
 
         PageInfo<ProjectWithCreateBy> projects = projectService.getProjectsByOrg(id, user, keyword, pageNum, pageSize);
-        return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payload(projects));
+        return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payload(projects).code(HttpCodeEnum.OK));
     }
 
 

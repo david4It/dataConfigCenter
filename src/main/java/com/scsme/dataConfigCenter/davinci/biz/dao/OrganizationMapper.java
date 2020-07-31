@@ -33,10 +33,10 @@ public interface OrganizationMapper {
 
     int insert(Organization organization);
 
-    @Select({"select * from organization where id = #{id}"})
+    @Select({"select * from `daav_tenant` where id = #{id}"})
     Organization getById(@Param("id") Long id);
 
-    @Select({"select id from organization where name = #{name}"})
+    @Select({"select id from `daav_tenant` where name = #{name}"})
     Long getIdByName(@Param("name") String name);
 
     /**
@@ -48,18 +48,18 @@ public interface OrganizationMapper {
      */
     @Select({
             "SELECT o.*, IFNULL(ruo.role ,0) as role ",
-            "FROM organization o ",
-            "LEFT JOIN rel_user_organization ruo ON (ruo.org_id = o.id and ruo.user_id = #{userId})",
+            "FROM `daav_tenant` o ",
+            "LEFT JOIN daav_rel_user_tenant ruo ON (ruo.org_id = o.id and ruo.user_id = #{userId})",
             "WHERE o.id IN (",
-            "   SELECT id FROM organization WHERE user_id = #{userId}",
+            "   SELECT id FROM `daav_tenant` WHERE user_id = #{userId}",
             "    union",
-            "   SELECT org_id as id FROM rel_user_organization WHERE user_id = #{userId}",
+            "   SELECT org_id as id FROM daav_rel_user_tenant WHERE user_id = #{userId}",
             ")",
     })
     List<OrganizationInfo> getOrganizationByUser(@Param("userId") Long userId);
 
     @Update({
-            "update organization",
+            "update `daav_tenant`",
             "set `name` = #{name},",
             "description = #{description},",
             "avatar = #{avatar},",
@@ -81,7 +81,7 @@ public interface OrganizationMapper {
 
     int updateRoleNum(Organization organization);
 
-    @Delete({"delete from organization where id = #{id}"})
+    @Delete({"delete from `daav_tenant` where id = #{id}"})
     int deleteById(@Param("id") Long id);
 
     List<OrganizationInfo> getJointlyOrganization(@Param("list") List<Long> userIds, @Param("userId") Long userId);

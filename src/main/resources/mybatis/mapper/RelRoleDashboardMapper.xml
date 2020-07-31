@@ -21,7 +21,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleDashboardMapper">
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleDashboard">
-        insert ignore rel_role_dashboard
+        insert ignore daav_rel_role_dashboard
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `role_id`,
             `dashboard_id`,
@@ -39,7 +39,7 @@
     </insert>
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_dashboard
+        replace into daav_rel_role_dashboard
         (`role_id`, `dashboard_id`, `visible`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">
@@ -54,7 +54,7 @@
     </insert>
 
     <delete id="deleteByDashboardIds" parameterType="java.util.Set">
-        delete from rel_role_dashboard where
+        delete from daav_rel_role_dashboard where
         <if test="dashboardIds != null and dashboardIds.size > 0">
             dashboard_id in
             <foreach collection="dashboardIds" index="index" item="item" open="(" close=")" separator=",">

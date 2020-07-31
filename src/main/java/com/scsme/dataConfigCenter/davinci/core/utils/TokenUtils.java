@@ -35,9 +35,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.elasticsearch.geometry.utils.WellKnownText.EMPTY;
-
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.EMPTY;
 
 @Slf4j
 @Component

@@ -21,11 +21,11 @@ package com.scsme.dataConfigCenter.davinci.biz.dto.projectDto;
 
 import com.scsme.dataConfigCenter.davinci.biz.dto.userDto.UserBaseInfo;
 import com.scsme.dataConfigCenter.davinci.biz.model.Organization;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import lombok.Data;
 
 @Data
-public class ProjectDetail extends Project {
+public class ProjectDetail extends DaavProject {
     private Organization organization;
 
     private UserBaseInfo createBy;
@@ -33,7 +33,7 @@ public class ProjectDetail extends Project {
 
     @Override
     public String toString() {
-        return "Project{" +
+        return "DaavProject{" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +

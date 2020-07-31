@@ -20,11 +20,11 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.dashboardDto;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.DashboardPortal;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import lombok.Data;
 
 @Data
 public class PortalWithProject extends DashboardPortal {
 
-    private Project project;
+    private DaavProject project;
 }

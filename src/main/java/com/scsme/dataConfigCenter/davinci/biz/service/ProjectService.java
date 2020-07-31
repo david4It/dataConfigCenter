@@ -26,7 +26,7 @@ import com.scsme.dataConfigCenter.davinci.core.exception.UnAuthorizedExecption;
 import com.scsme.dataConfigCenter.davinci.core.service.CheckEntityService;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.*;
 import com.scsme.dataConfigCenter.davinci.biz.dto.roleDto.RoleProject;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import com.scsme.dataConfigCenter.davinci.biz.model.User;
 
 import java.util.List;
@@ -41,11 +41,11 @@ public interface ProjectService extends CheckEntityService {
 
     ProjectInfo createProject(ProjectCreat projectCreat, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
 
-    Project updateProject(Long id, ProjectUpdate projectUpdate, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
+    DaavProject updateProject(Long id, ProjectUpdate projectUpdate, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
 
     boolean deleteProject(Long id, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
 
-    Project transferPeoject(Long id, Long orgId, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
+    DaavProject transferPeoject(Long id, Long orgId, User user) throws ServerException, UnAuthorizedExecption, NotFoundException;
 
     PageInfo<ProjectWithCreateBy> searchProjects(String keywords, User user, int pageNum, int pageSize);
 

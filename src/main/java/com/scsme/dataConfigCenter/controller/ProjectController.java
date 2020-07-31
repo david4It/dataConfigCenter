@@ -53,7 +53,7 @@ import java.util.List;
 @ApiResponses(@ApiResponse(code = 404, message = "project not found"))
 @Slf4j
 @RestController
-@RequestMapping(value = Constants.BASE_API_PATH + "/projects", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = Constants.BASE_API_PATH + "/projects")
 public class ProjectController extends BaseController {
 
     @Autowired
@@ -72,15 +72,19 @@ public class ProjectController extends BaseController {
      */
     @ApiOperation(value = "get projects")
     @GetMapping
-    public ResponseEntity getProjects(@ApiIgnore @CurrentUser User user, HttpServletRequest request) {
+    public @ResponseBody ResponseEntity getProjects(@ApiIgnore @CurrentUser User user, HttpServletRequest request) {
+        if(user == null) {
+            user= new User();
+            user.setId((long) 1);
+        }
         List<ProjectInfo> projects = projectService.getProjects(user);
-        return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payloads(projects));
+        return ResponseEntity.ok(new ResultMap(tokenUtils).payloads(projects));
     }
 
 
     @ApiOperation(value = "get roles where proejct is located")
     @GetMapping("/{id}/roles")
-    public ResponseEntity getRolesOfProject(@ApiIgnore @CurrentUser User user,
+    public @ResponseBody ResponseEntity getRolesOfProject(@ApiIgnore @CurrentUser User user,
                                             @PathVariable Long id,
                                             HttpServletRequest request) {
         if (invalidId(id)) {

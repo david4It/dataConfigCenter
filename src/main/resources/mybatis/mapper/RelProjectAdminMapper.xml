@@ -25,7 +25,7 @@
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        insert ignore rel_project_admin
+        insert ignore daav_rel_project_admin
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `project_id`,
             `user_id`,
@@ -43,7 +43,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        insert ignore rel_project_admin
+        insert ignore daav_rel_project_admin
         (`project_id`, `user_id`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">

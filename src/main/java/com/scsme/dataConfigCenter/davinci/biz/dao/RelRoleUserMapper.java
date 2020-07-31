@@ -59,7 +59,7 @@ public interface RelRoleUserMapper {
 
     @Select({
             "SELECT rru.id, u.id as 'user.id', IFNULL(u.`name`, u.username) as 'user.username', u.avatar",
-            "FROM rel_role_user rru LEFT JOIN `user` u on u.id = rru.user_id",
+            "FROM rel_role_user rru LEFT JOIN `daav_user` u on u.id = rru.user_id",
             "WHERE rru.role_id = #{id}",
     })
     List<RelRoleMember> getMembersByRoleId(Long id);

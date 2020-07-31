@@ -21,7 +21,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleDisplayMapper">
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleDisplay">
-        insert ignore rel_role_display
+        insert ignore daav_rel_role_display
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `role_id`,
             `display_id`,
@@ -40,7 +40,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_display
+        replace into daav_rel_role_display
         (`role_id`, `display_id`, `visible`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">

@@ -21,7 +21,7 @@ package com.scsme.dataConfigCenter.davinci.core.enums;
 
 public enum CheckEntityEnum {
     USER("user", "userService", "com.scsme.dataConfigCenter.davinci.biz.model.User"),
-    PROJECT("project", "projectService", "com.scsme.dataConfigCenter.davinci.biz.model.Project"),
+    PROJECT("project", "projectService", "com.scsme.dataConfigCenter.davinci.biz.model.DaavProject"),
     ORGANIZATION("organization", "organizationService", "com.scsme.dataConfigCenter.davinci.biz.model.Organization"),
     SOURCE("source", "sourceService", "com.scsme.dataConfigCenter.davinci.biz.model.Source"),
     VIEW("view", "viewService", "com.scsme.dataConfigCenter.davinci.biz.model.View"),

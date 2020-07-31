@@ -7,14 +7,10 @@ spring:
     name: 数据配置中心
   resources:
     static-locations: classpath:/static/
-  thymeleaf:
-    cache: false
-    encoding: utf-8
-    check-template-location: false
-    enabled: true
-    prefix: classpath:/templates/
-    mode: HTML5
-    suffix: .html
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -119,6 +115,9 @@ spring:
         max-wait: 1
         max-idle: 8
         min-idle: 0
+  devtools:
+    restart:
+      enabled: true
 springfox:
   documentation:
     swagger:

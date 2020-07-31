@@ -23,9 +23,9 @@
 
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleViewMapper">
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-            SELECT id from rel_role_view where `role_id` = #{roleId} and `view_id` = #{viewId}
+            SELECT id from daav_rel_role_view where `role_id` = #{roleId} and `view_id` = #{viewId}
         </selectKey>
-        insert ignore rel_role_view
+        insert ignore daav_rel_role_view
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `view_id`,
             `role_id`,
@@ -47,7 +47,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_view
+        replace into daav_rel_role_view
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `view_id`,
             `role_id`,

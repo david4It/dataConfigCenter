@@ -94,7 +94,7 @@
     <select id="selectByWidgetIds" resultType="com.scsme.dataConfigCenter.davinci.biz.model.View">
         select * from `view` where id in
         (
-        select view_id from widget where
+        select view_id from daav_widget where
         <if test="widgetIds != null and widgetIds.size > 0">
             id in
             <foreach collection="widgetIds" index="index" item="item" open="(" close=")" separator=",">
@@ -117,21 +117,21 @@
                p.`org_id`      'project.orgId',
                p.`user_id`     'project.userId',
                p.`visibility`  'p.visibility',
-               s.`id`          'source.id',
-               s.`name`        'source.name',
-               s.`description` 'source.description',
-               s.`config`      'source.config',
-               s.`project_id`  'source.projectId',
-               s.`type`        'source.type'
+               s.`id`          'daav_source.id',
+               s.`name`        'daav_source.name',
+               s.`description` 'daav_source.description',
+               s.`config`      'daav_source.config',
+               s.`project_id`  'daav_source.projectId',
+               s.`type`        'daav_source.type'
         FROM `view` v
                  LEFT JOIN project p on p.id = v.project_id
-                 LEFT JOIN source s on s.id = v.source_id
+                 LEFT JOIN daav_source s on s.id = v.source_id
     </sql>
 
     <select id="getViewWithProjectAndSourceByWidgetId"
             resultType="com.scsme.dataConfigCenter.davinci.biz.dto.viewDto.ViewWithProjectAndSource">
         <include refid="selectViewWithProjectAndSourceBaseSql"></include>
-        WHERE v.id = (select view_id from widget where id = #{widgetId})
+        WHERE v.id = (select view_id from daav_widget where id = #{widgetId})
     </select>
 
     <select id="getViewWithProjectAndSourceById"

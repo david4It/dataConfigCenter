@@ -14,7 +14,7 @@
     id, uuid, name, path, status, create_time, last_download_time
   </sql>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.ShareDownloadRecord" useGeneratedKeys="true" >
-    insert into share_download_record
+    insert into daav_share_download_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

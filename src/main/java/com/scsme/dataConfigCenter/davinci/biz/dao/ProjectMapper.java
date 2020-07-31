@@ -26,7 +26,7 @@ import com.scsme.dataConfigCenter.davinci.biz.dto.organizationDto.OrganizationIn
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectDetail;
 import com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.ProjectWithCreateBy;
 import com.scsme.dataConfigCenter.davinci.biz.model.Dashboard;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper
-public interface ProjectMapper extends BaseMapper<Project> {
+public interface ProjectMapper extends BaseMapper<DaavProject> {
 
 
     List<ProjectWithCreateBy> getProejctsByUser(@Param("userId") Long userId);
@@ -48,23 +48,23 @@ public interface ProjectMapper extends BaseMapper<Project> {
     @Select({"select id from project where org_id = #{orgId} and `name` = #{name}"})
     Long getByNameWithOrgId(@Param("name") String name, @Param("orgId") Long orgId);
 
-    int insert(Project project);
+    int insert(DaavProject project);
 
     @Select({"select * from project where id = #{id}"})
-    Project getById(@Param("id") Long id);
+    DaavProject getById(@Param("id") Long id);
 
     ProjectDetail getProjectDetail(@Param("id") Long id);
 
     ProjectDetail getProjectDetailByDashboardId(@Param("dashboardId") Long dashboardId);
 
     @Select({"select * from project where id = #{id} and user_id = #{userId}"})
-    Project getByProject(Project project);
+    DaavProject getByProject(DaavProject project);
 
     @Update({"update project set `name` = #{name}, description = #{description}, visibility = #{visibility}, config = #{config, typeHandler=com.scsme.dataConfigCenter.davinci.core.handler.JsonTypeHandler}, update_time = #{updateTime}, update_by = #{updateBy}  where id = #{id}"})
-    int updateBaseInfo(Project project);
+    int updateBaseInfo(DaavProject project);
 
     @Update({"update project set `org_id` = #{orgId} where id = #{id}"})
-    int changeOrganization(Project project);
+    int changeOrganization(DaavProject project);
 
     @Update({"update project set `is_transfer` = #{isTransfer, jdbcType=TINYINT} where id = #{id}"})
     int changeTransferStatus(@Param("isTransfer") Boolean isTransfer, @Param("id") Long id);
@@ -73,7 +73,7 @@ public interface ProjectMapper extends BaseMapper<Project> {
     int deleteById(@Param("id") Long id);
 
     @Select({"select * from project where org_id = #{orgId}"})
-    List<Project> getByOrgId(@Param("orgId") Long orgId);
+    List<DaavProject> getByOrgId(@Param("orgId") Long orgId);
 
     @Update({"update project set star_num = star_num + 1 where id = #{id}"})
     int starNumAdd(@Param("id") Long id);

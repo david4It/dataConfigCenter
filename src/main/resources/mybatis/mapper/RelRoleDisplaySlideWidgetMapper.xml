@@ -21,7 +21,7 @@
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleDisplaySlideWidgetMapper">
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_display_slide_widget
+        replace into daav_rel_role_display_slide_widget
         (`role_id`, `mem_display_slide_widget_id`, `visible`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">
@@ -37,15 +37,15 @@
 
     <insert id="copyRoleSlideWidgetRelation">
         <foreach collection="relSlideCopies" item="copy" open="" close="" separator=";">
-            replace into rel_role_display_slide_widget
+            replace into daav_rel_role_display_slide_widget
             (`role_id`, `mem_display_slide_widget_id`, `visible`, `create_by`, `create_time`)
-            select `role_id`, ${copy.copyId}, `visible`, ${userId}, NOW() from rel_role_display_slide_widget
+            select `role_id`, ${copy.copyId}, `visible`, ${userId}, NOW() from daav_rel_role_display_slide_widget
             where mem_display_slide_widget_id = #{copy.originId}
         </foreach>
     </insert>
 
     <delete id="deleteByMemDisplaySlideWidgetIds" parameterType="java.util.Set">
-        delete from rel_role_display_slide_widget where
+        delete from daav_rel_role_display_slide_widget where
         <if test="memDisplaySlideWidgetIds != null and memDisplaySlideWidgetIds.size > 0">
             mem_display_slide_widget_id in
             <foreach collection="memDisplaySlideWidgetIds" index="index" item="item" open="(" close=")" separator=",">

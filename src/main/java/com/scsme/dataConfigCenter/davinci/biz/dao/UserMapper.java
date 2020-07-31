@@ -31,39 +31,39 @@ public interface UserMapper {
 
     int insert(User user);
 
-    @Select({"select * from `user` where id = #{id}"})
+    @Select({"select * from `daav_user` where id = #{id}"})
     User getById(@Param("id") Long id);
 
-    @Select({"select * from `user` where `username` = #{username} or `email` = #{username} or `name` = #{username}"})
+    @Select({"select * from `daav_user` where `username` = #{username} or `email` = #{username} or `name` = #{username}"})
     User selectByUsername(@Param("username") String username);
 
-    @Select({"select * from `user` where `email` = #{email}"})
+    @Select({"select * from `daav_user` where `email` = #{email}"})
     User selectByEmail(@Param("email") String email);
 
     List<UserBaseInfo> getUsersByKeyword(@Param("keyword") String keyword, @Param("orgId") Long orgId);
 
-    @Update({"update `user` set `name` = #{name}, description = #{description}, department = #{department}, update_time = #{updateTime}",
+    @Update({"update `daav_user` set `name` = #{name}, description = #{description}, department = #{department}, update_time = #{updateTime}",
             "where id = #{id}"})
     int updateBaseInfo(User user);
 
     @Update({"update user set `avatar` = #{avatar}, update_time = #{updateTime}  where id = #{id}"})
     int updateAvatar(User user);
 
-    @Select({"select id from user where (LOWER(`username`) = LOWER(#{name}) or LOWER(`email`) = LOWER(#{name}) or LOWER(`name`) = LOWER(#{name}))"})
+    @Select({"select id from daav_user where (LOWER(`username`) = LOWER(#{name}) or LOWER(`email`) = LOWER(#{name}) or LOWER(`name`) = LOWER(#{name}))"})
     Long getIdByName(@Param("name") String name);
 
-    @Update({"update `user` set `active` = #{active}, `update_time` = #{updateTime}  where id = #{id}"})
+    @Update({"update `daav_user` set `active` = #{active}, `update_time` = #{updateTime}  where id = #{id}"})
     int activeUser(User user);
 
-    @Update({"update `user` set `password` = #{password}, `update_time` = #{updateTime}  where id = #{id}"})
+    @Update({"update `daav_user` set `password` = #{password}, `update_time` = #{updateTime}  where id = #{id}"})
     int changePassword(User user);
 
     List<User> getByIds(@Param("userIds") List<Long> userIds);
 
-    @Select({"select count(id) from `user` where `email` = #{email}"})
+    @Select({"select count(id) from `daav_user` where `email` = #{email}"})
     boolean existEmail(@Param("email") String email);
 
-    @Select({"select count(id) from `user` where `username` = #{username}"})
+    @Select({"select count(id) from `daav_user` where `username` = #{username}"})
     boolean existUsername(@Param("username") String username);
 
     /**
@@ -71,6 +71,6 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    @Delete({"delete from `user` where id = #{id}"})
+    @Delete({"delete from `daav_user` where id = #{id}"})
     int deleteById(@Param("id") Long id);
 }

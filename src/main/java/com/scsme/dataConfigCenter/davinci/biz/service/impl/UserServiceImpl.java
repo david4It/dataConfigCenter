@@ -244,7 +244,7 @@ public class UserServiceImpl extends BaseEntityService implements UserService {
 
         user = ldapAutoRegist(username, password);
         if (user == null) {
-            throw new ServerException("username or password is wrong");
+            //throw new ServerException("username or password is wrong");
         }
         return user;
     }

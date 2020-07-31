@@ -21,7 +21,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleSlideMapper">
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleSlide">
-        insert ignore rel_role_slide
+        insert ignore daav_rel_role_slide
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `role_id`,
             `slide_id`,
@@ -40,7 +40,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_slide
+        replace into daav_rel_role_slide
         (`role_id`, `slide_id`, `visible`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">
@@ -56,8 +56,8 @@
 
     <insert id="copyRoleSlideRelation">
         <foreach collection="relSlideCopies" item="copy" open="" close="" separator=";">
-            replace into rel_role_slide (`role_id`,`slide_id`,`visible`,`create_by`,`create_time`)
-            select `role_id`, ${copy.copyId}, visible, ${userId}, NOW() from rel_role_slide
+            replace into daav_rel_role_slide (`role_id`,`slide_id`,`visible`,`create_by`,`create_time`)
+            select `role_id`, ${copy.copyId}, visible, ${userId}, NOW() from daav_rel_role_slide
             where slide_id = #{copy.originId}
         </foreach>
     </insert>

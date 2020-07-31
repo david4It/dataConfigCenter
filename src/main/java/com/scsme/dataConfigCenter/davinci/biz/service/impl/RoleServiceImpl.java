@@ -438,7 +438,7 @@ public class RoleServiceImpl implements RoleService {
             throw new UnAuthorizedExecption("Insufficient permissions");
         }
 
-        Project project = projectMapper.getById(projectId);
+        DaavProject project = projectMapper.getById(projectId);
         if (null == project) {
             log.warn("project ( :{} ) is not found", projectId);
             throw new NotFoundException("project is not found");

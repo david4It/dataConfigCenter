@@ -201,7 +201,7 @@ public class ProjectServiceImpl extends BaseEntityService implements ProjectServ
 
 		try {
 
-			Project project = new Project();
+			DaavProject project = new DaavProject();
 	        BeanUtils.copyProperties(projectCreat, project);
 	        project.setUserId(user.getId());
 	        project.setCreateUserId(user.getId());
@@ -255,7 +255,7 @@ public class ProjectServiceImpl extends BaseEntityService implements ProjectServ
      */
     @Override
     @Transactional
-    public Project transferPeoject(Long id, Long orgId, User user) throws ServerException, UnAuthorizedExecption, NotFoundException {
+    public DaavProject transferPeoject(Long id, Long orgId, User user) throws ServerException, UnAuthorizedExecption, NotFoundException {
 
     	ProjectDetail project = getProjectDetail(id, user, true);
 
@@ -367,7 +367,7 @@ public class ProjectServiceImpl extends BaseEntityService implements ProjectServ
      */
     @Override
     @Transactional
-    public Project updateProject(Long id, ProjectUpdate projectUpdate, User user) throws ServerException, UnAuthorizedExecption, NotFoundException {
+    public DaavProject updateProject(Long id, ProjectUpdate projectUpdate, User user) throws ServerException, UnAuthorizedExecption, NotFoundException {
 
         ProjectDetail project = getProjectDetail(id, user, true);
         String originInfo = project.baseInfoToString();

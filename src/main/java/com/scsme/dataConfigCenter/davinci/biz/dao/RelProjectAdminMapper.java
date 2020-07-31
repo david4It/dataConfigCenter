@@ -63,7 +63,7 @@ public interface RelProjectAdminMapper {
             "    ifnull(u.`name`, u.username) as 'user.username',",
             "    u.avatar                     as 'user.avatar'",
             "from rel_project_admin r",
-            "    left join `user` u on u.id = r.user_id",
+            "    left join `daav_user` u on u.id = r.user_id",
             "where r.project_id = #{projectId}"
     })
     List<RelProjectAdminDto> getByProject(Long projectId);
@@ -72,7 +72,7 @@ public interface RelProjectAdminMapper {
     @Select({
             "select r.user_id",
             "from rel_project_admin r",
-            "    left join `user` u on u.id = r.user_id",
+            "    left join `daav_user` u on u.id = r.user_id",
             "where r.project_id = #{projectId}"
     })
     List<Long> getAdminIds(Long projectId);

@@ -22,7 +22,7 @@ package com.scsme.dataConfigCenter.davinci.biz.dto.displayDto;
 import com.scsme.dataConfigCenter.davinci.biz.model.Display;
 import com.scsme.dataConfigCenter.davinci.biz.model.DisplaySlide;
 
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import lombok.Data;
 
 @Data
@@ -30,7 +30,7 @@ public class SlideWithDisplayAndProject extends DisplaySlide {
 
     private Display display;
 
-    private Project project;
+    private DaavProject project;
 
     @Override
     public String toString() {

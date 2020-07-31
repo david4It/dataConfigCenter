@@ -21,7 +21,7 @@
 <mapper namespace="com.scsme.dataConfigCenter.davinci.biz.dao.RelRoleDashboardWidgetMapper" >
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        replace into rel_role_dashboard_widget
+        replace into daav_rel_role_dashboard_widget
         (`role_id`, `mem_dashboard_widget_id`, `visible`, `create_by`, `create_time`)
         VALUES
         <foreach collection="list" item="record" index="index" separator=",">
@@ -36,7 +36,7 @@
     </insert>
 
     <delete id="deleteByMemDashboardWidgetIds" parameterType="java.util.Set">
-        delete from rel_role_dashboard_widget where
+        delete from daav_rel_role_dashboard_widget where
         <if test="memDashboardWidgetIds != null and memDashboardWidgetIds.size > 0">
             mem_dashboard_widget_id in
             <foreach collection="memDashboardWidgetIds" index="index" item="item" open="(" close=")" separator=",">

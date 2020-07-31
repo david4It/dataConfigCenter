@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.springframework.org/schema/data/jaxb">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>数据大屏管理中心</title>
+		<link rel="stylesheet" href="lib/layui/css/layui.css">
+		<link rel="stylesheet" href="css/admin.css">
+		<link rel="shortcut icon" href="../resources/images/favicon.ico" th:href="@{/images/favicon.ico}">
+	</head>
+	<body class="layui-layout-body">
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header">
+				<div class="layui-logo">后台管理</div>
+				<!-- 头部区域（可配合layui已有的水平导航） -->
+				<ul class="layui-nav layui-layout-left">
+					<li class="layui-nav-item layui-this" data-nav="1"><a href="javascript:;">数据大屏</a></li>
+					<li class="layui-nav-item" data-nav="2"><a href="javascript:;">用户管理</a></li>
+				</ul>
+				<ul class="layui-nav layui-layout-right">
+					<li class="layui-nav-item">
+						<a href="javascript:;">
+							<img src="images/logins.png" class="layui-nav-img">小龙猫
+						</a>
+						<dl class="layui-nav-child">
+							<dd><a href="javascript:;">基本资料</a></dd>
+							<dd><a href="javascript:;">组织管理</a></dd>
+							<dd><a href="javascript:;">退出登录</a></dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item"><a href="">首页</a></li>
+				</ul>
+			</div>
+			<div class="layui-side layui-bg-black">
+				<div class="layui-side-scroll" id="layui_nav_left_1">
+					<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+					<ul class="layui-nav layui-nav-tree"  lay-filter="test">
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">项目管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="set-basic">我的项目</a></dd>
+								<dd><a href="javascript:;" data-url="set-upload">新建项目</a></dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">数据大屏</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="set-basic">大屏列表</a></dd>
+								<dd><a href="javascript:;" data-url="set-upload">新建大屏</a></dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item layui-nav-itemed">
+							<a href="javascript:;">Widget管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="admin-list">Widget列表</a></dd>
+								<dd><a href="javascript:;" data-url="role-list">新增Widget</a></dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item layui-nav-itemed">
+							<a href="javascript:;">视图管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="enclosure-list">视图列表</a></dd>
+								<dd><a href="javascript:;" data-url="cache">添加视图</a></dd>
+							</dl>
+						</li>
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">数据源管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="db-list">数据源列表</a></dd>
+							</dl>
+						</li>
+					</ul>
+				</div>
+
+				<div class="layui-side-scroll" id="layui_nav_left_2">
+					<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+					<ul class="layui-nav layui-nav-tree"  lay-filter="test">
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">用户管理</a>
+							<dl class="layui-nav-child">
+								<!--<dd><a href="javascript:;" data-url="article_category-list">用户列表</a></dd>-->
+								<dd><a href="javascript:;" data-url="article-list">用户信息</a></dd>
+							</dl>
+						</li>
+
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">组织管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="organization-list">组织列表</a></dd>
+							</dl>
+						</li>
+
+						<!--<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">角色管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="article_category-list">角色列表</a></dd>
+								<dd><a href="javascript:;" data-url="article-list">新增角色</a></dd>
+							</dl>
+						</li>
+
+						<li class="layui-nav-item layui-nav-itemed">
+							<a class="" href="javascript:;">授权管理</a>
+							<dl class="layui-nav-child">
+								<dd><a href="javascript:;" data-url="article_category-list">权限列表</a></dd>
+								<dd><a href="javascript:;" data-url="article-list">用户授权</a></dd>
+							</dl>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+			<div class="layui-body" id="LAY_app_body">
+				<div class="layui-tabsbody-item layui-show">
+					<iframe src="console.html" frameborder="0" class="layui-iframe" style="padding: 15px;"></iframe>
+				</div>
+			</div>
+			<div class="layui-footer">
+				<!-- 底部固定区域 -->
+				© 后台管理
+			</div>
+		</div>
+	</body>
+</html>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="lib/layui/layui.js"></script>
+<script src="js/jquery.cookie.min.js"></script>
+<script src="js/admin.js"></script>

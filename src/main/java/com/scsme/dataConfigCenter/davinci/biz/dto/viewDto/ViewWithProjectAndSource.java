@@ -19,7 +19,7 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.dto.viewDto;
 
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.Source;
 import lombok.Data;
@@ -27,6 +27,6 @@ import lombok.Data;
 @Data
 public class ViewWithProjectAndSource extends ViewWithSource {
 
-    private Project project;
+    private DaavProject project;
     private Source source;
 }

@@ -41,7 +41,7 @@ import com.scsme.dataConfigCenter.davinci.core.model.TokenEntity;
 import com.scsme.dataConfigCenter.davinci.biz.dao.*;
 import com.scsme.dataConfigCenter.davinci.biz.dto.organizationDto.*;
 import com.scsme.dataConfigCenter.davinci.biz.model.Organization;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import com.scsme.dataConfigCenter.davinci.biz.model.RelUserOrganization;
 import com.scsme.dataConfigCenter.davinci.biz.model.User;
 
@@ -281,7 +281,7 @@ public class OrganizationServiceImpl extends BaseEntityService implements Organi
         checkOwner(organization, user.getId(), id, "delete");
 
         //校验组织下是否有项目
-        List<Project> projectList = projectMapper.getByOrgId(id);
+        List<DaavProject> projectList = projectMapper.getByOrgId(id);
         if (!CollectionUtils.isEmpty(projectList)) {
             log.info("There is at least one project under the organization({}), it is can not be deleted", organization.getId());
             throw new ServerException("There is at least one project under this organization, it is can not be deleted");

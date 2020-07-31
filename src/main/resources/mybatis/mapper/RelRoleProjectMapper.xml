@@ -23,9 +23,9 @@
 
     <insert id="insert" parameterType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleProject">
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-            SELECT id from rel_role_project where `role_id` = #{roleId} and `project_id` = #{projectId}
+            SELECT id from daav_rel_role_project where `role_id` = #{roleId} and `project_id` = #{projectId}
         </selectKey>
-        insert ignore rel_role_project
+        insert ignore daav_rel_role_project
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `project_id`,
             `role_id`,
@@ -57,7 +57,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        insert ignore rel_role_project
+        insert ignore daav_rel_role_project
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `project_id`,
             `role_id`,
@@ -91,7 +91,7 @@
 
     <delete id="deleteByIds">
         <if test="list != null">
-            delete from rel_role_project where id in
+            delete from daav_rel_role_project where id in
             <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
                 #{item}
             </foreach>
@@ -108,8 +108,8 @@
                IFNULL(max(rrp.schedule_permission), 0) as schedulePermission,
                IFNULL(max(rrp.share_permission), 0)    as sharePermission,
                IFNULL(max(rrp.download_permission), 0) as downloadPermission
-        FROM rel_role_project rrp
-                 left join rel_role_user rru on rru.role_id = rrp.role_id
+        FROM daav_rel_role_project rrp
+                 left join daav_rel_role_user rru on rru.role_id = rrp.role_id
     </sql>
 
     <select id="getMaxPermissions" resultType="com.scsme.dataConfigCenter.davinci.biz.dto.projectDto.UserMaxProjectPermission">
@@ -129,7 +129,7 @@
 
     <select id="getByProject" resultType="com.scsme.dataConfigCenter.davinci.biz.model.RelRoleProject">
         select *
-        from rel_role_project
+        from daav_rel_role_project
         where project_id = #{projectId}
     </select>
 </mapper>

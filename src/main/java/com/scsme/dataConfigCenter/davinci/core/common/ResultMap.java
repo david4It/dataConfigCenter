@@ -52,30 +52,30 @@ public class ResultMap extends HashMap<String, Object> {
         this.header.put("code", this.code);
         this.header.put("msg", "Success");
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
     public ResultMap success(String token) {
         this.code = HttpCodeEnum.OK.getCode();
         this.header = new HashMap<>();
-        this.header.put("code", this.code);
-        this.header.put("msg", "Success");
-        this.header.put("token", token);
-        this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("code", this.code);
+        this.put("msg", "Success");
+        this.put("token", token);
+        //this.put("header", header);
+        this.put("data", EMPTY);
         return this;
     }
 
     public ResultMap successAndRefreshToken(HttpServletRequest request) {
         String token = request.getHeader(Constants.TOKEN_HEADER_STRING);
         this.code = HttpCodeEnum.OK.getCode();
-        this.header = new HashMap<>();
-        this.header.put("code", this.code);
-        this.header.put("msg", "Success");
-        this.header.put("token", this.tokenUtils.refreshToken(token));
-        this.put("header", header);
-        this.put("payload", EMPTY);
+        //this.header = new HashMap<>();
+        this.put("code", this.code);
+        this.put("msg", "Success");
+        this.put("token", this.tokenUtils.refreshToken(token));
+        //this.put("header", header);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -85,7 +85,7 @@ public class ResultMap extends HashMap<String, Object> {
         this.header = new HashMap<>();
         this.header.put("code", code);
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -94,7 +94,7 @@ public class ResultMap extends HashMap<String, Object> {
         this.header = new HashMap<>();
         this.header.put("code", code);
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -106,7 +106,7 @@ public class ResultMap extends HashMap<String, Object> {
         this.header.put("msg", HttpCodeEnum.FAIL.getMessage());
         this.header.put("token", tokenUtils.refreshToken(token));
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -123,7 +123,7 @@ public class ResultMap extends HashMap<String, Object> {
             this.header.put("token", this.tokenUtils.refreshToken(token));
         }
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -139,7 +139,7 @@ public class ResultMap extends HashMap<String, Object> {
         }
 
         this.put("header", header);
-        this.put("payload", EMPTY);
+        this.put("data", EMPTY);
         return this;
     }
 
@@ -150,12 +150,18 @@ public class ResultMap extends HashMap<String, Object> {
     }
 
     public ResultMap payload(Object object) {
-        this.put("payload", null == object ? EMPTY : object);
+        this.put("data", null == object ? EMPTY : object);
+        return this;
+    }
+    public ResultMap code(HttpCodeEnum httpCodeEnum) {
+        this.code = httpCodeEnum.getCode();
+        this.put("code", code);
         return this;
     }
 
     public ResultMap payloads(Collection list) {
-        this.put("payload", null == list ? new List[0] : list);
+        this.put("data", null == list ? new List[0] : list);
+        this.put("count", list.size());
         return this;
     }
 

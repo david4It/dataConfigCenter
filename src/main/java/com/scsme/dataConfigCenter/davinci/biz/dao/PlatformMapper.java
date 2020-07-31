@@ -28,6 +28,6 @@ import org.springframework.stereotype.Component;
 @Mapper
 public interface PlatformMapper {
 
-    @Select("select * from platform where code = #{code}")
+    @Select("select * from daav_platform where code = #{code}")
     Platform getPlatformByCode(@Param("code") String code);
 }

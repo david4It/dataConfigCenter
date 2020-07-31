@@ -20,11 +20,11 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.displayDto;
 
 import com.scsme.dataConfigCenter.davinci.biz.model.Display;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import lombok.Data;
 
 @Data
 public class DisplayWithProject extends Display {
 
-    private Project project;
+    private DaavProject project;
 }

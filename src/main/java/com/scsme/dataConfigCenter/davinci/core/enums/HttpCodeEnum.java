@@ -21,7 +21,7 @@ package com.scsme.dataConfigCenter.davinci.core.enums;
 
 public enum HttpCodeEnum {
 
-    OK(200, "OK"),
+    OK(0, "OK"),
     FAIL(400, "Bad Request"),
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),

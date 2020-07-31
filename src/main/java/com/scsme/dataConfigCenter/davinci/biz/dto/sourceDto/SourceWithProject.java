@@ -19,11 +19,11 @@
 
 package com.scsme.dataConfigCenter.davinci.biz.dto.sourceDto;
 
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import com.scsme.dataConfigCenter.davinci.biz.model.Source;
 import lombok.Data;
 
 @Data
 public class SourceWithProject extends Source {
-    private Project project;
+    private DaavProject project;
 }

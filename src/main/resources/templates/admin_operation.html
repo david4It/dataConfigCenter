@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>后台管理</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+		<link rel="stylesheet" href="css/admin.css" media="all">
+	</head>
+	<body>
+        <div class="layui-fluid">
+			<div class="layui-col-md12">
+				<form class="layui-form layui-form-pane" action="" id="frm-reg" >
+					<div class="layui-form-item">
+						<label class="layui-form-label">登录账号</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="text" name="username" id="username" value="" placeholder="请输入管理员登录账号" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请输入管理员登录账号</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">登录密码</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="password" name="password" id="password" value="" placeholder="请输入管理员登录密码" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请输入管理员登录密码</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">确认密码</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="password" name="passwords" id="passwords" value="" placeholder="请输入确认密码" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请输入确认密码</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">选择角色</label>
+						<div class="layui-input-inline layer-inputs">
+							<select name="system_role_id" id="system_role_id" lay-filter="system_role_id">
+								<option value="0" selected="selected">请选择角色</option>
+								<option value="1" selected="selected">超级管理员</option>
+								<option value="2" selected="selected">系统管理员</option>
+							</select>
+						</div>
+						<div class="layui-form-mid layui-word-aux">请选择管理员选择角色</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">姓名</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="text" name="name" id="name" value="" placeholder="请输入管理员姓名" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请输入管理员姓名</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">手机号</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="number" min="0" max="11" name="mobile" id="mobile" value="0" placeholder="请输入管理员手机号" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请输入管理员手机号</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">头像</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" class="layui-input" name="portrait" id="portrait" value="">
+						</div>
+						<div class="layui-form-mid layui-word-aux"><button type="button" class="layui-btn" data-name="portrait" data-place="system" id="upload_pictures" style="margin-top: -8px;">上传图片</button></div>
+					</div>
+					<div class="layui-form-item">
+						<img id="images_url" src="images/default.png" style="width: 80px;height: 80px;border: 1px solid #cccccc;border-radius: 50%;">
+						<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="layui_progress" style="width: 30%;position: relative;top: 5px;">
+							<div class="layui-progress-bar layui-bg-normal" lay-percent="0%"></div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline layer-inputs">
+							<input type="radio" name="status" value="0" title="显示" checked="checked">
+							<input type="radio" name="status" value="1" title="隐藏">
+						</div>
+					</div>
+					<div class="layui-form-item" style="margin-left: 50px;">
+						<input type="hidden" name="request_url" id="request_url" value="">
+						<input type="hidden" name="id" id="id" value="">
+						<button class="layui-btn" id="execute" lay-submit="execute" lay-filter="execute"><i class="layui-icon layui-icon-form"></i>保存</button>
+					</div>
+				</form>
+			</div>
+		</div>	
+    </body>
+</html>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="lib/layui/layui.js"></script>
+<script src="js/admin.js"></script>

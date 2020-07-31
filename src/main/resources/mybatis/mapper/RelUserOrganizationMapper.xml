@@ -24,7 +24,7 @@
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        insert ignore rel_user_organization
+        insert ignore daav_rel_user_tenant
         <trim prefix="(" suffix=")" suffixOverrides=",">
             `org_id`,
             `user_id`,
@@ -44,7 +44,7 @@
 
 
     <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
-        insert ignore into rel_user_organization
+        insert ignore into daav_rel_user_tenant
         (`org_id`,`user_id`, `role`, `create_by`, `create_time`)
         values
         <foreach collection="set" item="record" index="index" separator=",">
@@ -60,7 +60,7 @@
 
 
     <delete id="deleteBatch" parameterType="java.util.List">
-        DELETE FROM rel_user_organization WHERE
+        DELETE FROM daav_rel_user_tenant WHERE
         <if test="set != null and set.size > 0">
             id in
             <foreach collection="set" index="index" item="item" open="(" close=")" separator=",">

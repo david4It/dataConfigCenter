@@ -20,11 +20,11 @@
 package com.scsme.dataConfigCenter.davinci.biz.dto.projectDto;
 
 import com.scsme.dataConfigCenter.davinci.biz.dto.userDto.UserBaseInfo;
-import com.scsme.dataConfigCenter.davinci.biz.model.Project;
+import com.scsme.dataConfigCenter.davinci.biz.model.DaavProject;
 import lombok.Data;
 
 @Data
-public class ProjectWithCreateBy extends Project {
+public class ProjectWithCreateBy extends DaavProject {
 
     private Boolean isStar = false;
 
