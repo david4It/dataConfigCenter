@@ -47,3 +47,28 @@ function mergeRecursive(obj1, obj2) {
 
     return obj1;
 }
+
+function getRequestParams() {
+    let str = document.location.search.substr(1);
+    if (str === "") {
+        return null;
+    } else {
+        let params = document.location.search.substr(1).split("&");
+        let obj = {};
+        for (let i = 0; i < params.length; i++) {
+            let kv = params[i].split("=");
+            obj[kv[0]] = kv[1];
+        }
+        return obj;
+    }
+}
+
+
+function forwardUrl(data, url) {
+    for (let key in data) {
+        if (data[key]) {
+            url += '&' + key + '=' + data[key];
+        }
+    }
+    window.location.href = encodeURI(url);
+}

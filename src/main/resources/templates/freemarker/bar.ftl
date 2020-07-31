@@ -1,6 +1,6 @@
         //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-bar
         component_${vo.getLocationIndex()}() {
-            axios.get("/statistics/common", {params: {componentId: ${vo.getId()}}}).then((res) => {
+            axios.get("/statistics/common", {params: {componentId: ${vo.getId()}, valueMap: getRequestParams()}}).then((res) => {
                 // 基于准备好的dom，初始化echarts实例
                 let myChart = echarts.init(document.getElementById("${'component_' + vo.getLocationIndex()}"));
                 let option = {
@@ -70,13 +70,19 @@
                     if (result.configJson) {
                         mergeRecursive(option, result.configJson);
                     }
+                    if (result.extData) {
+                        option.xAxis.data.extData = result.extData;
+                    }
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().css("display", "block");
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
                     myChart.resize();
                     myChart.setOption(option);
-                    myChart.on("click", (param) => {
-                        console.log(param);
-                    });
+                    <#if vo.getLinkUrl()??>
+                        myChart.on("click", (param) => {
+                            console.log(param);
+                            forwardUrl(param.extData, "${vo.getLinkUrl()}")
+                        });
+                    </#if>
                     window.addEventListener("resize", function () {
                         myChart.resize();
                     });
