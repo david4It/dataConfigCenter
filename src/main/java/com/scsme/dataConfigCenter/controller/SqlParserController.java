@@ -1,5 +1,6 @@
 package com.scsme.dataConfigCenter.controller;
 
+import com.scsme.dataConfigCenter.util.SQLParserUtil;
 import com.scsme.dataConfigCenter.vo.Result;
 import com.scsme.dataConfigCenter.vo.SqlVO;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,23 @@ public class SqlParserController {
         Result<Boolean> result = new Result<>();
         try {
             CCJSqlParserUtil.parseStatements(vo.getSql());
+            result.success("校验SQL语句成功！");
+        } catch (JSQLParserException e) {
+            e.printStackTrace();
+            result.success("SQL存在语法错误！");
+            result.setResult(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.error500("校验SQL语句失败！");
+        }
+        return result;
+    }
+
+    @PostMapping("/validateWithParams")
+    public Result<Boolean> validateWithParams(@RequestBody SqlVO vo) {
+        Result<Boolean> result = new Result<>();
+        try {
+            CCJSqlParserUtil.parseStatements(SQLParserUtil.parseSqlWithParams(vo.getSql(), vo.getParams()));
             result.success("校验SQL语句成功！");
         } catch (JSQLParserException e) {
             e.printStackTrace();
