@@ -18,10 +18,11 @@ public class StatisticsController {
     @Autowired
     StatisticsService service;
     @GetMapping("common")
-    public Result<Map<String, Object>> common(@RequestParam("componentId") Long componentId) {
+    public Result<Map<String, Object>> common(@RequestParam("componentId") Long componentId,
+                                              @RequestParam(value = "valueMap", required = false) Map<String, Object> valueMap) {
         Result<Map<String, Object>> result = new Result<>();
         try {
-            Map<String, Object> value = service.query(componentId);
+            Map<String, Object> value = service.query(componentId, valueMap);
             result.setResult(value);
             result.success("查询视图数据成功！");
         } catch (Exception e) {

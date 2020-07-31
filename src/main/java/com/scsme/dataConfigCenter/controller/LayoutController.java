@@ -1,11 +1,11 @@
 package com.scsme.dataConfigCenter.controller;
 
-import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,15 +53,15 @@ public class LayoutController {
         return result;
     }
 
-    @GetMapping("/edit")
-    public Result<LayoutVO> edit(@RequestParam(name="id") Long id) {
-        Result<LayoutVO> result = new Result<>();
+    @DeleteMapping("/delete")
+    public Result<Boolean> delete(@RequestParam(name="id") Long id) {
+        Result<Boolean> result = new Result<>();
         try {
-            LayoutVO vo= layoutService.queryLayout(id);
-            result.setResult(vo);
-            result.success("查询布局数据成功！");
+            Boolean deleted= layoutService.deleteLayout(id);
+            result.setResult(deleted);
+            result.success("删除布局数据成功！");
         } catch (Exception e) {
-            result.error500("查询布局数据失败！");
+            result.error500("删除布局数据失败！");
             log.error(e.getLocalizedMessage());
         }
         return result;

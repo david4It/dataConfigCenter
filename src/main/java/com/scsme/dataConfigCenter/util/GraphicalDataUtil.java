@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,16 +31,20 @@ public class GraphicalDataUtil {
     private static final String VALUE = "value";
     private static final String MAX = "max";
     private static final String RADAR_INDICATOR = "radarIndicator";
-    public static Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component) {
+    private static final String EXT_DATA = "extData";
+    public static Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component, Map<String, Object> params) {
         String dataType = component.getType();
         String sql = component.getQuery();
+        if (params != null) {
+            sql = SQLParserUtil.parseSqlWithValues(sql, params);
+        }
         String configJson = component.getConfigJson();
         Graphical graphical = Graphical.valueOf(dataType.toUpperCase());
         Map<String, Object> result = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
-            result = graphical.transMap(resultSet);
+            result = graphical.transMap(resultSet, component.getParams());
             //TODO 后期调整，直接将数据绑定到configJson中，前端直接merge即可
             if (StringUtils.hasText(configJson)) {
                 result.put("configJson", new ObjectMapper().readValue(configJson, Object.class));
@@ -64,8 +69,13 @@ public class GraphicalDataUtil {
         }
 
         //为了能从ResultSetMetaData中解析到别名，需要在JDBC的url配置信息加上useOldAliasMetadataBehavior=true
-        public Map<String, Object> transMap(ResultSet resultSet) throws Exception {
+        public Map<String, Object> transMap(ResultSet resultSet, String params) throws Exception {
             Map<String, Object> result = new HashMap<>();
+            Set<String> paramsSet = new HashSet<>();
+            if (StringUtils.hasText(params)) {
+                String[] split = params.split(",");
+                paramsSet.addAll(Arrays.asList(split));
+            }
             switch (this) {
                 case PIE:
                     List<Map<String, Object>> pieSeriesData = new ArrayList<>();
@@ -91,15 +101,24 @@ public class GraphicalDataUtil {
                 case LINE: case BAR:
                     List<BigDecimal> lbSeriesData = new ArrayList<>();
                     List<String> lbXAxisData = new ArrayList<>();
+                    List<Object> extData = new ArrayList<>();
                     while (resultSet.next()) {
                         ResultSetMetaData metaData = resultSet.getMetaData();
                         int count = metaData.getColumnCount();
                         for (int i = 1; i <= count; i++) {
-                            lbXAxisData.add(metaData.getColumnName(i));
+                            String columnName = metaData.getColumnName(i);
                             String valueStr = resultSet.getString(i);
-                            lbSeriesData.add(getDecimalValue(valueStr));
+                            if (paramsSet.contains(columnName)) {
+                                Map<String, String> map = new HashMap<>();
+                                map.put(columnName, valueStr);
+                                extData.add(map);
+                            } else {
+                                lbXAxisData.add(metaData.getColumnName(i));
+                                lbSeriesData.add(getDecimalValue(valueStr));
+                            }
                         }
                     }
+                    result.put(EXT_DATA, extData);
                     result.put(X_AXIS_DATA, lbXAxisData);
                     result.put(SERIES_DATA, lbSeriesData);
                     break;

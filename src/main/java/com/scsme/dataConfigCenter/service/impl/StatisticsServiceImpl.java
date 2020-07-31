@@ -20,10 +20,10 @@ public class StatisticsServiceImpl implements StatisticsService {
     ComponentMapper mapper;
 
     @Override
-    public Map<String, Object> query(Long componentId) {
+    public Map<String, Object> query(Long componentId, Map<String, Object> params) {
         Component component = mapper.selectById(componentId);
         if (component != null) {
-            return GraphicalDataUtil.getGraphicalDataMap(dataSource, component);
+            return GraphicalDataUtil.getGraphicalDataMap(dataSource, component, params);
         }
         return null;
     }

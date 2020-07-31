@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ComponentVO extends Component {
+    private String linkUrl;
     public Component trans(){
         Component component = new Component();
         component.setLayoutId(this.getLayoutId());
