@@ -33,8 +33,8 @@ public class GraphicalDataUtil {
     private static final String RADAR_INDICATOR = "radarIndicator";
     private static final String EXT_DATA = "extData";
     private static final String CONFIG_JSON = "configJson";
-    private static final String PATTERN_SEPARATOR = ":";
-    private static final String PARAMS_SEPARATOR = ",";
+    private static final String COLON_SEPARATOR = ":";
+    private static final String COMMA_SEPARATOR = ",";
     public static Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         String dataType = component.getType();
         String sql = component.getQuery();
@@ -73,9 +73,9 @@ public class GraphicalDataUtil {
 
         private void arrangement(Component component, ResultSet resultSet, List<Map<String, Object>> mapList, List<String> strList) throws Exception {
             Set<String> paramsSet = new HashSet<>();
-            String[] arr = component.getCategoryValuePattern().split(PATTERN_SEPARATOR);
+            String[] arr = component.getCategoryValuePattern().split(COLON_SEPARATOR);
             if (StringUtils.hasText(component.getParams())) {
-                String[] split = component.getParams().split(PARAMS_SEPARATOR);
+                String[] split = component.getParams().split(COMMA_SEPARATOR);
                 paramsSet.addAll(Arrays.asList(split));
             }
             while (resultSet.next()) {
@@ -129,28 +129,40 @@ public class GraphicalDataUtil {
                     List<Map<String, Object>> radarIndicatorData = new ArrayList<>();
                     Map<String, BigDecimal> indicatorMaxMap = new LinkedHashMap<>();
                     List<Map<String, Object>> radarSeriesData = new ArrayList<>();
+                    Set<String> paramsSet = new HashSet<>();
+                    String[] arr = component.getCategoryValuePattern().split(COLON_SEPARATOR);
+                    Set<String> dimensionSet = new HashSet<>(Arrays.asList(arr[1].split(COMMA_SEPARATOR)));
+                    if (StringUtils.hasText(component.getParams())) {
+                        String[] split = component.getParams().split(COMMA_SEPARATOR);
+                        paramsSet.addAll(Arrays.asList(split));
+                    }
                     while (resultSet.next()) {
                         ResultSetMetaData metaData = resultSet.getMetaData();
                         int count = metaData.getColumnCount();
                         List<BigDecimal> vList = new ArrayList<>();
                         Map<String, Object> radarSeriesMap = new LinkedHashMap<>();
+                        Map<String, Object> valueData = new HashMap<>();
                         for (int i = 1; i <= count; i++) {
                             String columnName = metaData.getColumnName(i);
-                            String columnValue = resultSet.getString(i);
-                            if (!isDigits(columnValue)) {
-                                //表明这是数据描述字段，而非数值字段
-                                radarSeriesMap.put(NAME, columnValue);
-                                radarLegendData.add(columnValue);
+                            String valueStr = resultSet.getString(i);
+                            if (paramsSet.contains(columnName)) {
+                                valueData.put(columnName, valueStr);
                             } else {
-                                BigDecimal decimalValue = getDecimalValue(columnValue);
-                                vList.add(decimalValue);
-                                //保存维度的最大值
-                                if (indicatorMaxMap.get(columnName) == null || indicatorMaxMap.get(columnName).compareTo(decimalValue) < 0) {
-                                    indicatorMaxMap.put(columnName, decimalValue);
+                                if (arr[0].equals(columnName)) {
+                                    radarSeriesMap.put(NAME, valueStr);
+                                    radarLegendData.add(valueStr);
+                                } else if (dimensionSet.contains(columnName)) {
+                                    BigDecimal decimalValue = getDecimalValue(valueStr);
+                                    vList.add(decimalValue);
+                                    //保存维度的最大值
+                                    if (indicatorMaxMap.get(columnName) == null || indicatorMaxMap.get(columnName).compareTo(decimalValue) < 0) {
+                                        indicatorMaxMap.put(columnName, decimalValue);
+                                    }
                                 }
                             }
                         }
                         radarSeriesMap.put(VALUE, vList);
+                        radarSeriesMap.put(EXT_DATA, valueData);
                         radarSeriesData.add(radarSeriesMap);
                     }
                     for (Map.Entry<String, BigDecimal> next : indicatorMaxMap.entrySet()) {
@@ -186,7 +198,7 @@ public class GraphicalDataUtil {
 
         private BigDecimal getDecimalValue(String value) {
             if (isDigits(value)) {
-                value = value.replaceAll(PARAMS_SEPARATOR, "").trim();
+                value = value.replaceAll(COMMA_SEPARATOR, "").trim();
             } else {
                 value = "0";
             }
