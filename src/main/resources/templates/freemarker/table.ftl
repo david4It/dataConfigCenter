@@ -13,6 +13,9 @@
                 if (result.configJson) {
                     mergeRecursive(config, result.configJson);
                 }
+                if (result.extData) {
+                    this.tableExtData = result.extData;
+                }
                 this.tableConfig = config;
                 this.tableKey = 'changed';
                 $('${'#component_' + vo.getLocationIndex()}').parent().parent().css("display", "block");
@@ -22,3 +25,8 @@
             }
         });
     },
+    <#if vo.getLinkUrl()??>
+    rowClick(event) {
+        forwardUrl(this.tableExtData[event.rowIndex], "${vo.getLinkUrl()}")
+    },
+    </#if>

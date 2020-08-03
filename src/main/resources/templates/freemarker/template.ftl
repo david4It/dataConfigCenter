@@ -78,6 +78,7 @@
         el: '#layout',
         data: {
           tableConfig: {},
+          tableExtData: [],
           tableKey: ''
         },
         created() {
