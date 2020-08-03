@@ -46,6 +46,7 @@ public abstract class AbstractGraphical {
     Map<String, Object> getGraphicalData() throws Exception {
         String sql = component.getQuery();
         if (valueMap != null) {
+            //替换SQL语句中的变量，得到完整的SQL语句
             sql = SQLParserUtil.parseSqlWithValues(sql, valueMap);
         }
         String configJson = component.getConfigJson();
@@ -53,9 +54,10 @@ public abstract class AbstractGraphical {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
+            //处理结果集
             transMap(resultSet, component, result);
-            //TODO 后期调整，直接将数据绑定到configJson中，前端直接merge即可
             if (StringUtils.hasText(configJson)) {
+                //封装自定义配置的json数据信息
                 result.put(CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
             }
         }
@@ -63,6 +65,7 @@ public abstract class AbstractGraphical {
     }
 
     BigDecimal getDecimalValue(String value) {
+        //SQL查询语句中针对数值类型，会使用,进行分割显示，需要对字符串进行处理
         if (isDigits(value)) {
             value = value.replaceAll(COMMA_SEPARATOR, "").trim();
         } else {
@@ -72,6 +75,7 @@ public abstract class AbstractGraphical {
     }
 
     private boolean isDigits(String value) {
+        //使用正则判定字符串是否为数字
         Pattern pattern = Pattern.compile(DIGITS_PATTERN);
         if (StringUtils.hasText(value)) {
             return pattern.matcher(value).find();
@@ -79,10 +83,13 @@ public abstract class AbstractGraphical {
         return false;
     }
 
+    //LINE,BAR,PIE三种数据封装的方法
     void arrangement(Component component, ResultSet resultSet, List<Map<String, Object>> mapList, List<String> strList) throws Exception {
         Set<String> paramsSet = new HashSet<>();
+        //component.categoryValuePattern针对LINE,BAR,PIE三种数据风格，均采用key:value形式，key为分类的字段名，value为值的字段名
         String[] arr = component.getCategoryValuePattern().split(COLON_SEPARATOR);
         if (StringUtils.hasText(component.getParams())) {
+            //component.params用于子页面传参，形式为field1,field2,field3...
             String[] split = component.getParams().split(COMMA_SEPARATOR);
             paramsSet.addAll(Arrays.asList(split));
         }
@@ -94,6 +101,7 @@ public abstract class AbstractGraphical {
                 String columnName = metaData.getColumnName(i);
                 String valueStr = resultSet.getString(i);
                 if (paramsSet.contains(columnName)) {
+                    //封装用于传参的字段以及其对应的值
                     if (valueData.get(EXT_DATA) != null) {
                         ((Map)valueData.get(EXT_DATA)).put(columnName, valueStr);
                     } else {
@@ -102,6 +110,7 @@ public abstract class AbstractGraphical {
                         valueData.put(EXT_DATA, extDataMap);
                     }
                 } else {
+                    //封装用于展示的数据
                     if (columnName.equals(arr[0])) {
                         strList.add(valueStr);
                         valueData.put(NAME, valueStr);

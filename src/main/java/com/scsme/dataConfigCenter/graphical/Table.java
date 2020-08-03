@@ -27,6 +27,7 @@ public class Table extends AbstractGraphical {
         List<List<Object>> tableSeriesData = new ArrayList<>();
         List<Map<String, String>> extData = new ArrayList<>();
         Set<String> paramsSet = new HashSet<>();
+        //表格的component.categoryValuePattern，值为字段的名称，使用的数据格式为field1,field2,field3,...
         Set<String> headerSet = new HashSet<>(Arrays.asList(component.getCategoryValuePattern().split(COMMA_SEPARATOR)));
         if (StringUtils.hasText(component.getParams())) {
             String[] split = component.getParams().split(COMMA_SEPARATOR);
@@ -44,6 +45,7 @@ public class Table extends AbstractGraphical {
                     tableLegendData.add(columnName);
                     seriesData.add(valueStr);
                 } else if (paramsSet.contains(columnName)) {
+                    //封装用于传参的字段以及其对应的值
                     extDataMap.put(columnName, valueStr);
                 }
             }

@@ -26,12 +26,15 @@ public class Radar extends AbstractGraphical {
     void transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
         List<String> radarLegendData = new ArrayList<>();
         List<Map<String, Object>> radarIndicatorData = new ArrayList<>();
+        //indicatorMaxMap用于保存各个维度的最大值
         Map<String, BigDecimal> indicatorMaxMap = new LinkedHashMap<>();
         List<Map<String, Object>> radarSeriesData = new ArrayList<>();
         Set<String> paramsSet = new HashSet<>();
+        //由于雷达度需要展示的是多维度信息，故component.categoryValuePattern使用的数据形式为key:value1,value2,value3...
         String[] arr = component.getCategoryValuePattern().split(COLON_SEPARATOR);
         Set<String> dimensionSet = new HashSet<>(Arrays.asList(arr[1].split(COMMA_SEPARATOR)));
         if (StringUtils.hasText(component.getParams())) {
+            //component.params用于子页面传参，值为字段的名字，形式为field1,field2,field3...
             String[] split = component.getParams().split(COMMA_SEPARATOR);
             paramsSet.addAll(Arrays.asList(split));
         }
@@ -45,6 +48,7 @@ public class Radar extends AbstractGraphical {
                 String columnName = metaData.getColumnName(i);
                 String valueStr = resultSet.getString(i);
                 if (paramsSet.contains(columnName)) {
+                    //封装用于传参的字段以及其对应的值
                     valueData.put(columnName, valueStr);
                 } else {
                     if (arr[0].equals(columnName)) {
