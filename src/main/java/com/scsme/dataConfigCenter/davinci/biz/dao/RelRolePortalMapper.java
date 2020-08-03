@@ -38,33 +38,33 @@ public interface RelRolePortalMapper {
 
     @Select({
             "select rru.role_id as roleId, rrp.portal_id as vizId",
-            "from rel_role_portal rrp",
-            "       inner join rel_role_user rru on rru.role_id = rrp.role_id",
-            "       inner join dashboard_portal p on p.id = rrp.portal_id",
+            "from daav_rel_role_portal rrp",
+            "       inner join daav_rel_role_user rru on rru.role_id = rrp.role_id",
+            "       inner join daav_dashboard_portal p on p.id = rrp.portal_id",
             "where rru.user_id = #{userId} and rrp.visible = 0 and p.project_id = #{projectId}"
     })
     List<RoleDisableViz> getDisablePortalByUser(@Param("userId") Long userId, @Param("projectId") Long projectId);
 
-    @Delete({"delete from rel_role_portal where portal_id = #{portalId}"})
+    @Delete({"delete from daav_rel_role_portal where portal_id = #{portalId}"})
     int deleteByProtalId(@Param("portalId") Long portalId);
 
-    @Select("select role_id from rel_role_portal where portal_id = #{portalId} and visible = 0")
+    @Select("select role_id from daav_rel_role_portal where portal_id = #{portalId} and visible = 0")
     List<Long> getExecludeRoles(@Param("portalId") Long portalId);
 
     @Select({
             "select rrp.portal_id",
-            "from rel_role_portal rrp",
-            "inner join dashboard_portal p on p.id = rrp.portal_id",
+            "from daav_rel_role_portal rrp",
+            "inner join daav_dashboard_portal p on p.id = rrp.portal_id",
             "where rrp.role_id = #{id} and rrp.visible = 0 and p.project_id = #{projectId}"
     })
     List<Long> getExecludePortals(@Param("id") Long id, @Param("projectId") Long projectId);
 
-    @Delete({"delete from rel_role_portal where portal_id = #{portalId} and role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_portal where portal_id = #{portalId} and role_id = #{roleId}"})
     int delete(@Param("portalId") Long portalId, @Param("roleId") Long roleId);
 
-    @Delete({"delete from rel_role_portal where role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_portal where role_id = #{roleId}"})
     int deleteByRoleId(Long roleId);
 
-    @Delete({"delete from rel_role_portal where portal_id in (select id from dashboard_portal where project_id = #{projectId})"})
+    @Delete({"delete from daav_rel_role_portal where portal_id in (select id from daav_dashboard_portal where project_id = #{projectId})"})
     int deleteByProject(Long projectId);
 }

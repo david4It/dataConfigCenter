@@ -34,43 +34,43 @@ public interface RelRoleDisplaySlideWidgetMapper {
 
     int deleteByMemDisplaySlideWidgetIds(@Param("memDisplaySlideWidgetIds") Set<Long> memDisplaySlideWidgetIds);
 
-    @Delete({"delete from rel_role_display_slide_widget where mem_display_slide_widget_id = #{memDisplaySlideWidgetId}"})
+    @Delete({"delete from daav_rel_role_display_slide_widget where mem_display_slide_widget_id = #{memDisplaySlideWidgetId}"})
     int deleteByMemDisplaySlideWidgetId(@Param("memDisplaySlideWidgetId") Long memDisplaySlideWidgetId);
 
-    @Delete({"delete from rel_role_display_slide_widget where role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_display_slide_widget where role_id = #{roleId}"})
     int deleteByRoleId(@Param("roleId") Long roleId);
 
-    @Delete({"DELETE rrdsw FROM rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
+    @Delete({"DELETE rrdsw FROM daav_rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
             "( " +
             "SELECT mdsw.id " +
-            "FROM mem_display_slide_widget mdsw " +
-            "INNER JOIN display_slide ds ON ds.id = mdsw.display_slide_id " +
+            "FROM daav_mem_display_slide_widget mdsw " +
+            "INNER JOIN daav_display_slide ds ON ds.id = mdsw.display_slide_id " +
             "WHERE ds.display_id = #{displayId} " +
             ") "})
     int deleteByDisplayId(@Param("displayId") Long displayId);
 
-    @Delete({"DELETE rrdsw FROM rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
+    @Delete({"DELETE rrdsw FROM daav_rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
             "( " +
             "SELECT mdsw.id " +
-            "FROM mem_display_slide_widget mdsw " +
+            "FROM daav_mem_display_slide_widget mdsw " +
             "WHERE mdsw.display_slide_id = #{slideId} " +
             ") "})
     int deleteBySlideId(@Param("slideId") Long slideId);
 
     @Select({
             "SELECT rrdsw.mem_display_slide_widget_id " +
-                    "FROM rel_role_display_slide_widget rrdsw " +
-                    "INNER JOIN rel_role_user rru ON rru.role_id = rrdsw.role_id " +
+                    "FROM daav_rel_role_display_slide_widget rrdsw " +
+                    "INNER JOIN daav_rel_role_user rru ON rru.role_id = rrdsw.role_id " +
                     "WHERE rru.user_id = #{userId} AND rrdsw.visible = 0 "
     })
     List<Long> getDisableByUser(@Param("userId") Long userId);
 
-    @Delete({"DELETE rrdsw FROM rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
+    @Delete({"DELETE rrdsw FROM daav_rel_role_display_slide_widget rrdsw WHERE rrdsw.mem_display_slide_widget_id IN " +
             "( " +
             "SELECT mdsw.id " +
-            "FROM mem_display_slide_widget mdsw " +
-            "INNER JOIN display_slide ds ON ds.id = mdsw.display_slide_id " +
-            "INNER JOIN display d ON d.id = ds.display_id " +
+            "FROM daav_mem_display_slide_widget mdsw " +
+            "INNER JOIN daav_display_slide ds ON ds.id = mdsw.display_slide_id " +
+            "INNER JOIN daav_display d ON d.id = ds.display_id " +
             "WHERE d.project_id = #{projectId} " +
             ") "})
     int deleteByProjectId(@Param("projectId") Long projectId);

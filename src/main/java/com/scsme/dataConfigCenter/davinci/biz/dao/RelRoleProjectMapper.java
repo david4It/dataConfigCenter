@@ -33,23 +33,23 @@ public interface RelRoleProjectMapper {
     int insert(RelRoleProject record);
 
     @Delete({
-            "delete from rel_role_project where id = #{relationId}"
+            "delete from daav_rel_role_project where id = #{relationId}"
     })
     int deleteById(@Param("relationId") Long relationId);
 
     @Delete({
-            "delete from rel_role_project where project_id = #{projectId}"
+            "delete from daav_rel_role_project where project_id = #{projectId}"
     })
     int deleteByProjectId(@Param("projectId") Long projectId);
 
 
     @Select({
-            "select * from rel_role_project where id = #{id,jdbcType=BIGINT}"
+            "select * from daav_rel_role_project where id = #{id,jdbcType=BIGINT}"
     })
     RelRoleProject getById(Long id);
 
     @Update({
-            "update rel_role_project",
+            "update daav_rel_role_project",
             "set project_id = #{projectId,jdbcType=BIGINT},",
             "role_id = #{roleId,jdbcType=BIGINT},",
             "source_permission = #{sourcePermission,jdbcType=SMALLINT},",
@@ -66,7 +66,7 @@ public interface RelRoleProjectMapper {
     int update(RelRoleProject record);
 
     @Select({
-            "select * from rel_role_project where role_id = #{roleId} and project_id = #{projectId}"
+            "select * from daav_rel_role_project where role_id = #{roleId} and project_id = #{projectId}"
     })
     RelRoleProject getByRoleAndProject(@Param("roleId") Long roleId, @Param("projectId") Long projectId);
 
@@ -77,7 +77,7 @@ public interface RelRoleProjectMapper {
     int insertBatch(@Param("list") List<RelRoleProject> list);
 
     @Delete({
-            "delete from rel_role_project where role_id = #{roleId}"
+            "delete from daav_rel_role_project where role_id = #{roleId}"
     })
     int deleteByRoleId(Long roleId);
 
@@ -86,8 +86,8 @@ public interface RelRoleProjectMapper {
             "select r.id,",
             "       r.name,",
             "       r.description",
-            "from role r",
-            "       left join rel_role_project rrp on rrp.role_id = r.id",
+            "from daav_role r",
+            "       left join daav_rel_role_project rrp on rrp.role_id = r.id",
             "where rrp.project_id = #{projectId}",
     })
     List<RoleBaseInfo> getRoleBaseInfoByProject(Long projectId);
@@ -103,14 +103,14 @@ public interface RelRoleProjectMapper {
             "       rrp.schedule_permission as 'permission.schedulePermission',",
             "       rrp.share_permission    as 'permission.sharePermission',",
             "       rrp.download_permission as 'permission.downloadPermission'",
-            "from role r",
-            "       left join rel_role_project rrp on rrp.role_id = r.id",
+            "from daav_role r",
+            "       left join daav_rel_role_project rrp on rrp.role_id = r.id",
             "where rrp.project_id = #{projectId} and rrp.role_id = #{roleId}",
     })
     RoleWithProjectPermission getPermission(@Param("projectId") Long projectId, @Param("roleId") Long roleId);
 
     @Delete({
-            "delete from rel_role_project where role_id = #{roleId} and project_id = #{projectId}"
+            "delete from daav_rel_role_project where role_id = #{roleId} and project_id = #{projectId}"
     })
     int deleteByRoleAndProject(@Param("roleId") Long roleId, @Param("projectId") Long projectId);
 

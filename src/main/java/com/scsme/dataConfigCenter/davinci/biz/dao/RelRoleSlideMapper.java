@@ -36,42 +36,42 @@ public interface RelRoleSlideMapper {
 
     int insertBatch(List<RelRoleSlide> list);
 
-    @Delete("delete from rel_role_slide where slide_id = #{slideId}")
+    @Delete("delete from daav_rel_role_slide where slide_id = #{slideId}")
     int deleteBySlideId(Long slideId);
 
     @Select({
             "select rru.role_id as roleId, rrs.slide_id as vizId",
-            "from rel_role_slide rrs",
-            "inner join rel_role_user rru on rru.role_id = rrs.role_id",
-            "inner join display_slide s on s.id = rrs.slide_id",
+            "from daav_rel_role_slide rrs",
+            "inner join daav_rel_role_user rru on rru.role_id = rrs.role_id",
+            "inner join daav_display_slide s on s.id = rrs.slide_id",
             "where rru.user_id = #{userId} and rrs.visible = 0 and s.display_id = #{displayId}"
     })
     List<RoleDisableViz> getDisableSlides(@Param("userId") Long userId, @Param("displayId") Long displayId);
 
     @Select({
-            "select role_id from rel_role_slide where slide_id = #{slideId} and visible = 0"
+            "select role_id from daav_rel_role_slide where slide_id = #{slideId} and visible = 0"
     })
     List<Long> getById(Long slideId);
 
     @Select({
             "select rrs.slide_id",
-            "from rel_role_slide rrs",
-            "inner join display_slide s on s.id = rrs.slide_id",
-            "INNER JOIN display d on d.id = s.display_id",
+            "from daav_rel_role_slide rrs",
+            "inner join daav_display_slide s on s.id = rrs.slide_id",
+            "INNER JOIN daav_display d on d.id = s.display_id",
             "where rrs.role_id = #{id} and rrs.visible = 0 and d.project_id = #{projectId}"
     })
     List<Long> getExecludeSlides(@Param("id") Long id, @Param("projectId") Long projectId);
 
-    @Delete({"delete from rel_role_slide where slide_id = #{slideId} and role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_slide where slide_id = #{slideId} and role_id = #{roleId}"})
     int delete(@Param("slideId") Long slideId, @Param("roleId") Long roleId);
 
-    @Delete({"delete from rel_role_slide where role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_slide where role_id = #{roleId}"})
     int deleteByRoleId(Long roleId);
 
-    @Delete({"DELETE rrs FROM rel_role_slide rrs WHERE rrs.slide_id IN " +
+    @Delete({"DELETE rrs FROM daav_rel_role_slide rrs WHERE rrs.slide_id IN " +
             "( " +
             "SELECT ds.id " +
-            "FROM display_slide ds " +
+            "FROM daav_display_slide ds " +
             "WHERE ds.display_id = #{displayId} " +
             ") "})
     int deleteByDisplayId(@Param("displayId") Long displayId);
@@ -79,9 +79,9 @@ public interface RelRoleSlideMapper {
     int copyRoleSlideRelation(@Param("relSlideCopies") List<RelModelCopy> slideCopies, @Param("userId") Long userId);
 
     @Delete({
-            "delete from rel_role_slide where slide_id in ",
-            "(select ds.id from display_slide ds ",
-            "left join display d on d.id = ds.display_id ",
+            "delete from daav_rel_role_slide where slide_id in ",
+            "(select ds.id from daav_display_slide ds ",
+            "left join daav_display d on d.id = ds.display_id ",
             "where d.project_id = #{projectId})"
     })
     int deleteByProjectId(Long projectId);

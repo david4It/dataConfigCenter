@@ -31,19 +31,19 @@ public interface DisplayMapper {
 
     int insert(Display display);
 
-    @Delete({"delete from display where id = #{id}"})
+    @Delete({"delete from daav_display where id = #{id}"})
     int deleteById(@Param("id") Long id);
 
-    @Delete({"delete from display where project_id = #{projectId}"})
+    @Delete({"delete from daav_display where project_id = #{projectId}"})
     int deleteByProject(@Param("projectId") Long projectId);
 
 
-    @Select({"select * from display where id = #{id}"})
+    @Select({"select * from daav_display where id = #{id}"})
     Display getById(@Param("id") Long id);
 
 
     @Update({
-            "update display",
+            "update daav_display",
             "set `name` = #{name,jdbcType=VARCHAR},",
             "description = #{description,jdbcType=VARCHAR},",
             "project_id = #{projectId,jdbcType=BIGINT},",
@@ -68,21 +68,21 @@ public interface DisplayMapper {
             "	p.user_id 'project.userId',",
             "	p.visibility 'p.visibility'",
             "FROM",
-            "	display d ",
-            "	LEFT JOIN project p on d.project_id = p.id",
+            "	daav_display d ",
+            "	LEFT JOIN daav_project p on d.project_id = p.id",
             "WHERE d.id = #{id}",
     })
     DisplayWithProject getDisplayWithProjectById(@Param("id") Long id);
 
-    @Select({"select * from display where project_id = #{projectId}"})
+    @Select({"select * from daav_display where project_id = #{projectId}"})
     List<Display> getByProject(@Param("projectId") Long projectId);
 
-    @Select({"select id from display where project_id = #{projectId} and `name` = #{name}"})
+    @Select({"select id from daav_display where project_id = #{projectId} and `name` = #{name}"})
     Long getByNameWithProjectId(@Param("name") String name, @Param("projectId") Long projectId);
 
     @Select({
             "SELECT max(REPLACE(`name`,'${name}','')) ",
-            "FROM display WHERE project_id = #{projectId} and `name` REGEXP CONCAT('${name}','[0-9]+')"
+            "FROM daav_display WHERE project_id = #{projectId} and `name` REGEXP CONCAT('${name}','[0-9]+')"
     })
     Integer selectMaxNameOrderByName(@Param("name") String name, @Param("projectId") Long projectId);
 }

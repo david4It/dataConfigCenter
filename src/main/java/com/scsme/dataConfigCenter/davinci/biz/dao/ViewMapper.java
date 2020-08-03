@@ -74,7 +74,7 @@ public interface ViewMapper {
     @Select({
             "select v.*,",
             "s.id as 'source.id', s.`name` as 'source.name' from `daav_view` v ",
-            "left join source s on s.id = v.source_id ",
+            "left join daav_data_source s on s.id = v.source_id ",
             "where v.id = #{id}"
     })
     ViewWithSourceBaseInfo getViewWithSourceBaseInfo(@Param("id") Long id);
@@ -83,7 +83,7 @@ public interface ViewMapper {
     @Select({
             "select v.id, v.`name`, v.`description`, s.name as 'sourceName'",
             "from `daav_view` v ",
-            "left join source s on s.id = v.source_id ",
+            "left join daav_data_source s on s.id = v.source_id ",
             "where v.project_id = #{projectId}"
     })
     List<ViewBaseInfo> getViewBaseInfoByProject(@Param("projectId") Long projectId);
@@ -104,8 +104,8 @@ public interface ViewMapper {
             "	s.`project_id` 'source.projectId',",
             "	s.`type` 'source.type'",
             "FROM `daav_view` v",
-            "	LEFT JOIN project p on p.id = v.project_id",
-            "	LEFT JOIN source s on s.id = v.source_id",
+            "	LEFT JOIN daav_project p on p.id = v.project_id",
+            "	LEFT JOIN daav_data_source s on s.id = v.source_id",
             "WHERE v.id = #{id}",
     })
     ViewWithSource getViewWithSource(Long id);

@@ -33,13 +33,13 @@ import java.util.Set;
 public interface WidgetMapper {
     int insert(Widget widget);
 
-    @Delete({"delete from widget where id = #{id}"})
+    @Delete({"delete from daav_widget where id = #{id}"})
     int deleteById(@Param("id") Long id);
 
-    @Select({"select * from widget where id = #{id}"})
+    @Select({"select * from daav_widget where id = #{id}"})
     Widget getById(@Param("id") Long id);
 
-    @Select({"select w.*,v.model from widget w LEFT JOIN `view` v on v.id = w.view_id where w.id = #{id}"})
+    @Select({"select w.*,v.model from daav_widget w LEFT JOIN `daav_view` v on v.id = w.view_id where w.id = #{id}"})
     ShareWidget getShareWidgetById(@Param("id") Long id);
 
 
@@ -47,7 +47,7 @@ public interface WidgetMapper {
 
 
     @Update({
-            "update widget",
+            "update daav_widget",
             "set `name` = #{name,jdbcType=VARCHAR},",
             "`description` = #{description,jdbcType=VARCHAR},",
             "`view_id` = #{viewId,jdbcType=BIGINT},",
@@ -68,41 +68,41 @@ public interface WidgetMapper {
 
 
     @Select({
-            "SELECT  w.*, s.id as 'vizId', s.index as 'vizIndex' FROM widget w ",
-            "LEFT JOIN mem_display_slide_widget m on w.id = m.widget_id",
-            "LEFT JOIN display_slide s on m.display_slide_id = s.id",
+            "SELECT  w.*, s.id as 'vizId', s.index as 'vizIndex' FROM daav_widget w ",
+            "LEFT JOIN daav_mem_display_slide_widget m on w.id = m.widget_id",
+            "LEFT JOIN daav_display_slide s on m.display_slide_id = s.id",
             "WHERE s.display_id = #{displayId}",
     })
     List<WidgetWithVizId> queryByDisplayId(@Param("displayId") Long displayId);
 
     @Select({
-            "SELECT  w.*, v.model, v.variable FROM widget w ",
-            "LEFT JOIN mem_display_slide_widget m on w.id = m.widget_id",
-            "LEFT JOIN display_slide s on m.display_slide_id = s.id",
-            "LEFT JOIN `view` v on v.id = w.view_id",
+            "SELECT  w.*, v.model, v.variable FROM daav_widget w ",
+            "LEFT JOIN daav_mem_display_slide_widget m on w.id = m.widget_id",
+            "LEFT JOIN daav_display_slide s on m.display_slide_id = s.id",
+            "LEFT JOIN `daav_view` v on v.id = w.view_id",
             "WHERE s.display_id = #{displayId}",
     })
     Set<ShareWidget> getShareWidgetsByDisplayId(@Param("displayId") Long displayId);
 
-    @Select({"select id from widget where project_id = #{projectId} and `name` = #{name}"})
+    @Select({"select id from daav_widget where project_id = #{projectId} and `name` = #{name}"})
     Long getByNameWithProjectId(@Param("name") String name, @Param("projectId") Long projectId);
 
-    @Select({"select * from widget where project_id = #{projectId}"})
+    @Select({"select * from daav_widget where project_id = #{projectId}"})
     List<Widget> getByProject(@Param("projectId") Long projectId);
 
-    @Select({"SELECT w.*, m.id as 'relationId' FROM mem_dashboard_widget m LEFT JOIN widget w on w.id = m.widget_Id WHERE m.dashboard_id = #{dashboardId}"})
+    @Select({"SELECT w.*, m.id as 'relationId' FROM daav_mem_dashboard_widget m LEFT JOIN daav_widget w on w.id = m.widget_Id WHERE m.dashboard_id = #{dashboardId}"})
     Set<WidgetWithRelationDashboardId> getByDashboard(@Param("dashboardId") Long dashboardId);
 
-    @Select({"SELECT w.*, v.model FROM mem_dashboard_widget m ",
-            "LEFT JOIN widget w on w.id = m.widget_Id ",
-            "LEFT JOIN `view` v on v.id = w.view_id",
+    @Select({"SELECT w.*, v.model FROM daav_mem_dashboard_widget m ",
+            "LEFT JOIN daav_widget w on w.id = m.widget_Id ",
+            "LEFT JOIN `daav_view` v on v.id = w.view_id",
             "WHERE m.dashboard_id = #{dashboardId}"})
     Set<ShareWidget> getShareWidgetsByDashboard(@Param("dashboardId") Long dashboardId);
 
-    @Delete({"delete from widget where project_id = #{projectId}"})
+    @Delete({"delete from daav_widget where project_id = #{projectId}"})
     int deleteByProject(@Param("projectId") Long projectId);
 
-    @Select({"select * from widget where view_id = #{viewId}"})
+    @Select({"select * from daav_widget where view_id = #{viewId}"})
     List<Widget> getWidgetsByWiew(@Param("viewId") Long viewId);
 
 

@@ -32,17 +32,17 @@ public interface DisplaySlideMapper {
 
     int insert(DisplaySlide displaySlide);
 
-    @Delete({"delete from display_slide where id = #{id}"})
+    @Delete({"delete from daav_display_slide where id = #{id}"})
     int deleteById(@Param("id") Long id);
 
-    @Delete({"DELETE FROM display_slide where display_id in (SELECT id from display WHERE project_id = #{projectId})"})
+    @Delete({"DELETE FROM daav_display_slide where display_id in (SELECT id from daav_display WHERE project_id = #{projectId})"})
     int deleteByProjectId(@Param("projectId") Long projectId);
 
-    @Select({"select * from display_slide where id = #{id}"})
+    @Select({"select * from daav_display_slide where id = #{id}"})
     DisplaySlide getById(Long id);
 
     @Update({
-            "update display_slide",
+            "update daav_display_slide",
             "set display_id = #{displayId,jdbcType=BIGINT},",
             "`index` = #{index,jdbcType=INTEGER},",
             "`config` = #{config,jdbcType=LONGVARCHAR},",
@@ -54,10 +54,10 @@ public interface DisplaySlideMapper {
 
     int updateBatch(List<DisplaySlide> list);
 
-    @Select({"select * from display_slide where display_id = #{displayId} order by `index`"})
+    @Select({"select * from daav_display_slide where display_id = #{displayId} order by `index`"})
     List<DisplaySlide> selectByDisplayId(@Param("displayId") Long displayId);
 
-    @Delete({"delete from display_slide where display_id = #{displayId}"})
+    @Delete({"delete from daav_display_slide where display_id = #{displayId}"})
     int deleteByDisplayId(@Param("displayId") Long displayId);
 
     @Select({
@@ -77,9 +77,9 @@ public interface DisplaySlideMapper {
             "	p.org_id 'project.orgId',",
             "	p.user_id 'project.userId',",
             "	p.visibility 'p.visibility'",
-            "FROM display_slide s ",
-            "   LEFT JOIN display d on d.id = s.display_id",
-            "   LEFT JOIN project p on p.id = d.project_id",
+            "FROM daav_display_slide s ",
+            "   LEFT JOIN daav_display d on d.id = s.display_id",
+            "   LEFT JOIN daav_project p on p.id = d.project_id",
             "where s.id = #{slideId}",
     })
     SlideWithDisplayAndProject getSlideWithDispalyAndProjectById(@Param("slideId") Long slideId);

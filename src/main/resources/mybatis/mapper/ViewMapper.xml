@@ -117,12 +117,12 @@
                p.`org_id`      'project.orgId',
                p.`user_id`     'project.userId',
                p.`visibility`  'p.visibility',
-               s.`id`          'daav_source.id',
-               s.`name`        'daav_source.name',
-               s.`description` 'daav_source.description',
-               s.`config`      'daav_source.config',
-               s.`project_id`  'daav_source.projectId',
-               s.`type`        'daav_source.type'
+               s.`id`          'source.id',
+               s.`name`        'source.name',
+               s.`description` 'source.description',
+               s.`config`      'source.config',
+               s.`project_id`  'source.projectId',
+               s.`type`        'source.type'
         FROM `view` v
                  LEFT JOIN daav_project p on p.id = v.project_id
                  LEFT JOIN daav_source s on s.id = v.source_id

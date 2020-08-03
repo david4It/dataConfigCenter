@@ -34,13 +34,13 @@ public interface RelRoleUserMapper {
     int insertBatch(@Param("relRoleUsers") List<RelRoleUser> relRoleUsers);
 
     @Delete({
-            "delete from rel_role_user where id = #{id,jdbcType=BIGINT}"
+            "delete from daav_rel_role_user where id = #{id,jdbcType=BIGINT}"
     })
     int deleteById(Long id);
 
 
     @Delete({
-            "delete from rel_role_user where role_id = #{roleId,jdbcType=BIGINT}"
+            "delete from daav_rel_role_user where role_id = #{roleId,jdbcType=BIGINT}"
     })
     int deleteByRoleId(Long roleId);
 
@@ -48,7 +48,7 @@ public interface RelRoleUserMapper {
     @Select({
             "select",
             "id, user_id, role_id, create_by, create_time, update_by, update_time",
-            "from rel_role_user",
+            "from daav_rel_role_user",
             "where id = #{id,jdbcType=BIGINT}"
     })
     RelRoleUser getById(Long id);
@@ -59,7 +59,7 @@ public interface RelRoleUserMapper {
 
     @Select({
             "SELECT rru.id, u.id as 'user.id', IFNULL(u.`name`, u.username) as 'user.username', u.avatar",
-            "FROM rel_role_user rru LEFT JOIN `daav_user` u on u.id = rru.user_id",
+            "FROM daav_rel_role_user rru LEFT JOIN `daav_user` u on u.id = rru.user_id",
             "WHERE rru.role_id = #{id}",
     })
     List<RelRoleMember> getMembersByRoleId(Long id);
@@ -67,7 +67,7 @@ public interface RelRoleUserMapper {
     List<Long> getUserIdsByIdAndMembers(@Param("roleId") Long roleId, @Param("userList") List<Long> userList);
 
     @Select({
-            "select user_id from rel_role_user where role_id = #{roleId}"
+            "select user_id from daav_rel_role_user where role_id = #{roleId}"
     })
     List<Long> getUserIdsByRoleId(Long roleId);
 

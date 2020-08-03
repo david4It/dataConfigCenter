@@ -29,20 +29,20 @@ public interface RoleMapper {
     int insert(Role record);
 
     @Delete({
-            "delete from `role` where id = #{id,jdbcType=BIGINT}"
+            "delete from `daav_role` where id = #{id,jdbcType=BIGINT}"
     })
     int deleteById(Long id);
 
     @Select({
-            "select * from `role` where id = #{id,jdbcType=BIGINT}"
+            "select * from `daav_role` where id = #{id,jdbcType=BIGINT}"
     })
     Role getById(Long id);
 
 
     @Select({
             "SELECT a.* " +
-                    "FROM role a " +
-                    "LEFT JOIN rel_role_user b ON b.role_id = a.id " +
+                    "FROM daav_role a " +
+                    "LEFT JOIN daav_rel_role_user b ON b.role_id = a.id " +
                     "WHERE a.org_id = #{orgId,jdbcType=BIGINT} AND b.user_id = #{userId,jdbcType=BIGINT} "
     })
     List<Role> getRolesByOrgAndUser(@Param("orgId") Long orgId, @Param("userId") Long userId);
@@ -50,7 +50,7 @@ public interface RoleMapper {
     List<Role> getRolesByIds(List<Long> list);
 
     @Update({
-            "update `role`",
+            "update `daav_role`",
             "set `org_id` = #{orgId,jdbcType=BIGINT},",
             "`name` = #{name,jdbcType=VARCHAR},",
             "`description` = #{description,jdbcType=VARCHAR},",
@@ -64,7 +64,7 @@ public interface RoleMapper {
 
 
     @Select({
-            "select id, `name`, description  from `role` where org_id = #{orgId}"
+            "select id, `name`, description  from `daav_role` where org_id = #{orgId}"
     })
     List<RoleBaseInfo> getBaseInfoByOrgId(Long orgId);
 
@@ -72,14 +72,14 @@ public interface RoleMapper {
     List<Role> selectByIdsAndOrgId(@Param("orgId") Long orgId, @Param("roleIds") List<Long> roleIds);
 
 
-    @Delete({"delete from `role` where org_id = #{orgId}"})
+    @Delete({"delete from `daav_role` where org_id = #{orgId}"})
     int deleteByOrg(Long orgId);
 
 
     @Select({
-            "SELECT DISTINCT r.id FROM role r INNER JOIN rel_role_project rrp on rrp.role_id = r.id",
-            "INNER JOIN dashboard_portal p on p.project_id = rrp.project_id",
-            "INNER JOIN rel_role_user rru on rru.role_id = r.id",
+            "SELECT DISTINCT r.id FROM daav_role r INNER JOIN daav_rel_role_project rrp on rrp.role_id = r.id",
+            "INNER JOIN daav_dashboard_portal p on p.project_id = rrp.project_id",
+            "INNER JOIN daav_rel_role_user rru on rru.role_id = r.id",
             "WHERE p.id = #{portalId} and rru.user_id = #{userId}"
     })
     List<Long> getRolesByUserAndPortal(@Param("userId") Long userId, @Param("portalId") Long portalId);
@@ -94,9 +94,9 @@ public interface RoleMapper {
     List<Long> getRolesByUserAndDisplay(@Param("userId") Long userId, @Param("displayId") Long displayId);
 
     @Select({
-            "SELECT DISTINCT r.id FROM role r",
-            "INNER JOIN rel_role_project rrp on rrp.role_id = r.id",
-            "INNER JOIN rel_role_user rru on rru.role_id = r.id",
+            "SELECT DISTINCT r.id FROM daav_role r",
+            "INNER JOIN daav_rel_role_project rrp on rrp.role_id = r.id",
+            "INNER JOIN daav_rel_role_user rru on rru.role_id = r.id",
             "WHERE rrp.project_id = #{projectId} and rru.user_id = #{userId}"
     })
     List<Long> getRolesByUserAndProject(@Param("userId") Long userId, @Param("projectId") Long projectId);

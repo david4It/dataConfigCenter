@@ -33,43 +33,43 @@ public interface RelRoleDashboardWidgetMapper {
 
     int deleteByMemDashboardWidgetIds(@Param("memDashboardWidgetIds") Set<Long> memDashboardWidgetIds);
 
-    @Delete({"delete from rel_role_dashboard_widget where mem_dashboard_widget_id = #{memDashboardWidgetId}"})
+    @Delete({"delete from daav_rel_role_dashboard_widget where mem_dashboard_widget_id = #{memDashboardWidgetId}"})
     int deleteByMemDashboardWidgetId(@Param("memDashboardWidgetId") Long memDashboardWidgetId);
 
-    @Delete({"delete from rel_role_dashboard_widget where role_id = #{roleId}"})
+    @Delete({"delete from daav_rel_role_dashboard_widget where role_id = #{roleId}"})
     int deleteByRoleId(@Param("roleId") Long roleId);
 
-    @Delete({"DELETE rrdw FROM rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
+    @Delete({"DELETE rrdw FROM daav_rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
             "( " +
             "SELECT mdw.id " +
-            "FROM mem_dashboard_widget mdw\n" +
-            "INNER JOIN dashboard d ON d.id = mdw.dashboard_id " +
+            "FROM daav_mem_dashboard_widget mdw\n" +
+            "INNER JOIN daav_dashboard d ON d.id = mdw.dashboard_id " +
             "WHERE d.dashboard_portal_id = #{portalId} " +
             ") "})
     int deleteByPortalId(@Param("portalId") Long portalId);
 
-    @Delete({"DELETE rrdw FROM rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
+    @Delete({"DELETE rrdw FROM daav_rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
             "( " +
             "SELECT mdw.id " +
-            "FROM mem_dashboard_widget mdw " +
+            "FROM daav_mem_dashboard_widget mdw " +
             "WHERE mdw.dashboard_id = #{dashboardId} " +
             ") "})
     int deleteByDashboardId(@Param("dashboardId") Long dashboardId);
 
     @Select({
             "SELECT rrdw.mem_dashboard_widget_id " +
-                    "FROM rel_role_dashboard_widget rrdw " +
-                    "INNER JOIN rel_role_user rru ON rru.role_id = rrdw.role_id " +
+                    "FROM daav_rel_role_dashboard_widget rrdw " +
+                    "INNER JOIN daav_rel_role_user rru ON rru.role_id = rrdw.role_id " +
                     "WHERE rru.user_id = #{userId} AND rrdw.visible = 0 "
     })
     List<Long> getDisableByUser(@Param("userId") Long userId);
 
-    @Delete({"DELETE rrdw FROM rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
+    @Delete({"DELETE rrdw FROM daav_rel_role_dashboard_widget rrdw WHERE rrdw.mem_dashboard_widget_id IN " +
             "( " +
             "SELECT mdw.id " +
-            "FROM mem_dashboard_widget mdw " +
-            "INNER JOIN dashboard d ON d.id = mdw.dashboard_id " +
-            "INNER JOIN dashboard_portal dp ON dp.id = d.dashboard_portal_id " +
+            "FROM daav_mem_dashboard_widget mdw " +
+            "INNER JOIN daav_dashboard d ON d.id = mdw.dashboard_id " +
+            "INNER JOIN daav_dashboard_portal dp ON dp.id = d.dashboard_portal_id " +
             "WHERE dp.project_id = #{projectId} " +
             ") "})
     int deleteByProjectId(@Param("projectId") Long projectId);

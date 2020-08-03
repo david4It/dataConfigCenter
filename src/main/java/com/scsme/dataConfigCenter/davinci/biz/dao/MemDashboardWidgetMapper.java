@@ -29,18 +29,18 @@ import java.util.List;
 public interface MemDashboardWidgetMapper {
     int insert(MemDashboardWidget memDashboardWidget);
 
-    @Delete({"delete from mem_dashboard_widget where id = #{id}"})
+    @Delete({"delete from daav_mem_dashboard_widget where id = #{id}"})
     int deleteById(@Param("id") Long id);
 
 
     @Select({
-            "select * from mem_dashboard_widget where id = #{id}"
+            "select * from daav_mem_dashboard_widget where id = #{id}"
     })
     MemDashboardWidget getById(@Param("id") Long id);
 
 
     @Update({
-            "update mem_dashboard_widget",
+            "update daav_mem_dashboard_widget",
             "set dashboard_id = #{dashboardId,jdbcType=BIGINT},",
             "widget_Id = #{widgetId,jdbcType=BIGINT},",
             "x = #{x,jdbcType=INTEGER},",
@@ -54,11 +54,11 @@ public interface MemDashboardWidgetMapper {
     })
     int update(MemDashboardWidget memDashboardWidget);
 
-    @Select({"select * from mem_dashboard_widget where dashboard_id = #{dashboardId}"})
+    @Select({"select * from daav_mem_dashboard_widget where dashboard_id = #{dashboardId}"})
     List<MemDashboardWidget> getByDashboardId(@Param("dashboardId") Long dashboardId);
 
     @Delete({
-            "delete from mem_dashboard_widget where dashboard_id in ",
+            "delete from daav_mem_dashboard_widget where dashboard_id in ",
             "(SELECT d.id FROM dashboard d LEFT JOIN dashboard_portal p on d.dashboard_portal_id = p.id where p.project_id = #{projectId})"
     })
     int deleteByProject(@Param("projectId") Long projectId);
@@ -67,10 +67,10 @@ public interface MemDashboardWidgetMapper {
 
     int updateBatch(List<MemDashboardWidget> list);
 
-    @Delete("delete from mem_dashboard_widget where widget_Id = #{widgetId}")
+    @Delete("delete from daav_mem_dashboard_widget where widget_Id = #{widgetId}")
     int deleteByWidget(@Param("widgetId") Long widgetId);
 
-    @Delete({"DELETE mdw FROM mem_dashboard_widget mdw WHERE mdw.dashboard_id IN " +
+    @Delete({"DELETE mdw FROM daav_mem_dashboard_widget mdw WHERE mdw.dashboard_id IN " +
             "( " +
             "SELECT d.id " +
             "FROM dashboard d " +
@@ -78,6 +78,6 @@ public interface MemDashboardWidgetMapper {
             ") "})
     int deleteByPortalId(@Param("portalId") Long portalId);
 
-    @Delete("delete from mem_dashboard_widget where dashboard_id = #{dashboardId}")
+    @Delete("delete from daav_mem_dashboard_widget where dashboard_id = #{dashboardId}")
     int deleteByDashboardId(@Param("dashboardId") Long dashboardId);
 }

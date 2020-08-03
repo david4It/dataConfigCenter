@@ -205,10 +205,12 @@ public class SourceController extends BaseController {
      */
     @ApiOperation(value = "test source", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping(value = "/test", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity testSource(@Valid @RequestBody SourceTest sourceTest,
+    public @ResponseBody ResponseEntity testSource(@Valid @RequestBody SourceTest sourceTest,
                                      @ApiIgnore BindingResult bindingResult,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -216,7 +218,8 @@ public class SourceController extends BaseController {
         }
 
         sourceService.testSource(sourceTest);
-        return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request));
+        ResponseEntity responseEntity = ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request));
+        return responseEntity;
     }
 
     /**

@@ -50,19 +50,19 @@
         <result column="createBy.username" property="createBy.username" />
         <result column="createBy.avatar" property="createBy.avatar" />
 
-        <result column="daav_tenant.name" property="daav_tenant.name" />
-        <result column="daav_tenant.description" property="daav_tenant.description" />
-        <result column="daav_tenant.avatar" property="daav_tenant.avatar" />
-        <result column="daav_tenant.userId" property="daav_tenant.userId" />
-        <result column="daav_tenant.projectNum" property="daav_tenant.projectNum" />
-        <result column="daav_tenant.memberNum" property="daav_tenant.memberNum" />
-        <result column="daav_tenant.roleNum" property="daav_tenant.roleNum" />
-        <result column="daav_tenant.allowCreateProject" property="daav_tenant.allowCreateProject" />
-        <result column="daav_tenant.memberPermission" property="daav_tenant.memberPermission" />
-        <result column="daav_tenant.createTime" property="daav_tenant.createTime" />
-        <result column="daav_tenant.createBy" property="daav_tenant.createBy" />
-        <result column="daav_tenant.updateTime" property="daav_tenant.updateTime" />
-        <result column="daav_tenant.updateBy" property="daav_tenant.updateBy" />
+        <result column="organization.name" property="organization.name" />
+        <result column="organization.description" property="organization.description" />
+        <result column="organization.avatar" property="organization.avatar" />
+        <result column="organization.userId" property="organization.userId" />
+        <result column="organization.projectNum" property="organization.projectNum" />
+        <result column="organization.memberNum" property="organization.memberNum" />
+        <result column="organization.roleNum" property="organization.roleNum" />
+        <result column="organization.allowCreateProject" property="organization.allowCreateProject" />
+        <result column="organization.memberPermission" property="organization.memberPermission" />
+        <result column="organization.createTime" property="organization.createTime" />
+        <result column="organization.createBy" property="organization.createBy" />
+        <result column="organization.updateTime" property="organization.updateTime" />
+        <result column="organization.updateBy" property="organization.updateBy" />
 
         <result column="name" property="name" />
         <result column="description" property="description" />
@@ -303,20 +303,20 @@
                u.`id`                                       AS 'createBy.id',
                IF(u.`name` is NULL, u.`username`, u.`name`) AS 'createBy.username',
                u.`avatar`                                   AS 'createBy.avatar',
-               o.`id`                                       AS 'daav_tenant.id',
-               o.`name`                                     AS 'daav_tenant.name',
-               o.`description`                              AS 'daav_tenant.description',
-               o.`avatar`                                   AS 'daav_tenant.avatar',
-               o.`user_id`                                  AS 'daav_tenant.userId',
-               o.`project_num`                              AS 'daav_tenant.projectNum',
-               o.`member_num`                               AS 'daav_tenant.memberNum',
-               o.`role_num`                                 AS 'daav_tenant.role_num',
-               o.`allow_create_project`                     AS 'daav_tenant.allowCreateProject',
-               o.`member_permission`                        AS 'daav_tenant.memberPermission',
-               o.`create_time`                              AS 'daav_tenant.createTime',
-               o.`create_by`                                AS 'daav_tenant.createBy',
-               o.`update_time`                              AS 'daav_tenant.updateTime',
-               o.`update_by`                                AS 'daav_tenant.updateBy'
+               o.`id`                                       AS 'organization.id',
+               o.`name`                                     AS 'organization.name',
+               o.`description`                              AS 'organization.description',
+               o.`avatar`                                   AS 'organization.avatar',
+               o.`user_id`                                  AS 'organization.userId',
+               o.`project_num`                              AS 'organization.projectNum',
+               o.`member_num`                               AS 'organization.memberNum',
+               o.`role_num`                                 AS 'organization.role_num',
+               o.`allow_create_project`                     AS 'organization.allowCreateProject',
+               o.`member_permission`                        AS 'organization.memberPermission',
+               o.`create_time`                              AS 'organization.createTime',
+               o.`create_by`                                AS 'organization.createBy',
+               o.`update_time`                              AS 'organization.updateTime',
+               o.`update_by`                                AS 'organization.updateBy'
         FROM daav_project p
                  LEFT JOIN daav_tenant o on o.`id` = p.`org_id`
                  LEFT JOIN `daav_user` u on u.`id` = p.`user_id`
@@ -329,20 +329,20 @@
                u.`id`                                       AS 'createBy.id',
                IF(u.`name` is NULL, u.`username`, u.`name`) AS 'createBy.username',
                u.`avatar`                                   AS 'createBy.avatar',
-               o.`id`                                       AS 'daav_tenant.id',
-               o.`name`                                     AS 'daav_tenant.name',
-               o.`description`                              AS 'daav_tenant.description',
-               o.`avatar`                                   AS 'daav_tenant.avatar',
-               o.`user_id`                                  AS 'daav_tenant.userId',
-               o.`project_num`                              AS 'daav_tenant.projectNum',
-               o.`member_num`                               AS 'daav_tenant.memberNum',
-               o.`role_num`                                 AS 'daav_tenant.roleNum',
-               o.`allow_create_project`                     AS 'daav_tenant.allowCreateProject',
-               o.`member_permission`                        AS 'daav_tenant.memberPermission',
-               o.`create_time`                              AS 'daav_tenant.createTime',
-               o.`create_by`                                AS 'daav_tenant.createBy',
-               o.`update_time`                              AS 'daav_tenant.updateTime',
-               o.`update_by`                                AS 'daav_tenant.updateBy'
+               o.`id`                                       AS 'organization.id',
+               o.`name`                                     AS 'organization.name',
+               o.`description`                              AS 'organization.description',
+               o.`avatar`                                   AS 'organization.avatar',
+               o.`user_id`                                  AS 'organization.userId',
+               o.`project_num`                              AS 'organization.projectNum',
+               o.`member_num`                               AS 'organization.memberNum',
+               o.`role_num`                                 AS 'organization.roleNum',
+               o.`allow_create_project`                     AS 'organization.allowCreateProject',
+               o.`member_permission`                        AS 'organization.memberPermission',
+               o.`create_time`                              AS 'organization.createTime',
+               o.`create_by`                                AS 'organization.createBy',
+               o.`update_time`                              AS 'organization.updateTime',
+               o.`update_by`                                AS 'organization.updateBy'
         FROM daav_tenant o, daav_user u, daav_project p, daav_dashboard_portal dp, daav_dashboard d
         WHERE o.id = p.org_id
         and u.id = p.user_id

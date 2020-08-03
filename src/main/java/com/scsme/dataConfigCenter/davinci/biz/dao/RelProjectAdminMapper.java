@@ -33,27 +33,27 @@ public interface RelProjectAdminMapper {
 
 
     @Select({
-            "select * from rel_project_admin where project_id = #{projectId} and user_id = #{userId}"
+            "select * from daav_rel_project_admin where project_id = #{projectId} and user_id = #{userId}"
     })
     RelProjectAdmin getByProjectAndUser(@Param("projectId") Long projectId, @Param("userId") Long userId);
 
     @Delete({
-            "delete from rel_project_admin where id = #{id,jdbcType=BIGINT}"
+            "delete from daav_rel_project_admin where id = #{id,jdbcType=BIGINT}"
     })
     int deleteById(Long id);
 
     @Delete({
-            "delete from rel_project_admin where project_id = #{projectId} and user_id = #{userId}"
+            "delete from daav_rel_project_admin where project_id = #{projectId} and user_id = #{userId}"
     })
     int delete(@Param("projectId") Long projectId, @Param("userId") Long userId);
 
     @Select({
-            "select * from rel_project_admin where id = #{id,jdbcType=BIGINT}"
+            "select * from daav_rel_project_admin where id = #{id,jdbcType=BIGINT}"
     })
     RelProjectAdmin getById(Long id);
 
     @Delete({
-            "delete from rel_project_admin where project_id = #{projectId}"
+            "delete from daav_rel_project_admin where project_id = #{projectId}"
     })
     int deleteByProjectId(Long projectId);
 
@@ -62,7 +62,7 @@ public interface RelProjectAdminMapper {
             "    u.id                         as 'user.id',",
             "    ifnull(u.`name`, u.username) as 'user.username',",
             "    u.avatar                     as 'user.avatar'",
-            "from rel_project_admin r",
+            "from daav_rel_project_admin r",
             "    left join `daav_user` u on u.id = r.user_id",
             "where r.project_id = #{projectId}"
     })
@@ -71,7 +71,7 @@ public interface RelProjectAdminMapper {
 
     @Select({
             "select r.user_id",
-            "from rel_project_admin r",
+            "from daav_rel_project_admin r",
             "    left join `daav_user` u on u.id = r.user_id",
             "where r.project_id = #{projectId}"
     })
