@@ -20,6 +20,7 @@ public class Component {
     private String query;
     private Long link;
     private String params;
+    private String categoryValuePattern;
     private Integer locationIndex;
     private Integer x;
     private Integer y;
@@ -29,7 +30,4 @@ public class Component {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime lastUpdateTime;
 }

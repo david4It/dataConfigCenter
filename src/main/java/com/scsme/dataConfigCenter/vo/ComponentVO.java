@@ -14,6 +14,7 @@ public class ComponentVO extends Component {
         component.setQuery(this.getQuery());
         component.setLink(this.getLink());
         component.setParams(this.getParams());
+        component.setCategoryValuePattern(this.getCategoryValuePattern());
         component.setLocationIndex(this.getLocationIndex());
         component.setX(this.getX());
         component.setY(this.getY());
@@ -21,7 +22,6 @@ public class ComponentVO extends Component {
         component.setHeight(this.getHeight());
         component.setConfigJson(this.getConfigJson());
         component.setCreateTime(this.getCreateTime());
-        component.setLastUpdateTime(this.getLastUpdateTime());
         return component;
     }
 
@@ -39,6 +39,7 @@ public class ComponentVO extends Component {
         this.setQuery(component.getQuery());
         this.setLink(component.getLink());
         this.setParams(component.getParams());
+        this.setCategoryValuePattern(component.getCategoryValuePattern());
         this.setLocationIndex(component.getLocationIndex());
         this.setX(component.getX());
         this.setY(component.getY());

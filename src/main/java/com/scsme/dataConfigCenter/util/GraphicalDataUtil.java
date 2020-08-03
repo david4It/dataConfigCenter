@@ -32,11 +32,14 @@ public class GraphicalDataUtil {
     private static final String MAX = "max";
     private static final String RADAR_INDICATOR = "radarIndicator";
     private static final String EXT_DATA = "extData";
-    public static Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component, Map<String, Object> params) {
+    private static final String CONFIG_JSON = "configJson";
+    private static final String PATTERN_SEPARATOR = ":";
+    private static final String PARAMS_SEPARATOR = ",";
+    public static Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         String dataType = component.getType();
         String sql = component.getQuery();
-        if (params != null) {
-            sql = SQLParserUtil.parseSqlWithValues(sql, params);
+        if (valueMap != null) {
+            sql = SQLParserUtil.parseSqlWithValues(sql, valueMap);
         }
         String configJson = component.getConfigJson();
         Graphical graphical = Graphical.valueOf(dataType.toUpperCase());
@@ -44,10 +47,10 @@ public class GraphicalDataUtil {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
-            result = graphical.transMap(resultSet, component.getParams());
+            graphical.transMap(resultSet, component, result);
             //TODO 后期调整，直接将数据绑定到configJson中，前端直接merge即可
             if (StringUtils.hasText(configJson)) {
-                result.put("configJson", new ObjectMapper().readValue(configJson, Object.class));
+                result.put(CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,57 +71,56 @@ public class GraphicalDataUtil {
             return value;
         }
 
-        //为了能从ResultSetMetaData中解析到别名，需要在JDBC的url配置信息加上useOldAliasMetadataBehavior=true
-        public Map<String, Object> transMap(ResultSet resultSet, String params) throws Exception {
-            Map<String, Object> result = new HashMap<>();
+        private void arrangement(Component component, ResultSet resultSet, List<Map<String, Object>> mapList, List<String> strList) throws Exception {
             Set<String> paramsSet = new HashSet<>();
-            if (StringUtils.hasText(params)) {
-                String[] split = params.split(",");
+            String[] arr = component.getCategoryValuePattern().split(PATTERN_SEPARATOR);
+            if (StringUtils.hasText(component.getParams())) {
+                String[] split = component.getParams().split(PARAMS_SEPARATOR);
                 paramsSet.addAll(Arrays.asList(split));
             }
+            while (resultSet.next()) {
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                int count = metaData.getColumnCount();
+                Map<String, Object> valueData = new HashMap<>();
+                for (int i = 1; i <= count; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    String valueStr = resultSet.getString(i);
+                    if (paramsSet.contains(columnName)) {
+                        if (valueData.get(EXT_DATA) != null) {
+                            ((Map)valueData.get(EXT_DATA)).put(columnName, valueStr);
+                        } else {
+                            Map<String, String> extDataMap = new HashMap<>();
+                            extDataMap.put(columnName, valueStr);
+                            valueData.put(EXT_DATA, extDataMap);
+                        }
+                    } else {
+                        if (columnName.equals(arr[0])) {
+                            strList.add(valueStr);
+                            valueData.put(NAME, valueStr);
+                        } else if (columnName.equals(arr[1])) {
+                            valueData.put(VALUE, getDecimalValue(valueStr));
+                        }
+                    }
+                }
+                mapList.add(valueData);
+            }
+
+        }
+
+        //为了能从ResultSetMetaData中解析到别名，需要在JDBC的url配置信息加上useOldAliasMetadataBehavior=true
+        public Map<String, Object> transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
             switch (this) {
                 case PIE:
                     List<Map<String, Object>> pieSeriesData = new ArrayList<>();
                     List<String> pieLegendData = new ArrayList<>();
-                    while (resultSet.next()) {
-                        Map<String, Object> valueMap = new HashMap<>();
-                        ResultSetMetaData metaData = resultSet.getMetaData();
-                        int count = metaData.getColumnCount();
-                        for (int i = 1; i <= count; i++) {
-                            String valueStr = resultSet.getString(i);
-                            if (isDigits(valueStr)) {
-                                valueMap.put(VALUE, getDecimalValue(valueStr));
-                            } else {
-                                valueMap.put(NAME, valueStr);
-                                pieLegendData.add(valueStr);
-                            }
-                        }
-                        pieSeriesData.add(valueMap);
-                    }
+                    arrangement(component, resultSet, pieSeriesData, pieLegendData);
                     result.put(LEGEND_DATA, pieLegendData);
                     result.put(SERIES_DATA, pieSeriesData);
                     break;
                 case LINE: case BAR:
-                    List<BigDecimal> lbSeriesData = new ArrayList<>();
+                    List<Map<String,Object>> lbSeriesData = new ArrayList<>();
                     List<String> lbXAxisData = new ArrayList<>();
-                    List<Object> extData = new ArrayList<>();
-                    while (resultSet.next()) {
-                        ResultSetMetaData metaData = resultSet.getMetaData();
-                        int count = metaData.getColumnCount();
-                        for (int i = 1; i <= count; i++) {
-                            String columnName = metaData.getColumnName(i);
-                            String valueStr = resultSet.getString(i);
-                            if (paramsSet.contains(columnName)) {
-                                Map<String, String> map = new HashMap<>();
-                                map.put(columnName, valueStr);
-                                extData.add(map);
-                            } else {
-                                lbXAxisData.add(metaData.getColumnName(i));
-                                lbSeriesData.add(getDecimalValue(valueStr));
-                            }
-                        }
-                    }
-                    result.put(EXT_DATA, extData);
+                    arrangement(component, resultSet, lbSeriesData, lbXAxisData);
                     result.put(X_AXIS_DATA, lbXAxisData);
                     result.put(SERIES_DATA, lbSeriesData);
                     break;
@@ -184,7 +186,7 @@ public class GraphicalDataUtil {
 
         private BigDecimal getDecimalValue(String value) {
             if (isDigits(value)) {
-                value = value.replaceAll(",", "").trim();
+                value = value.replaceAll(PARAMS_SEPARATOR, "").trim();
             } else {
                 value = "0";
             }

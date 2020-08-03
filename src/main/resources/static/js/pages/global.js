@@ -65,10 +65,12 @@ function getRequestParams() {
 
 
 function forwardUrl(data, url) {
+    let params = "";
     for (let key in data) {
         if (data[key]) {
-            url += '&' + key + '=' + data[key];
+            params += '&' + key + '=' + data[key];
         }
     }
+    url = url + '?' + params.substr(1, params.length);
     window.location.href = encodeURI(url);
 }
