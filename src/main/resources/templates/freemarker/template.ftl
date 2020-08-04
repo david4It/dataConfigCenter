@@ -16,7 +16,6 @@
     <script src="js/framework/common.js"></script>
     <script src="js/framework/echarts.min.js"></script>
     <script src="js/framework/axios.js"></script>
-    <script src="js/pages/china.js"></script>
     <script src="js/pages/global.js"></script>
     <style>
         .t_title{
