@@ -80,7 +80,9 @@ public class ViewController extends BaseController {
     @GetMapping
     public ResponseEntity getViews(@RequestParam Long projectId,
                                    @ApiIgnore @CurrentUser User user,
-                                   HttpServletRequest request) {
+                                   HttpServletRequest request,
+                                   @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(projectId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid project id");
@@ -104,7 +106,9 @@ public class ViewController extends BaseController {
     @GetMapping("/{id}")
     public ResponseEntity getView(@PathVariable Long id,
                                   @ApiIgnore @CurrentUser User user,
-                                  HttpServletRequest request) {
+                                  HttpServletRequest request,
+                                  @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid view id");
@@ -130,7 +134,9 @@ public class ViewController extends BaseController {
     public ResponseEntity createView(@Valid @RequestBody ViewCreate view,
                                      @ApiIgnore BindingResult bindingResult,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -159,7 +165,9 @@ public class ViewController extends BaseController {
                                      @Valid @RequestBody ViewUpdate viewUpdate,
                                      @ApiIgnore BindingResult bindingResult,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
 
         if (invalidId(id) || !id.equals(viewUpdate.getId())) {
@@ -189,7 +197,9 @@ public class ViewController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteView(@PathVariable Long id,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid view id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -211,11 +221,13 @@ public class ViewController extends BaseController {
      * @return
      */
     @ApiOperation(value = "executesql")
-    @PostMapping(value = "/executesql", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity executeSql(@Valid @RequestBody ViewExecuteSql executeSql,
+    @GetMapping(value = "/executesql", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity executeSql(@Valid @ModelAttribute ViewExecuteSql executeSql,
                                      @ApiIgnore BindingResult bindingResult,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -241,7 +253,9 @@ public class ViewController extends BaseController {
     public ResponseEntity getData(@PathVariable Long id,
                                   @RequestBody(required = false) ViewExecuteParam executeParam,
                                   @ApiIgnore @CurrentUser User user,
-                                  HttpServletRequest request) throws SQLException {
+                                  HttpServletRequest request,
+                                  @CookieValue("uid") String uid) throws SQLException {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid view id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -258,7 +272,9 @@ public class ViewController extends BaseController {
                                            @Valid @RequestBody DistinctParam param,
                                            @ApiIgnore BindingResult bindingResult,
                                            @ApiIgnore @CurrentUser User user,
-                                           HttpServletRequest request) {
+                                           HttpServletRequest request,
+                                           @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid view id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -276,7 +292,9 @@ public class ViewController extends BaseController {
 
     @ApiOperation(value = "get dac channels")
     @GetMapping("/dac/channels")
-    public ResponseEntity getDacChannels(@ApiIgnore @CurrentUser User user, HttpServletRequest request) {
+    public ResponseEntity getDacChannels(@ApiIgnore @CurrentUser User user, HttpServletRequest request,
+                                         @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         Map<String, DacChannel> dacMap = DacChannelUtil.dacMap;
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payloads(dacMap.keySet()));
     }
@@ -294,7 +312,9 @@ public class ViewController extends BaseController {
     public ResponseEntity getDacBizs(@PathVariable String dacName,
                                      @PathVariable String tenantId,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payloads(dacChannelUtil.getBizs(dacName, tenantId)));
     }
 }

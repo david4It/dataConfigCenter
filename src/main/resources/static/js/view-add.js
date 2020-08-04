@@ -1,13 +1,40 @@
+layui.config({
+	base: '{/}./js/code/' //wangEditor.min.js目录，根据自己存放位置修改
+});
 
-layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','table','code'], function(){
+layui.define(function(exports) {
+	exports('ace.min', function(){
+		demo:demo//这句没用，只是测试
+	});
+	exports('cb-complete-list', function(){
+		demo:demo//这句没用，只是测试
+	});
+	exports('ext-beautify', function(){
+		demo:demo//这句没用，只是测试
+	});
+	exports('ext-language_tools', function(){
+		demo:demo//这句没用，只是测试
+	});
+	exports('mode-drools', function(){
+		demo:demo//这句没用，只是测试
+	});
+	exports('theme-sqlserver', function(){
+		demo:demo//这句没用，只是测试
+	});
+});
+
+layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
 		element = layui.element,
         layedit = layui.layedit,
         laydate = layui.laydate,
-        upload = layui.upload,
 		table = layui.table,
 		colorpicker = layui.colorpicker;
+
+	$('.layui-body').css('left', '0px');
+	$('.layui-body').css('top', '50px');
+	//$('.layui-input-inline').css('width', '180px');
 
 	/**日期选择**/
 		/**开始日期**/
@@ -26,6 +53,29 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	let token = $.cookie("token");
 	//console.log("cookie: " , token);
 	///api/v3/sources/test 数据源测试
+	//steps
+	steps({
+		el: "#steps1",
+		data: [
+			{ title: "编写SQL", description: "" },
+			{ title: "编辑数据模型与权限", description: "" }
+		],
+		active: 0,
+		dataOrder: ["title", "line", "description"]
+	});
+	//ace code editor
+	ace.config.set("basePath", "js/code/");
+	let editor = ace.edit("sqlArea");
+	editor.setTheme("ace/theme/sqlserver");
+	editor.getSession().setMode("ace/mode/sql");
+	document.getElementById('sqlArea').style.fontSize='16px';//设置字体
+	editor.resize();//编辑器自适应
+	editor.setShowPrintMargin(false);//显示打印边线
+	editor.setOptions({
+		enableBasicAutocompletion: true,
+		enableSnippets: true,
+		enableLiveAutocompletion: true//启用自动补全
+	});
 
 	/**
 	 * 操作管理--数据操作
@@ -120,49 +170,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		});
     });
 
-	/**
-	 * 操作管理--文件上传
-	 * @param upload_pictures 需要上传事件ID
-	 * @param place 文件存放位置
-	 * @param layui_progress 进度条事件
-	 * @param images_url 返回路径赋值图片ID
-	 * @return json code 0:操作成功；1:操作失败；route 返回的图片路径
-	 */
-    upload.render({
-        elem: '#upload_pictures',
-		url: '',
-		data:{
-			file_place: function (){
-				return $(this).data('place');
-			}
-        },
-		multiple: true,
-		progress: function(n){
-            var percent = n + '%';
-            element.progress('layui_progress', percent);
-        },
-		before: function(obj){
-            layer.load();
-        },
-		done: function (data) {
-            layer.closeAll('loading');
-            if (data.code == 0) {
-                layer.msg(data.msg, {icon: 1, time: 1000});
-                $('#images_url').attr('src', data.route);
-                var id_name = $(this)[0]['elem'][0]['attributes'][2]['value'];
-                $('#' + id_name).val(data.route);
-				return false;
-            } else {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-                return false;
-            }
-        },
-		error: function(e){
-            layer.closeAll('loading');
-            layer.msg(e.responseText, {icon: 2, time: 1000});
-        }
-    });
-
 	table.render({
 		elem: '#orgList'  //绑定table id
 		,url:'/api/v3/views?projectId=1'  //数据请求路径
@@ -193,16 +200,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		}
 
 	});
-	/*table.render({
-		elem: '#test'
-		,url:'/demo/table/user/'
-		,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-		,cols: [[
-			{field:'key', width:80, title: 'key', sort: true}
-			,{field:'value', width:80, title: 'value'}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
-		]]
-	});*/
+
 	//监听工具条
 	table.on('tool(demo)', function(obj){
 		var data = obj.data;
@@ -215,7 +213,61 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			layer.alert('编辑行：<br>'+ JSON.stringify(data))
 		}
 	});
+	//execute sql
+	let myData=new Array();
+	window.executeSql = function (){
+		let limit = 500;
+		let sourceId = 1;
+		let sql = editor.getValue();
+		console.log(sql);
+		table.render({
+			elem: '#sqlResult'  //绑定table id
+			,url:'/api/v3/views/executesql'  //数据请求路径
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql}
+			,xhrFields: {
+				withCredentials: true //允许跨域带Cookie
+			},
+			headers: {
+				"Authorization": token //此处放置请求到的用户token
+			}
+			,cellMinWidth: 80
+			,cols: []
+			,page: true   //开启分页
+			,height: 'full-200'
+			,response:{
+				statusName:'code', //规定返回的状态码字段为code
+				statusCode:0 //规定成功的状态码味200
+			}
+			,parseData: function(res) {  //res 即为原始返回的数据
+				let packJson=res.data.columns;
+				for(let i in packJson){
+					//遍历packJson 数组时，i为索引
+					myData[i]={field:packJson[i].name, width:150,title:packJson[i].name,sort: true}
+				}
 
+				$.cookie("token",res.token,{
+					expires: 10
+				});
+				return {
+					code: res.code,
+					msg: res.msg,
+					count: res.data.totalCount,
+					data: res.data.resultList
+				}
+			}
+			, done: function (res, curr, count) {
+				//刷新表
+				table.init('sqlResult',{//转换成静态表格
+					cols:[myData]
+					,data:res.data
+					,limit:10
+					,page: true   //开启分页
+				});
+
+			}
+
+		});
+	}
 });
 
 /**
@@ -307,6 +359,7 @@ function testDbConnetion() {
 				$.cookie("token",data.token,{
 					expires: 10
 				});
+
 				return false;
 			} else {
 				layer.msg("数据库连接失败", {icon: 2, time: 1000});
@@ -319,3 +372,8 @@ function testDbConnetion() {
 		}
 	});
 }
+function queryData(){
+	//alert("query");
+	executeSql();
+}
+
