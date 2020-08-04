@@ -16,6 +16,7 @@ public class LayoutVO extends Layout {
         layout.setUrl(this.getUrl());
         layout.setCreateTime(this.getCreateTime());
         layout.setTitle(this.getTitle());
+        layout.setTemplateName(this.getTemplateName());
         layout.setLastUpdateTime(this.getLastUpdateTime());
         return layout;
     }
@@ -26,6 +27,7 @@ public class LayoutVO extends Layout {
         this.setCreateTime(layout.getCreateTime());
         this.setLastUpdateTime(layout.getLastUpdateTime());
         this.setTitle(layout.getTitle());
+        this.setTemplateName(layout.getTemplateName());
         this.setUrl(layout.getUrl());
         return this;
     }

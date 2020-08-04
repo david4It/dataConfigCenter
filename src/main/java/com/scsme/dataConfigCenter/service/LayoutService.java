@@ -3,6 +3,7 @@ package com.scsme.dataConfigCenter.service;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface LayoutService {
@@ -12,4 +13,5 @@ public interface LayoutService {
     Boolean saveLayout(LayoutVO layout);
     Boolean updateLayout(LayoutVO layout);
     Boolean checkUrl(String url);
+    List<String> thumbnails() throws IOException;
 }

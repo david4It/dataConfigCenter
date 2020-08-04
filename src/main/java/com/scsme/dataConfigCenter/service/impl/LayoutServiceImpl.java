@@ -11,11 +11,15 @@ import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -62,6 +66,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public Boolean saveLayout(LayoutVO layout) {
         Layout beSave = layout.transLayout();
+        beSave.setCreateTime(LocalDateTime.now());
         int insert = layoutMapper.insert(beSave);
         return insert > 0;
     }
@@ -76,6 +81,17 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public Boolean checkUrl(String url) {
         return getLayout(url) != null;
+    }
+
+    @Override
+    public List<String> thumbnails() throws IOException {
+        List<String> result = new ArrayList<>();
+        ClassPathResource resource = new ClassPathResource("/static/img/center/template/");
+        File file = new File(resource.getURI().getPath());
+        if (file.list() != null) {
+            result.addAll(Arrays.asList(file.list()));
+        }
+        return result;
     }
 
     private Layout getLayout(String url) {

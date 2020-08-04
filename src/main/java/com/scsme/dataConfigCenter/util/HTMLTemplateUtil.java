@@ -21,6 +21,10 @@ import java.util.Map;
 public class HTMLTemplateUtil {
     private static final String TEMPLATES_DIR = "/templates/";
     private static final String FREEMARKER_DIR = "/templates/freemarker/";
+    private static final String TEMPLATE_SUFFIX = ".ftl";
+    private static final String HTML_SUFFIX = ".html";
+    private static final String TITLE = "title";
+    private static final String COMPONENTS = "components";
 
     public static void generatedHTMLFile(LayoutVO layout) {
         generatedHTMLFile(layout, null);
@@ -32,11 +36,11 @@ public class HTMLTemplateUtil {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
         try {
             configuration.setDirectoryForTemplateLoading(new File(new ClassPathResource(FREEMARKER_DIR).getURI().getPath()));
-            Template template = configuration.getTemplate("template.ftl");
+            Template template = configuration.getTemplate(layout.getTemplateName() + TEMPLATE_SUFFIX);
             Map<String, Object> dataMap = new HashMap<>();
-            dataMap.put("title", layout.getTitle());
-            dataMap.put("components", components);
-            File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + layout.getUrl() + ".html");
+            dataMap.put(TITLE, layout.getTitle());
+            dataMap.put(COMPONENTS, components);
+            File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + layout.getUrl() + HTML_SUFFIX);
             file.deleteOnExit();
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
                 template.process(dataMap, out);

@@ -16,6 +16,7 @@ public class Layout {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
+    private String templateName;
     private String url;
     private String enabled;
     @Lazy

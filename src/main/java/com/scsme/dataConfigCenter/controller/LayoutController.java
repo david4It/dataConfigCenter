@@ -26,13 +26,14 @@ public class LayoutController {
         Result<Boolean> result = new Result<>();
         try {
             Boolean saved = layoutService.saveLayout(layout);
+            result.setResult(saved);
             if (saved) {
-                result.success("保存布局成功！");
+                result.success("保存布局数据成功！");
             } else {
-                result.error500("保存布局失败！");
+                result.error500("保存布局数据失败！");
             }
         } catch (Exception e) {
-            result.error500("保存布局失败！");
+            result.error500("保存布局数据失败！");
             log.error(e.getLocalizedMessage());
         }
         return result;
@@ -59,7 +60,11 @@ public class LayoutController {
         try {
             Boolean deleted= layoutService.deleteLayout(id);
             result.setResult(deleted);
-            result.success("删除布局数据成功！");
+            if (deleted) {
+                result.success("删除布局数据成功！");
+            } else {
+                result.error500("保存布局数据失败！");
+            }
         } catch (Exception e) {
             result.error500("删除布局数据失败！");
             log.error(e.getLocalizedMessage());
@@ -71,8 +76,13 @@ public class LayoutController {
     public Result<Boolean> update(@RequestBody LayoutVO layout) {
         Result<Boolean> result = new Result<>();
         try {
-
-            result.success("更新布局数据成功！");
+            Boolean updated = layoutService.updateLayout(layout);
+            result.setResult(updated);
+            if (updated) {
+                result.success("更新布局数据成功！");
+            } else {
+                result.error500("更新布局数据失败！");
+            }
         } catch (Exception e) {
             result.error500("更新布局数据失败！");
             log.error(e.getLocalizedMessage());
@@ -89,6 +99,20 @@ public class LayoutController {
             result.result(isValid);
         } catch (Exception e) {
             result.error500("校验url失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
+    @GetMapping("/template/thumbnails")
+    public Result<List<String>> thumbnails() {
+        Result<List<String>> result = new Result<>();
+        try {
+            List<String> thumbnails = layoutService.thumbnails();
+            result.success("获取模板缩略图成功！");
+            result.result(thumbnails);
+        } catch (Exception e) {
+            result.error500("获取模板缩略图失败！");
             log.error(e.getLocalizedMessage());
         }
         return result;
