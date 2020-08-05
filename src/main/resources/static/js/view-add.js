@@ -23,6 +23,10 @@ layui.define(function(exports) {
 	});
 });
 
+let myData=new Array();
+let colsData;
+let model = {};
+let editor;
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -32,10 +36,13 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		table = layui.table,
 		colorpicker = layui.colorpicker;
 
-	$('.layui-body').css('left', '0px');
-	$('.layui-body').css('top', '50px');
+	$('.layui-body').css('left', '1rem');
+	$('.layui-body').css('top', '3.5rem');
 	//$('.layui-input-inline').css('width', '180px');
-
+	//设置下拉框样式在表格之上 不会遮挡下拉框
+	$(".layui-table-body").css('overflow','visible');
+	$(".layui-table-box").css('overflow','visible');
+	$(".layui-table-view").css('overflow','visible');
 	/**日期选择**/
 		/**开始日期**/
 	laydate.render({elem: '#start_time', type: 'datetime'});
@@ -65,7 +72,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 	});
 	//ace code editor
 	ace.config.set("basePath", "js/code/");
-	let editor = ace.edit("sqlArea");
+	editor = ace.edit("sqlArea");
 	editor.setTheme("ace/theme/sqlserver");
 	editor.getSession().setMode("ace/mode/sql");
 	document.getElementById('sqlArea').style.fontSize='16px';//设置字体
@@ -214,7 +221,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		}
 	});
 	//execute sql
-	let myData=new Array();
 	window.executeSql = function (){
 		let limit = 500;
 		let sourceId = 1;
@@ -240,6 +246,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			}
 			,parseData: function(res) {  //res 即为原始返回的数据
 				let packJson=res.data.columns;
+				colsData = packJson;
 				for(let i in packJson){
 					//遍历packJson 数组时，i为索引
 					myData[i]={field:packJson[i].name, width:150,title:packJson[i].name,sort: true}
@@ -263,11 +270,140 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 					,limit:10
 					,page: true   //开启分页
 				});
-
 			}
 
 		});
 	}
+	// generate columns table
+	window.generateModel = function (){
+		let limit = 50;
+		let sourceId = 1;
+		let sql = editor.getValue();
+		console.log(sql);
+		table.render({
+			elem: '#dataModel'  //绑定table id
+			,url:'/api/v3/views/executesql'  //数据请求路径
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql}
+			,xhrFields: {
+				withCredentials: true //允许跨域带Cookie
+			},
+			headers: {
+				"Authorization": token //此处放置请求到的用户token
+			}
+			,cols: [[
+				{field:'name',  title: '字段名称', sort: true}
+				,{field:'type',title: '字段类型', sort: true}
+				,{field:'',  title: '模型数据类型', templet: function (d) {
+					return '<select class="layui-table-cell layui-form-select" name="modeType" lay-filter="modeType" '   + ' " data-value="' + d.name + '" >' +
+						'        <option class="layui-table-cell" value="">请选择</option>' +
+						'        <option class="layui-table-cell" value="维度">维度</option>' +
+						'        <option class="layui-table-cell" value="指标">指标</option>' +
+						'      </select>';
+				}}
+				,{ field: '', title: '可视化类型', templet: function (d) {
+						return '<select  class="layui-table-cell layui-form-select"  name="visualType" lay-filter="visualType" '  + ' " data-value="' + d.name + '" >' +
+							'        <option class="layui-table-cell" value="">请选择</option>' +
+							'        <option value="数字">数字</option>' +
+							'        <option value="字符">字符</option>' +
+							'        <option value="日期">日期</option>' +
+							'        <option value="地理国家">地理国家</option>' +
+							'        <option value="地理省份">地理省份</option>' +
+							'        <option value="地理城市">地理城市</option>' +
+							'        <option value="地理区县">地理区县</option>' +
+							'        <option value="经度">经度</option>' +
+							'        <option value="纬度">纬度</option>' +
+							'      </select>';
+				}}
+			]]
+			,limit:50
+			//,page: true   //开启分页
+			,height: 'full-200'
+			,response:{
+				statusName:'code', //规定返回的状态码字段为code
+				statusCode:0 //规定成功的状态码味200
+			}
+			,parseData: function(res) {  //res 即为原始返回的数据
+				$.cookie("token",res.token,{
+					expires: 10
+				});
+				return {
+					code: res.code,
+					msg: res.msg,
+					count: res.data.columns.length,
+					data: res.data.columns
+				}
+			}
+
+		});
+
+	}
+	//end generate columns table
+	form.on('select(visualType)',function(data){
+		// 通过data.elem.dataset可以得到保存的对象id
+		// data.elem.value可以得到下拉框选择的文本
+		let id = data.elem.dataset.value; //当前数据的id
+		let selectVal = data.elem.value; //当前字段变化的值
+
+		for(let i in colsData){
+			if(colsData[i].name === id){
+				switch(selectVal) {
+					case "数字":
+						colsData[i].visualType = "number";
+						break;
+					case "字符":
+						colsData[i].visualType = "string";
+						break;
+					case "日期":
+						colsData[i].visualType = "date";
+						break;
+					case "地理国家":
+						colsData[i].visualType = "geoCountry";
+						break;
+					case "地理省份":
+						colsData[i].visualType = "geoProvince";
+						break;
+					case "地理城市":
+						colsData[i].visualType = "geoCity";
+						break;
+					case "地理区县":
+						colsData[i].visualType = "geoArea";
+						break;
+					case "经度":
+						colsData[i].visualType = "longitude";
+						break;
+					case "纬度":
+						colsData[i].visualType = "dimension";
+						break;
+					default:
+						colsData[i].visualType = "string";
+				}
+			}
+		}
+
+	});
+	form.on('select(modeType)',function(data){
+		// 通过data.elem.dataset可以得到保存的对象id
+		// data.elem.value可以得到下拉框选择的文本
+		let id = data.elem.dataset.value; //当前数据的id
+		let selectVal = data.elem.value; //当前字段变化的值
+		for(let i in colsData){
+			if(colsData[i].name === id){
+				switch(selectVal) {
+					case "维度":
+						colsData[i].modelType = "category";
+						break;
+					case "指标":
+						colsData[i].modelType = "value";
+						break;
+					default:
+						colsData[i].modelType = "category";
+				}
+			}
+		}
+
+	});
+	//end
+
 });
 
 /**
@@ -375,5 +511,93 @@ function testDbConnetion() {
 function queryData(){
 	//alert("query");
 	executeSql();
+}
+function goNext() {
+	$("#firstStep").hide();
+	$("#secondStep").show();
+	steps({
+		el: "#steps2",
+		data: [
+			{ title: "编写SQL", description: "" },
+			{ title: "编辑数据模型与权限", description: "" }
+		],
+		active: 1,
+		dataOrder: ["title", "line", "description"]
+	});
+	generateModel();
+}
+function goPast() {
+	$("#firstStep").show();
+	$("#secondStep").hide();
+	steps({
+		el: "#steps1",
+		data: [
+			{ title: "编写SQL", description: "" },
+			{ title: "编辑数据模型与权限", description: "" }
+		],
+		active: 0,
+		dataOrder: ["title", "line", "description"]
+	});
+}
+function cancel(){
+	goPast();
+}
+
+/**
+ * 保存模型数据
+ */
+function saveModel() {
+	//取数据模型
+	for(let i in colsData){
+		let one = {};
+		one.visualType=colsData[i].visualType;
+		one.modelType=colsData[i].modelType;
+		one.sqlType=colsData[i].type;
+		model[colsData[i].name]= one;
+	}
+	console.log("model json: ", model);
+
+	//取data source
+	let sourceId = 1;//$("#source").val();
+	let sourceName = "eps";//$("#source").text;
+	let source = {};
+	source.id = sourceId;
+	source.name=sourceName;
+
+	let projectId = 1;
+	let name = $("#name").val();
+	let description = $("#description").val();
+	let sql = editor.getValue();
+	$.ajax({
+		url: "/api/v3/views",
+		type: "Post",
+		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description}),
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		xhrFields: {
+			withCredentials: true //允许跨域带Cookie
+		},
+		async: false,
+		headers: {
+			"Authorization":$.cookie("token")//此处放置请求到的用户token
+		},
+		success: function (data) {
+			if (data.code == 0) {
+				layer.msg("保存成功", {icon: 1, time: 1000});
+
+				$.cookie("token",data.token,{
+					expires: 10
+				});
+				return false;
+			} else {
+				layer.msg("保存失败", {icon: 2, time: 1000});
+				return false;
+			}
+		},
+		fail: function (data) {
+			layer.msg("保存失败", {icon: 2, time: 1000});
+			return false;
+		}
+	});
 }
 

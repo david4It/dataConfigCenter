@@ -16,7 +16,20 @@
 		.btn-wrap{background:#f3f3f3;text-align:right;position:relative;z-index:1;box-shadow:0 5px 10px #e8e3e3;}
 		.right-part{position:absolute;right:0;top:0;background:#f3f3f3!important;width:60%;height:100%;}
 		#sqlArea {margin: 0;height:100%;width:100%;border-right:1px solid #f3f3f3;}
+		/* 防止下拉框的下拉列表被隐藏---必须设置--- */
+		/* 使得下拉框与单元格刚好合适 */
+		td .layui-form-select{
+			margin-top: -10px;
+			margin-left: -15px;
+			margin-right: -15px;
+		}
 
+		.layui-table-cell{
+			overflow: visible !important;
+		}
+		.layui-layer-tips{
+			display: none
+		}
 	</style>
 </head>
 <body class="layui-layout-body">
@@ -32,15 +45,16 @@
 			</a>
 		</div>
 	</div>
-	<div class="layui-body" >
-		<div class="layui-layout" style="width: 100%;height:2%;margin-top: 0px;">
+	<form class="layui-form layui-form-pane" action="" id="frm-reg" >
+	<div class="layui-body"  id="firstStep" >
+		<div class="layui-layout" style="width: 100%;height:4rem;margin-top: 0px;">
 			<div id="steps1"></div>
 		</div>
-		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 2rem;">
 			<legend></legend>
 		</fieldset>
-		<div  class="layui-layout"   style="width: 15%;height:100%;float:left;border: 5px;margin-left:0px;">
-			<form class="layui-form layui-form-pane" action="" id="frm-reg" >
+		<!-- 填写视图信息，创建sql语句  -->
+		<div  class="layui-layout"   style="width: 15%;float:left;margin-left:0.5rem;">
 			<div class="layui-form-item">
 				<div class="layui-inline">
 					<input type="text" name="name" id="name" value="" placeholder="名称" class="layui-input-inline  layui-input">
@@ -54,41 +68,69 @@
 			<div class="layui-form-item">
 				<div class="layui-inline">
 					<div class="layui-input-inline  layer-inputs">
-						<select name="type" id="type" lay-verify="required" lay-search="">
+						<select name="source" id="source" lay-verify="required" lay-search="">
 							<option value="">请选择</option>
 							<option value="1">EPS</option>
 						</select>
 					</div>
 				</div>
 			</div>
-			</form>
 			<div id="tablesTree"></div>
 		</div>
 		<div style="margin-left:2px; float:left;width: 1px;height: 100%; background: #eee;"></div>
-		<div  style="width: 82%;height:100%;float:left;border: 5px">
-			<div style="width: 65%;height:30%;float:left;border: 5px; margin-left: 1rem;">
+		<div  style="width: 82%;height:100%;float:left;">
+			<div style="width: 65%;height:30%;float:left;margin-left: 1rem;">
 				<div class="layui-bg-gray" id="sqlArea"></div>
 			</div>
 
-			<div style="width: 30%;height:30%;float:left;border: 1px; margin-left: 1rem;">variable area</div>
+			<div class="layui-bg-gray" style="width: 31%;height:30%;float:left;margin-left: 1rem;">variable area</div>
 
-			<div style="width: 100%;height:auto;float:right;border: 1px;">
-				<hr class="layui-bg-gray">
-				<table class="layui-table layui-form" id="sqlResult"  lay-filter="sqlResult">
-				</table>
-			</div>
-
-			<div  class="layui-card-body" style="width:100%;height:10%;float:right;margin-top:20px">
-				<hr class="layui-bg-gray">
+			<hr class="layui-bg-gray" style="margin-top: 15rem">
+			<div  class="layui-card-body" style="width:100%;min-height: 2rem;float:left;margin-left: 1rem;">
+				<input style="float:right;margin-right: 2rem"  class="layui-btn  layui-btn-primary" value="下一步" onclick="goNext()"  >
+				<input style="float:right;margin-right: 1rem"  class="layui-btn  layui-btn-primary" value="执行" onclick="queryData()">
 				<input style="float:right;margin-right: 1rem" class="layui-btn  layui-btn-primary" value="取消" onclick=""  >
-				<input style="float:right;margin-right: 1rem"  class="layui-btn  layui-btn-primary" value="执行" onclick="queryData()"  >
-				<input style="float:right;margin-right: 1rem"  class="layui-btn  layui-btn-primary" value="下一步" onclick=""  >
 			</div>
+			<div style="width: 100%;float:right;margin-left: 1rem;">
+				<hr class="layui-bg-gray">
+				<div style="margin-left: 2rem;">
+					<table class="layui-table layui-form" id="sqlResult"  lay-filter="sqlResult">
+					</table>
+				</div>
+			</div>
+
 		</div>
+		<!-- end first step-->
 
 	</div>
 
+	<!-- 下一步跳转，创建数据模型，对数据模型授权 -->
+	<div  class="layui-body"  id="secondStep" style="display: none">
+		<div class="layui-layout" style="width: 100%;height:4rem;margin-top: 0px;">
+			<div id="steps2"></div>
+		</div>
 
+		<hr class="layui-bg-gray" style="margin-top: 2rem">
+		<div  class="layui-card-body" style="width:100%;min-height: 2rem;float:left;margin-left: 1rem;">
+			<input style="float:right;margin-right: 1rem" class="layui-btn  layui-btn-primary" value="取消" onclick="cancel()"  >
+			<input style="float:right;margin-right: 1rem"  class="layui-btn  layui-btn-primary" value="保存" onclick="saveModel()">
+			<input style="float:right;margin-right: 2rem"  class="layui-btn  layui-btn-primary" value="上一步" onclick="goPast()"  >
+		</div>
+
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 2rem;">
+			<legend></legend>
+		</fieldset>
+		<div class="layui-tab layui-tab-brief" style="min-height: 20rem;" lay-filter="secondStep">
+			<ul class="layui-tab-title">
+				<li class="layui-this">数据模型</li>
+				<li>模型授权</li>
+			</ul>
+			<div  class="layui-table layui-form dataModel "  id="dataModel"></div>
+			<div id="roleModel"></div>
+		</div>
+	</div>
+	<!-- end second step-->
+	</form>
 </body>
 </html>
 <script src="js/jquery-3.4.1.min.js"></script>
@@ -104,6 +146,24 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/ace/1.4.12/snippets/mysql.js"></script>
 
 <script src="js/view-add.js"></script>
-<script>
-
+<script type="text/html" id="selectVisual">
+	<select name='visualType' lay-filter='visualType' lay-search=''>
+		<option value=""></option>
+		<option value="数字">数字</option>
+		<option value="字符">字符</option>
+		<option value="日期">日期</option>
+		<option value="地理国家">地理国家</option>
+		<option value="地理省份">地理省份</option>
+		<option value="地理城市">地理城市</option>
+		<option value="地理区县">地理区县</option>
+		<option value="经度">经度</option>
+		<option value="维度">维度</option>
+	</select>
+</script>
+<script type="text/html" id="selectModel">
+	<select name='modeType' lay-filter='modeType' lay-search=''>
+		<option value=""></option>
+		<option value="维度">维度</option>
+		<option value="指标">指标</option>
+	</select>
 </script>
