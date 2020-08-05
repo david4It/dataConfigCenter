@@ -3,8 +3,10 @@ package com.scsme.dataConfigCenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.scsme.dataConfigCenter.executor.HTMLCreationExecutor;
 import com.scsme.dataConfigCenter.mapper.ComponentMapper;
 import com.scsme.dataConfigCenter.mapper.LayoutMapper;
+import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
@@ -60,7 +62,16 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public Boolean deleteLayout(Long id) {
         //删除布局对应的组件节点
-        return (layoutMapper.deleteById(id) > 0) && (componentMapper.deletComponenets(id) > 0);
+        boolean result = layoutMapper.deleteById(id) > 0;
+        if (result) {
+            QueryWrapper<Component> query = new QueryWrapper<>();
+            query.eq("layout_id", id);
+            List<Component> componentList = componentMapper.selectList(query);
+            if (componentList != null && componentList.size() > 0) {
+                result = componentMapper.deletComponenets(id) > 0;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -73,30 +84,45 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Boolean updateLayout(LayoutVO layout) {
+        boolean result = false;
         Layout beSave = layout.transLayout();
         beSave.setLastUpdateTime(LocalDateTime.now());
-        return layoutMapper.updateById(beSave) > 0;
+        result = layoutMapper.updateById(beSave) > 0;
+        if (result) {
+            //生成或者删除页面
+            if ("Y".equals(layout.getEnabled())) {
+                HTMLCreationExecutor.generatedHTMLFile(layout, layoutMapper);
+            } else {
+                HTMLCreationExecutor.deleteHTMLFile(layout, layoutMapper);
+            }
+        }
+        return result;
     }
 
     @Override
-    public Boolean checkUrl(String url) {
-        return getLayout(url) != null;
+    public Boolean checkUrl(String url, String id) {
+        return getLayout(url, id) == null;
     }
 
     @Override
     public List<String> thumbnails() throws IOException {
         List<String> result = new ArrayList<>();
         ClassPathResource resource = new ClassPathResource("/static/img/center/template/");
-        File file = new File(resource.getURI().getPath());
-        if (file.list() != null) {
-            result.addAll(Arrays.asList(file.list()));
+        if (resource.exists()) {
+            File file = new File(resource.getURI().getPath());
+            if (file.list() != null) {
+                result.addAll(Arrays.asList(file.list()));
+            }
         }
         return result;
     }
 
-    private Layout getLayout(String url) {
+    private Layout getLayout(String url, String id) {
         QueryWrapper<Layout> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("url", url);
+        if (id != null) {
+            queryWrapper.ne("id", id);
+        }
         return layoutMapper.selectOne(queryWrapper);
     }
 }

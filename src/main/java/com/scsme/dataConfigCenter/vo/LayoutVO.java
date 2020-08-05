@@ -12,6 +12,7 @@ public class LayoutVO extends Layout {
     private List<ComponentVO> components = new ArrayList<>();
     public Layout transLayout() {
         Layout layout = new Layout();
+        layout.setId(this.getId());
         layout.setEnabled(this.getEnabled());
         layout.setUrl(this.getUrl());
         layout.setCreateTime(this.getCreateTime());

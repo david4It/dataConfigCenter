@@ -6,13 +6,10 @@ new Vue({
        thumbnails: [],
        layoutList: [],
        pageInfo: {total: 10, pageNo: 1, pageSize: 10},
-       layout: { enabled: 'Y'},
+       layout: { enabled: 'N'},
        rules: {
            title :[{required: true, message: '标题不能为空！', trigger: 'blur'},
-               {max: 255, message: '长度超过255个字符限制！'}],
-           url :[{required: true, message: 'url不能为空！', trigger: 'blur'},
-               {max: 255, message: '长度超过255个字符限制'}],
-           enabled :[{required: true, message: '请选择状态！'}]
+               {max: 255, message: '长度超过255个字符限制！'}]
        }
    },
     watch: {
@@ -40,14 +37,6 @@ new Vue({
                     return;
                 }
                 me.layoutList = res.data.result;
-                me.layoutList.forEach((schedule) => {
-                    if (schedule.createTime) {
-                        schedule.createTime = new Date(schedule.createTime);
-                    }
-                    if (schedule.updateTime) {
-                        schedule.updateTime = new Date(schedule.updateTime);
-                    }
-                });
                 me.pageInfo.total = res.data.total;
             }).catch(err => {
                 me.$message.error("获取布局列表数据失败！");
@@ -72,10 +61,6 @@ new Vue({
             me.pageInfo.pageNo = pageNo;
             me.getLayoutList(pageNo);
         },
-        dateFormat(row, column) {
-            let date = row[column.property];
-            return date ? dateFormat("yyyy-MM-dd hh:mm:ss", date) : null;
-        },
         statusFormat(val) {
             return val === 'N' ? '<span style="color: red">禁用</span>' : '<span style="color: green">启用</span>'
         },
@@ -92,12 +77,38 @@ new Vue({
                 item.checked = item.value === value;
             });
             me.layout.templateName = value.split(".")[0];
-            me.$refs["dataForm"].$children[1].clearValidate();
+            if (me.$refs["dataForm"]) {
+                me.$refs["dataForm"].$children[1].clearValidate();
+            }
         },
         clearForm() {
             this.resetCheckbox();
             this.$refs["dataForm"].clearValidate();
-            this.layout = { enabled: 'Y'};
+            this.layout = { enabled: 'N'};
+        },
+        validateUrl(rule, value, callback) {
+            if (!value || value.trim() === '') {
+                callback(new Error("Url不能为空！"));
+            } else if (value.length > 255) {
+                callback(new Error("长度超过255个字符限制"));
+            } else {
+                service.get('/layout/checkUrl', {
+                    params: {
+                        url: value,
+                        id: this.layout.id
+                    }
+                }).then(res => {
+                    if (!res.data.success) {
+                        callback(new Error("Url校验失败！"));
+                    } else {
+                        if (res.data.result) {
+                            callback();
+                        } else {
+                            callback(new Error("Url重复！"));
+                        }
+                    }
+                })
+            }
         },
         validateCheckbox(rule, value, callback) {
             if (this.layout.templateName || !this.dialogVisible) {
@@ -150,7 +161,7 @@ new Vue({
             let me = this;
             me.dialogVisible = true;
             me.isUpdate = true;
-            me.layout = row;
+            me.layout = Object.assign({}, row);
             me.checkboxChanged(me.layout.templateName + ".png");
         },
         handleDelete(index, row) {
@@ -174,6 +185,33 @@ new Vue({
                     me.getLayoutList();
                 }).catch(err => {
                     me.$message.error("删除布局数据失败！");
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消操作'
+                });
+            });
+        },
+        handleStatusChange(index, row, status) {
+            let me = this;
+            let msg = status === 'Y' ? '是否发布此布局页面？' : '是否禁用此布局页面？';
+            this.$confirm(msg, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                row.enabled = status;
+                service.post("/layout/update", row).then(function(res){
+                    if (!res.data.success) {
+                        me.$message.error(res.data.message);
+                        return;
+                    }
+                    me.dialogVisible = false;
+                    me.successMsg(res.data.message);
+                    me.getLayoutList();
+                }).catch(err => {
+                    me.$message.error("更新布局数据失败！");
                 });
             }).catch(() => {
                 this.$message({

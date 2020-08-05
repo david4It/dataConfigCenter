@@ -71,15 +71,13 @@
                         prop="createTime"
                         label="创建时间"
                         width="240"
-                        align="center"
-                        :formatter="dateFormat">
+                        align="center">
                 </el-table-column>
                 <el-table-column
                         prop="lastUpdateTime"
                         label="更新时间"
                         width="240"
-                        align="center"
-                        :formatter="dateFormat">
+                        align="center">
                 </el-table-column>
                 <el-table-column
                         prop="enabled"
@@ -103,6 +101,14 @@
                                 size="mini"
                                 type="danger"
                                 @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button v-show="scope.row.enabled === 'N'"
+                                size="mini"
+                                type="success"
+                                @click="handleStatusChange(scope.$index, scope.row, 'Y')">发布</el-button>
+                        <el-button v-show="scope.row.enabled === 'Y'"
+                                size="mini"
+                                type="info"
+                                @click="handleStatusChange(scope.$index, scope.row, 'N')">禁用</el-button>
                         <el-button
                                 size="mini"
                                 type="warning"
@@ -146,22 +152,8 @@
                         </el-checkbox>
                     </div>
                 </el-form-item>
-                <el-form-item label="URL" prop="url">
+                <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
                     <el-input v-model="layout.url"></el-input>
-                </el-form-item>
-                <el-form-item label="状态" prop="enabled">
-                    <el-select v-model="layout.enabled">
-                        <el-option
-                                key="Y"
-                                label="启用"
-                                value="Y">
-                        </el-option>
-                        <el-option
-                                key="N"
-                                label="禁用"
-                                value="N">
-                        </el-option>
-                    </el-select>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">

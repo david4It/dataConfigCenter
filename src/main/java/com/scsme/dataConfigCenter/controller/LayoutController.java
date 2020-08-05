@@ -63,7 +63,7 @@ public class LayoutController {
             if (deleted) {
                 result.success("删除布局数据成功！");
             } else {
-                result.error500("保存布局数据失败！");
+                result.error500("删除布局数据失败！");
             }
         } catch (Exception e) {
             result.error500("删除布局数据失败！");
@@ -91,10 +91,10 @@ public class LayoutController {
     }
 
     @GetMapping("/checkUrl")
-    public Result<Boolean> checkUrl(@RequestParam String url) {
+    public Result<Boolean> checkUrl(@RequestParam String url, @RequestParam(required = false) String id) {
         Result<Boolean> result = new Result<>();
         try {
-            Boolean isValid = layoutService.checkUrl(url);
+            Boolean isValid = layoutService.checkUrl(url, id);
             result.success("校验url成功！");
             result.result(isValid);
         } catch (Exception e) {
