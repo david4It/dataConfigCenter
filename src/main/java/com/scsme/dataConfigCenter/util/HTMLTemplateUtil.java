@@ -26,11 +26,20 @@ public class HTMLTemplateUtil {
     private static final String TITLE = "title";
     private static final String COMPONENTS = "components";
 
-    public static void generatedHTMLFile(LayoutVO layout) {
-        generatedHTMLFile(layout, null);
+    public static void deleteHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
+        try {
+            File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + layout.getUrl() + HTML_SUFFIX);
+            file.delete();
+            if (layoutMapper != null) {
+                layout.setFile(null);
+                layoutMapper.updateById(layout);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void generatedHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
+    public static void generateHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
         //写入到本地文件
         List<ComponentVO> components = layout.getComponents();
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_30);
@@ -41,7 +50,7 @@ public class HTMLTemplateUtil {
             dataMap.put(TITLE, layout.getTitle());
             dataMap.put(COMPONENTS, components);
             File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + layout.getUrl() + HTML_SUFFIX);
-            file.deleteOnExit();
+            file.delete();
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
                 template.process(dataMap, out);
             }

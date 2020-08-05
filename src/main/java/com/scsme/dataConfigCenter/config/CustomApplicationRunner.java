@@ -1,8 +1,8 @@
 package com.scsme.dataConfigCenter.config;
 
+import com.scsme.dataConfigCenter.executor.HTMLCreationExecutor;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
-import com.scsme.dataConfigCenter.util.HTMLTemplateUtil;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class CustomApplicationRunner implements ApplicationRunner {
             layouts.forEach(layoutVO -> {
                 List<ComponentVO> componentVOS = componentService.componentList(layoutVO.getId());
                 layoutVO.setComponents(componentVOS);
-                HTMLTemplateUtil.generatedHTMLFile(layoutVO);
+                HTMLCreationExecutor.generatedHTMLFile(layoutVO, null);
             });
         } catch (Exception e) {
             e.printStackTrace();
