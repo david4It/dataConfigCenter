@@ -10,6 +10,9 @@ import java.util.List;
 @Data
 public class LayoutVO extends Layout {
     private List<ComponentVO> components = new ArrayList<>();
+    private List<LayoutVO> children = new ArrayList<>();
+    //下钻布局中需要保存父组件的id，以形成对应关系
+    private Long parentComponentId;
     public Layout transLayout() {
         Layout layout = new Layout();
         layout.setId(this.getId());
@@ -33,26 +36,26 @@ public class LayoutVO extends Layout {
         return this;
     }
 
-    public List<Component> transComponents(Long layoutId) {
-        List<Component> list = new ArrayList<>();
-        components.forEach((c) -> {
-            list.add(c.trans(layoutId));
-        });
-        return list;
-    }
-
-    public List<Component> transComponents() {
-        List<Component> list = new ArrayList<>();
-        components.forEach((c) -> {
-            list.add(c.trans());
-        });
-        return list;
-    }
-
-    public void convertComponents(List<Component> components) {
-        this.components.clear();
-        components.forEach((c) -> {
-            this.components.add(new ComponentVO().convert(c));
-        });
-    }
+//    public List<Component> transComponents(Long layoutId) {
+//        List<Component> list = new ArrayList<>();
+//        components.forEach((c) -> {
+//            list.add(c.trans(layoutId));
+//        });
+//        return list;
+//    }
+//
+//    public List<Component> transComponents() {
+//        List<Component> list = new ArrayList<>();
+//        components.forEach((c) -> {
+//            list.add(c.trans());
+//        });
+//        return list;
+//    }
+//
+//    public void convertComponents(List<Component> components) {
+//        this.components.clear();
+//        components.forEach((c) -> {
+//            this.components.add(new ComponentVO().convert(c));
+//        });
+//    }
 }

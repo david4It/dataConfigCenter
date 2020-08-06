@@ -54,6 +54,21 @@ public class LayoutController {
         return result;
     }
 
+    @GetMapping("/treeList")
+    public Result<List<LayoutVO>> treeList(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
+                                           @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+        Result<List<LayoutVO>> result = new Result<>();
+        try {
+            List<LayoutVO> list = layoutService.treeList(result, pageNo, pageSize);
+            result.setResult(list);
+            result.success("查询布局列表数据成功！");
+        } catch (Exception e) {
+            result.error500("查询布局列表数据失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
     @DeleteMapping("/delete")
     public Result<Boolean> delete(@RequestParam(name="id") Long id) {
         Result<Boolean> result = new Result<>();

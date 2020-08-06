@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -44,8 +45,10 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
         componentList.forEach(c -> {
             ComponentVO convert = new ComponentVO().convert(c);
             if (c.getLink() != null) {
-                String linkUrl = layoutMapper.getLayoutUrl(c.getLink());
-                convert.setLinkUrl(linkUrl);
+                Map<String, String> resultMap = layoutMapper.getLayoutUrl(c.getLink());
+                if ("Y".equals(resultMap.get("enabled"))) {
+                    convert.setLinkUrl(resultMap.get("url"));
+                }
             }
             vos.add(convert);
         });

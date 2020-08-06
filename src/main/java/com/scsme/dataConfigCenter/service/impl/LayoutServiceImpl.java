@@ -8,7 +8,6 @@ import com.scsme.dataConfigCenter.mapper.ComponentMapper;
 import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
-import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
@@ -47,6 +46,21 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
+    public List<LayoutVO> treeList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize) {
+        List<LayoutVO> vos = new ArrayList<>();
+        Page<Layout> page = new Page<>(pageNo, pageSize);
+        IPage<Layout> layoutIPage = layoutMapper.selectPage(page, new QueryWrapper<>());
+        result.setTotal(layoutIPage.getTotal());
+        List<Layout> records = layoutIPage.getRecords();
+        records.forEach((r) -> {
+            LayoutVO vo = new LayoutVO().convert(r);
+            recursionBuildLayout(r.getId(), vo.getChildren());
+            vos.add(vo);
+        });
+        return vos;
+    }
+
+    @Override
     public List<LayoutVO> enabledLayouts() {
         QueryWrapper<Layout> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("enabled", "Y");
@@ -64,10 +78,32 @@ public class LayoutServiceImpl implements LayoutService {
         //删除布局对应的组件节点
         boolean result = layoutMapper.deleteById(id) > 0;
         if (result) {
+            //更新所有引用了此布局的component组件的link为null
             QueryWrapper<Component> query = new QueryWrapper<>();
-            query.eq("layout_id", id);
+            query.eq("link", id);
             List<Component> componentList = componentMapper.selectList(query);
             if (componentList != null && componentList.size() > 0) {
+                for (Component c: componentList) {
+                    c.setLink(null);
+                    result = componentMapper.updateById(c) > 0;
+                    if (!result) {
+                        return false;
+                    }
+                }
+            }
+            query = new QueryWrapper<>();
+            query.eq("layout_id", id);
+            componentList = componentMapper.selectList(query);
+            if (componentList != null && componentList.size() > 0) {
+                //递归删除所有布局和组件
+                for (Component c: componentList) {
+                    if (c.getLink() != null) {
+                       result = deleteLayout(c.getLink());
+                       if (!result) {
+                           return false;
+                       }
+                    }
+                }
                 result = componentMapper.deletComponenets(id) > 0;
             }
         }
@@ -79,6 +115,13 @@ public class LayoutServiceImpl implements LayoutService {
         Layout beSave = layout.transLayout();
         beSave.setCreateTime(LocalDateTime.now());
         int insert = layoutMapper.insert(beSave);
+        if (layout.getParentComponentId() != null) {
+            Layout saved = getLayout(layout.getUrl(), null);
+            Component component = new Component();
+            component.setId(layout.getParentComponentId());
+            component.setLink(saved.getId());
+            componentMapper.updateById(component);
+        }
         return insert > 0;
     }
 
@@ -124,5 +167,21 @@ public class LayoutServiceImpl implements LayoutService {
             queryWrapper.ne("id", id);
         }
         return layoutMapper.selectOne(queryWrapper);
+    }
+
+    private void recursionBuildLayout(Long layoutId, List<LayoutVO> children) {
+        QueryWrapper<Component> query = new QueryWrapper<>();
+        query.eq("layout_id", layoutId);
+        List<Component> components = componentMapper.selectList(query);
+        components.forEach(c -> {
+            if (c.getLayoutId() != null) {
+                Layout layout = layoutMapper.selectById(layoutId);
+                if (layout != null) {
+                    LayoutVO vo = new LayoutVO().convert(layout);
+                    children.add(vo);
+                    recursionBuildLayout(c.getLayoutId(), vo.getChildren());
+                }
+            }
+        });
     }
 }

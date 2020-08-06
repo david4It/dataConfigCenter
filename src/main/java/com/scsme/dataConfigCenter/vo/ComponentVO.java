@@ -25,11 +25,11 @@ public class ComponentVO extends Component {
         return component;
     }
 
-    public Component trans(Long layoutId){
-        Component component = trans();
-        component.setLayoutId(layoutId);
-        return component;
-    }
+//    public Component trans(Long layoutId){
+//        Component component = trans();
+//        component.setLayoutId(layoutId);
+//        return component;
+//    }
 
     public ComponentVO convert(Component component) {
         this.setId(component.getId());
