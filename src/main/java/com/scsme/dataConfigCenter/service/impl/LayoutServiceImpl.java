@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -49,7 +51,10 @@ public class LayoutServiceImpl implements LayoutService {
     public List<LayoutVO> treeList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize) {
         List<LayoutVO> vos = new ArrayList<>();
         Page<Layout> page = new Page<>(pageNo, pageSize);
-        IPage<Layout> layoutIPage = layoutMapper.selectPage(page, new QueryWrapper<>());
+        QueryWrapper<Layout> query = new QueryWrapper<>();
+        //获取所有根节点数据，用于树形结构构建
+        query.eq("root", "Y");
+        IPage<Layout> layoutIPage = layoutMapper.selectPage(page, query);
         result.setTotal(layoutIPage.getTotal());
         List<Layout> records = layoutIPage.getRecords();
         records.forEach((r) -> {
@@ -170,16 +175,19 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     private void recursionBuildLayout(Long layoutId, List<LayoutVO> children) {
+        Set<Long> layoutIdSet = new HashSet<>();
         QueryWrapper<Component> query = new QueryWrapper<>();
         query.eq("layout_id", layoutId);
         List<Component> components = componentMapper.selectList(query);
         components.forEach(c -> {
-            if (c.getLayoutId() != null) {
-                Layout layout = layoutMapper.selectById(layoutId);
+            Long id = c.getLink();
+            if (id != null && !layoutIdSet.contains(id)) {
+                layoutIdSet.add(id);
+                Layout layout = layoutMapper.selectById(id);
                 if (layout != null) {
                     LayoutVO vo = new LayoutVO().convert(layout);
                     children.add(vo);
-                    recursionBuildLayout(c.getLayoutId(), vo.getChildren());
+                    recursionBuildLayout(layout.getId(), vo.getChildren());
                 }
             }
         });

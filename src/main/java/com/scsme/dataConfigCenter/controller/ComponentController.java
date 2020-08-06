@@ -1,6 +1,5 @@
 package com.scsme.dataConfigCenter.controller;
 
-import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.Result;

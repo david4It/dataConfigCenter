@@ -19,6 +19,7 @@ public class Layout {
     private String templateName;
     private String url;
     private String enabled;
+    private String root;
     @Lazy
     private byte[] file;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

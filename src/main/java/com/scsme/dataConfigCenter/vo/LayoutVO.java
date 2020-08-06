@@ -17,6 +17,7 @@ public class LayoutVO extends Layout {
         Layout layout = new Layout();
         layout.setId(this.getId());
         layout.setEnabled(this.getEnabled());
+        layout.setRoot(this.getRoot());
         layout.setUrl(this.getUrl());
         layout.setCreateTime(this.getCreateTime());
         layout.setTitle(this.getTitle());
@@ -28,6 +29,7 @@ public class LayoutVO extends Layout {
     public LayoutVO convert(Layout layout) {
         this.setId(layout.getId());
         this.setEnabled(layout.getEnabled());
+        this.setRoot(layout.getRoot());
         this.setCreateTime(layout.getCreateTime());
         this.setLastUpdateTime(layout.getLastUpdateTime());
         this.setTitle(layout.getTitle());
