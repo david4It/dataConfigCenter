@@ -36,6 +36,24 @@
 			float: left;
 			min-height: 7rem;
 		}
+		.display-icon{
+		// color: #e54746;
+			background-image: linear-gradient(135deg,
+			#eb8c96 0%,
+			#6570e8 67%,
+			#1512e5 100%);
+			-webkit-background-clip: text;
+			color:transparent;
+		}
+		.mouseclick-icon{
+		// color: #e54746;
+			background-image: linear-gradient(135deg,
+			#6ceb38 0%,
+			#82e5e8 67%,
+			#e5861d 100%);
+			-webkit-background-clip: text;
+			color:transparent;
+		}
 	</style>
 
 </head>
@@ -99,11 +117,11 @@
 					<legend>图表</legend>
 				</fieldset>
 				<div  class="layui-table layui-form dataModel "  id="dataModel">
-					<i class="fa fa-area-chart grapPad" aria-hidden="true"></i>
-					<i class="fa fa-bar-chart grapPad" aria-hidden="true"></i>
-					<i class="fa fa-line-chart grapPad" aria-hidden="true"></i>
-					<i class="fa fa-pie-chart grapPad" aria-hidden="true"></i>
-					<i class="fa fa-globe grapPad" aria-hidden="true"></i>
+					<a onclick="renderGraph(this,'area')"> <i class="fa fa-area-chart grapPad" aria-hidden="true"></i></a>
+					<a onclick="renderGraph(this,'bar')"> <i class="fa fa-bar-chart grapPad" aria-hidden="true"></i></a>
+					<a onclick="renderGraph(this,'line')"> <i class="fa fa-line-chart grapPad" aria-hidden="true"></i></a>
+					<a onclick="renderGraph(this,'pie')"> <i class="fa fa-pie-chart grapPad" aria-hidden="true"></i></a>
+					<a onclick="renderGraph(this,'map')"> <i class="fa fa-globe grapPad" aria-hidden="true"></i></a>
 				</div>
 			</div>
 			<div class="layui-tab layui-tab-brief" style="min-height: 30rem;border-top:1px solid #f3f3f3;" lay-filter="secondStep">
@@ -132,7 +150,7 @@
 				<div  class="layui-tab-item" id="setArea"></div>
 			</div>
 		</div>
-		<div  class=" pad-top" style="width: 60%;height:100%;float:left;margin-left: 1rem;">
+		<div id="graphArea" class=" pad-top" style="width: 60%;height:100%;float:left;margin-left: 1rem;">
 
 		</div>
 
@@ -145,6 +163,7 @@
 <script src="js/jquery-3.4.1.min.js"></script>
 <script src="lib/layui/layui.js"></script>
 <script src="js/jquery.cookie.min.js"></script>
-
+<script src="js/framework/echarts.min.js"></script>
+<script src="js/graph/pie.js"></script>
 <script src="js/widget-add.js"></script>
 

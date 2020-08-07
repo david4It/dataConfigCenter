@@ -26,7 +26,8 @@ layui.define(function(exports) {
 let myData=new Array();
 let colsData;
 let model = {};
-let editor;
+let editor,viewId;
+let globalWidgetData;
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -55,7 +56,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
     form.on('submit(execute)', function(data) {
         layer.confirm('确认要保存吗？',function(index) {
 			layer.load();
-			console.log(data.field);
+			//console.log(data.field);
 			let uid=$.cookie("uid");
 			data.field.id=uid;
 			data.field.projectId=1;
@@ -106,8 +107,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 	form.on('select(viewId)',function(data){
 		// 通过data.elem.dataset可以得到保存的对象id
 		// data.elem.value可以得到下拉框选择的文本
-		console.log("view data: ",data);
+		//console.log("view data: ",data);
 		if(data.value === "") return false;
+		viewId = data.value;
 		$.ajax({
 			url: "/api/v3/views/"+data.value,
 			type: "GET",
@@ -126,11 +128,11 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 					//console.log(data.data.model);
 					$('#valueType').empty();
 					$('#categoryType').empty();
-					var jsonModel = JSON.parse(data.data.model);
-					for(var prop in jsonModel) {
-						var dimensionDetail = jsonModel[prop];
-						console.log(dimensionDetail);
-						console.log(dimensionDetail.modelType);
+					let jsonModel = JSON.parse(data.data.model);
+					for(let prop in jsonModel) {
+						let dimensionDetail = jsonModel[prop];
+						//console.log(dimensionDetail);
+						//console.log(dimensionDetail.modelType);
 						if (dimensionDetail.modelType === "value") {
 							$('#valueType').append('<li  lay-filter="value" id="'+prop +'" draggable="true"><i class="fa fa-sort-numeric-desc pading-right"></i>' + prop + '</li>');
 						} else {
@@ -168,7 +170,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
              Data:数据：一般来说是字符串
         */
 		e.dataTransfer.setData("text/html",e.target.id)
-		console.log("id:",e.target.id);
+		//console.log("id:",e.target.id);
 	}
 	document.ondragend=function(e){
 		/* 当拖拽元素返回原位时 还是回复原来的样式*/
@@ -190,23 +192,51 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		/*添加元素*/
 		/* 通过e.dataTransfer.setData存储的数据，只能在ondrop事件中获取*/
 		let data = ev.dataTransfer.getData("text/html");
-		let item = document.getElementById(data).cloneNode();
-		console.log("item: ", item);
-		console.log("item.lay-filter: ",item.getAttribute("lay-filter"));
+		let item = document.getElementById(data);
+		//console.log("item: ", item);
+		//console.log("item.lay-filter: ",item.getAttribute("lay-filter"));
 		let cat = item.getAttribute("lay-filter");
-		if(cat ==="value"){
-
-		}else{
-			//category
-		}
-		//console.log(data + "document:",document.getElementById(data));
-		//console.log( "ev.target :",ev.target);
-		var newLi = document.createElement("li");
+		let newLi = document.createElement("li");
 		newLi.innerText=data;
-		newLi.style ='width:100%;margin-top:0.5rem;float:left;';
-
+		newLi.style ='width:100%;margin-top:0.5rem;margin-left: 0rem; float:left;background-color: #009688;color:white';
 		newLi.classList.add('layui-btn','layui-btn-primary');
-		ev.target.appendChild(newLi);
+		newLi.setAttribute("data-value",data);
+		//监听删除
+		newLi.addEventListener("click", function()
+		{
+			let target = this.parentNode;
+			target.removeChild(this);
+			//monitor charts change
+			moniteChartsChange();
+			//end monitor
+		});
+		//添加提醒
+		newLi.addEventListener("mouseover", function()
+		{
+			layer.tips("点我可以删除",this, {tips : 1})
+		});
+		let targetItem = ev.target;
+		let targetId = targetItem.getAttribute("id");
+		if(cat ==="value" && targetId ==="dragedValue"){
+			newLi.setAttribute("id","value_"+data);
+			let doc = document.getElementById("dragedValue");
+			doc.appendChild(newLi);
+		}else if(cat ==="category" && targetId ==="dragedDimesion"){
+			//category
+			newLi.setAttribute("id","dimesion_"+data);
+			let doc = document.getElementById("dragedDimesion");
+			doc.appendChild(newLi);
+		}else if(cat ==="category" && targetId ==="dragedFilter"){
+			//fiter
+			newLi.setAttribute("id","filter_"+data);
+			let doc = document.getElementById("dragedFilter");
+			doc.appendChild(newLi);
+		}else{
+			//do nothing.
+		}
+		//monitor charts change
+		moniteChartsChange();
+		//end monitor
 	}
 	//end h5 拖拽
 
@@ -233,7 +263,7 @@ function saveModel() {
 		one.sqlType=colsData[i].type;
 		model[colsData[i].name]= one;
 	}
-	console.log("model json: ", model);
+	//console.log("model json: ", model);
 
 	//取data source
 	let sourceId = 1;//$("#source").val();
@@ -300,10 +330,10 @@ function getViewsByProjectId(layer,form) {
 		success: function (data) {
 			if (data.code == 0) {
 				//layer.msg("查询成功", {icon: 1, time: 1000});
-				console.log(data.data);
+				//console.log(data.data);
 				$('#viewId').append(new Option("",""));
 				$.each(data.data,function(index,item){
-					console.log(item);
+					//console.log(item);
 					//option 第一个参数是页面显示的值，第二个参数是传递到后台的值
 					$('#viewId').append(new Option(item.name,item.id));//往下拉菜单里添加元素
 					//设置value（这个值就可以是在更新的时候后台传递到前台的值）为2的值为默认选中
@@ -326,4 +356,195 @@ function getViewsByProjectId(layer,form) {
 			return false;
 		}
 	});
+}
+/**
+ * monitor charts change
+ */
+function moniteChartsChange(){
+	//监控可以显示的图表display-icon
+	let categroys = document.getElementById("dragedDimesion").childElementCount;
+	let values = document.getElementById("dragedValue").childElementCount;
+	//清除之前痕迹
+	$(".fa-bar-chart").removeClass("display-icon");
+	$(".fa-line-chart").removeClass("display-icon");
+	$(".fa-pie-chart").removeClass("display-icon");
+	$(".fa-globe").removeClass("display-icon");
+	switch (categroys) {
+		case 0:
+			//仪表盘
+			switch (values) {
+				case 0:
+					//
+					break;
+				case 1:
+					//仪表盘
+					break;
+				case 2:
+					break;
+				default:
+					;
+			}
+			break;
+		case 1:
+			//表格，富文本
+			switch (values) {
+				case 0:
+					//饼图, 地图，表格
+					break;
+				case 1:
+					//折线图，柱状图，饼图, 地图，表格
+					$(".fa-bar-chart").addClass("display-icon");
+					$(".fa-line-chart").addClass("display-icon");
+					$(".fa-pie-chart").addClass("display-icon");
+					break;
+				case 2:
+					break;
+				default:
+					;
+			}
+			break;
+		case 2:
+			//表格，富文本
+			switch (values) {
+				case 0:
+					//饼图, 地图，表格
+					break;
+				case 1:
+					//饼图, 地图，表格
+					$(".fa-pie-chart").addClass("display-icon");
+					break;
+				case 2:
+					break;
+				default:
+					;
+			}
+			break;
+		case 3:
+			//表格，富文本
+			switch (values) {
+				case 0:
+					//饼图, 地图，表格
+					break;
+				case 1:
+					//饼图, 地图，表格
+					$(".fa-pie-chart").addClass("display-icon");
+					break;
+				case 2:
+					break;
+				default:
+					;
+			}
+			break;
+		default:
+
+			;
+	}
+}
+/**
+ * render graphics
+ */
+function renderGraph(obj,type){
+	console.log("type = "  + type);
+	//改变颜色  mouseclick-icon
+	console.log("this class = " + obj);
+	getDataByViewId(layer,null);
+	let retData = buildPieData(globalWidgetData);
+	let bizData = retData.showedData;
+	let legendData = retData.legendData;
+	renderPie("graphArea","饼图",legendData,bizData);
+}
+/**
+ * get view data by view id
+ * /1/getdata
+ */
+function getDataByViewId(layer,form) {
+	// 构造request data
+	let aggregators = [],
+		groups=[],
+		cache=false,
+		expired=0,
+		filters= [],
+		flush= false,
+		nativeQuery=false,
+		orders= [],
+		pageNo=0,
+		pageSize= 0;
+
+	//取category columns
+	let ret = getCategoriesAndValues();
+	aggregators = ret.aggregators;
+	groups = ret.groups;
+	//取 Filters columns //TODO:
+	let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
+		flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
+	$.ajax({
+		url: "/api/v3/views/"+viewId + "/getdata",
+		type: "POST",
+		dataType: "json",
+		data: data,
+		contentType: "application/json;charset=utf-8",
+		xhrFields: {
+			withCredentials: true //允许跨域带Cookie
+		},
+		async: false,
+		headers: {
+			"Authorization":$.cookie("token")//此处放置请求到的用户token
+		},
+		success: function (data) {
+			if (data.code == 0) {
+				//layer.msg("查询成功", {icon: 1, time: 1000});
+				console.log(data);
+
+				$.cookie("token",data.token,{
+					expires: 10
+				});
+				globalWidgetData = data;
+				return false;
+			} else {
+				layer.msg("查询失败", {icon: 2, time: 1000});
+				return false;
+			}
+		},
+		fail: function (data) {
+			layer.msg("查询失败", {icon: 2, time: 1000});
+			return false;
+		}
+	});
+}
+
+/**
+ * 获取要展示的维度和指标
+ */
+function getCategoriesAndValues(){
+	let aggregators = [],
+		groups=[];
+	let ret={};
+	//取category columns
+	let cateoryNodes = document.getElementById("dragedDimesion").childNodes;
+	let j = 0;
+	for(let i=0;i<cateoryNodes.length;i++){
+		if(i==0) continue;
+		let dataValue = cateoryNodes[i].getAttribute("data-value");
+		if(dataValue != null){
+			groups[j] = dataValue;
+			j++;
+		}
+	}
+	//取 value columns
+	let valueNodes = document.getElementById("dragedValue").childNodes;
+	let k = 0;
+	for(let i=0;i<valueNodes.length;i++){
+		if(i==0) continue;
+		let dataValue = valueNodes[i].getAttribute("data-value");
+		if(dataValue != null){
+			let temp = {};
+			temp.column = dataValue;
+			temp.func = "sum";
+			aggregators[k] = temp;
+			k++;
+		}
+	}
+	ret.aggregators=aggregators;
+	ret.groups = groups;
+	return ret;
 }
