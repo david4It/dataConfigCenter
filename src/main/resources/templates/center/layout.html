@@ -51,12 +51,12 @@
             <div style="height: 35px; width: 100%; margin-top: 5px; text-align: right">
                 <el-button size="mini" type="success" @click="dialogVisible=true; isUpdate=false">新增页面</el-button>
             </div>
-            <div style="height: 620px; width: 100%; border: solid 1px #D3D3D3; background-color: white">
-                <el-scrollbar style="height:100%">
-                    <el-tree id="tree" class="el-scrollbar" :expand-on-click-node="false" :data="layoutList" :props="defaultProps" @node-click="handleNodeClick">
+            <div style="height: 620px; width: 100%; border: solid 1px #D3D3D3; background-color: white;">
+                <el-scrollbar style="height:100%;">
+                    <el-tree id="tree" :expand-on-click-node="false" :data="layoutList" :props="defaultProps" @node-click="handleNodeClick">
                         <span class="custom-tree-node" slot-scope="{ node, data }">
                             <span :style="data.enabled === 'Y' ? 'font-size: 14px;color: green;': 'font-size: 14px;color: orange;'">{{ data.title }}</span>
-                            <span style="padding-left: 20px">
+                            <span style="padding:0 10px 0 10px">
                               <el-button
                                       style="color: #4682B4"
                                       title="编辑"
