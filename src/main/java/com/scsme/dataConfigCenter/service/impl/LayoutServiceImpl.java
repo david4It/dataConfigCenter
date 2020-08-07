@@ -54,6 +54,7 @@ public class LayoutServiceImpl implements LayoutService {
         QueryWrapper<Layout> query = new QueryWrapper<>();
         //获取所有根节点数据，用于树形结构构建
         query.eq("root", "Y");
+        query.orderByDesc("create_time");
         IPage<Layout> layoutIPage = layoutMapper.selectPage(page, query);
         result.setTotal(layoutIPage.getTotal());
         List<Layout> records = layoutIPage.getRecords();
@@ -119,8 +120,10 @@ public class LayoutServiceImpl implements LayoutService {
     public Boolean saveLayout(LayoutVO layout) {
         Layout beSave = layout.transLayout();
         beSave.setCreateTime(LocalDateTime.now());
+        boolean isRoot = layout.getParentComponentId() == null;
+        beSave.setRoot(isRoot ?  "Y" : "N");
         int insert = layoutMapper.insert(beSave);
-        if (layout.getParentComponentId() != null) {
+        if (!isRoot) {
             Layout saved = getLayout(layout.getUrl(), null);
             Component component = new Component();
             component.setId(layout.getParentComponentId());

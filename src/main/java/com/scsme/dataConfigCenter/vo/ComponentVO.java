@@ -3,6 +3,8 @@ package com.scsme.dataConfigCenter.vo;
 import com.scsme.dataConfigCenter.pojo.Component;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ComponentVO extends Component {
     private String linkUrl;
@@ -21,7 +23,7 @@ public class ComponentVO extends Component {
         component.setWidth(this.getWidth());
         component.setHeight(this.getHeight());
         component.setConfigJson(this.getConfigJson());
-        component.setCreateTime(this.getCreateTime());
+        component.setCreateTime(LocalDateTime.now());
         return component;
     }
 

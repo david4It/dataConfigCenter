@@ -1,6 +1,5 @@
 package com.scsme.dataConfigCenter.vo;
 
-import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
 import lombok.Data;
 

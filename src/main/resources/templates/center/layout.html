@@ -19,8 +19,7 @@
             display: none !important;
         }
         .container {
-            border: solid 1px grey;
-            background-color: white;
+            background-color: #283c55;
             height: 720px;
             margin: 50px 0 0 0;
             padding: 10px;
@@ -48,29 +47,45 @@
 <!--header end-->
 <div  id="main" v-cloak>
     <div class="container">
-        <div style="float: left; width: 300px; height: 660px; text-align: center; border: solid 1px #D3D3D3;">
-            <div style="height: 45px; width: 100%; margin-top: 15px; border-bottom: solid 1px #D3D3D3;">
-                <el-button size="mini" type="success">新增页面</el-button>
+        <div style="float: left; width: 300px; height: 660px; text-align: center;">
+            <div style="height: 35px; width: 100%; margin-top: 5px; text-align: right">
+                <el-button size="mini" type="success" @click="dialogVisible=true; isUpdate=false">新增页面</el-button>
             </div>
-            <div style="height: 600px; width: 100%;">
+            <div style="height: 620px; width: 100%; border: solid 1px #D3D3D3; background-color: white">
                 <el-scrollbar style="height:100%">
-                    <el-tree id="tree" class="el-scrollbar" :expand-on-click-node="false" :data="data" :props="defaultProps" @node-click="handleNodeClick">
+                    <el-tree id="tree" class="el-scrollbar" :expand-on-click-node="false" :data="layoutList" :props="defaultProps" @node-click="handleNodeClick">
                         <span class="custom-tree-node" slot-scope="{ node, data }">
-                            <span>{{ node.label }}</span>
+                            <span :style="data.enabled === 'Y' ? 'font-size: 14px;color: green;': 'font-size: 14px;color: orange;'">{{ data.title }}</span>
                             <span style="padding-left: 20px">
                               <el-button
                                       style="color: #4682B4"
+                                      title="编辑"
                                       type="text"
-                                      size="mini"
-                                      @click="() => append(data)">
-                                编辑
+                                      icon="el-icon-edit-outline"
+                                      @click="() => handleEdit(data)">
                               </el-button>
                               <el-button
                                       style="color: #CD5C5C"
+                                      title="删除"
                                       type="text"
-                                      size="mini"
-                                      @click="() => remove(node, data)">
-                                删除
+                                      icon="el-icon-delete"
+                                      @click="() => handleDelete(data)">
+                              </el-button>
+                              <el-button
+                                      v-show="data.enabled==='N'"
+                                      style="color: green"
+                                      title="启用"
+                                      type="text"
+                                      icon="el-icon-document-checked"
+                                      @click="() => handleStatusChange(data, 'Y')">
+                              </el-button>
+                              <el-button
+                                      v-show="data.enabled==='Y'"
+                                      style="color: orange"
+                                      title="禁用"
+                                      type="text"
+                                      icon="el-icon-document-delete"
+                                      @click="() => handleStatusChange(data, 'N')">
                               </el-button>
                             </span>
                         </span>
@@ -78,8 +93,11 @@
                 </el-scrollbar>
             </div>
         </div>
-        <div style="float:right; width: calc(100% - 330px); height: calc(100% - 60px); overflow-y: auto; border: solid 1px #D3D3D3;">
-            <graph></graph>
+        <div style="float: right; width: calc(100% - 330px); height: 40px;">
+            <div style="color: #adc1da; font-size: 18px; font-weight: bold">{{ graphLayoutTitle }}</div>
+        </div>
+        <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
+            <graph :layout_id="graphLayoutId"></graph>
         </div>
         <div style="float: left; width: 100%; height: 40px;">
             <div style="padding: 20px 100px 0 100px; text-align: center">
@@ -95,6 +113,45 @@
             </div>
         </div>
     </div>
+
+    <el-dialog
+            :title="isUpdate ? '更新' : '新增'"
+            :visible.sync="dialogVisible"
+            width="30%"
+            @closed="handleClose">
+        <el-form ref="dataForm" :model="layout" label-width="140px" :rules="rules">
+            <el-form-item label="标题" prop="title">
+                <el-input v-model="layout.title"></el-input>
+            </el-form-item>
+            <el-form-item label="模板" prop="templateName"
+                          :rules="[{required: true, validator: validateCheckbox}]">
+                <div style="overflow: hidden; height: 150px; overflow-y:scroll;">
+                    <el-checkbox v-model="thumb.checked" v-for="thumb in thumbnails" :key="thumb.value" @change="checkboxChanged(thumb.value)" bordar>
+                        <el-popover
+                                placement="right"
+                                trigger="hover">
+                            <img style="width: 800px" :src="'/img/center/template/' + thumb.value"/>
+                            <img slot="reference" :src="'/img/center/template/' + thumb.value"  style="width: 200px">
+                        </el-popover>
+                    </el-checkbox>
+                </div>
+            </el-form-item>
+            <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
+                <el-input v-model="layout.url"></el-input>
+            </el-form-item>
+            <el-form-item label="创建时间" v-show="isUpdate">
+                <el-input v-model="layout.createTime" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="更新时间" v-show="isUpdate">
+                <el-input v-model="layout.lastUpdateTime" disabled></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button v-if="!isUpdate" type="primary" @click="createLayout">创 建</el-button>
+                <el-button v-if="isUpdate" type="primary" @click="updateLayout">更 新</el-button>
+            </span>
+    </el-dialog>
 </div>
 <script type="text/javascript" src="/js/pages/center/header.js"></script>
 <script type="text/javascript" src="/js/pages/center/layout.js"></script>
