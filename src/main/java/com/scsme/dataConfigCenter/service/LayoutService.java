@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface LayoutService {
     List<LayoutVO> list(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize);
-    List<LayoutVO> treeList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize);
+    List<LayoutVO> treePageList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize);
+    List<LayoutVO> treeList();
     List<LayoutVO> enabledLayouts();
     Boolean deleteLayout(Long id);
     Boolean saveLayout(LayoutVO layout);

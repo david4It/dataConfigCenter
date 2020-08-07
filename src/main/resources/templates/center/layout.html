@@ -53,7 +53,14 @@
             </div>
             <div style="height: 620px; width: 100%; border: solid 1px #D3D3D3; background-color: white;">
                 <el-scrollbar style="height:100%;">
-                    <el-tree id="tree" :expand-on-click-node="false" :data="layoutList" :props="defaultProps" @node-click="handleNodeClick">
+                    <el-tree ref="tree"
+                             node-key="id"
+                             highlight-current
+                             :expand-on-click-node="false"
+                             :default-expanded-keys="defaultExpandKeys"
+                             :data="layoutList"
+                             :props="defaultProps"
+                             @node-click="handleNodeClick">
                         <span class="custom-tree-node" slot-scope="{ node, data }">
                             <span :style="data.enabled === 'Y' ? 'font-size: 14px;color: green;': 'font-size: 14px;color: orange;'">{{ data.title }}</span>
                             <span style="padding:0 10px 0 10px">
@@ -98,19 +105,6 @@
         </div>
         <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
             <graph :layout_id="graphLayoutId"></graph>
-        </div>
-        <div style="float: left; width: 100%; height: 40px;">
-            <div style="padding: 20px 100px 0 100px; text-align: center">
-                <el-pagination
-                        background
-                        layout="total, prev, pager, next"
-                        v-show="pageInfo.total>0"
-                        :total="pageInfo.total"
-                        :current-page="pageInfo.pageNo"
-                        :page-size.sync="pageInfo.pageSize"
-                        @current-change="getPageLayoutList">
-                </el-pagination>
-            </div>
         </div>
     </div>
 

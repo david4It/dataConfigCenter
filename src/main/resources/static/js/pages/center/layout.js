@@ -1,7 +1,7 @@
 new Vue({
     el: '#main',
     data: {
-        pageInfo: {total: 10, pageNo: 1, pageSize: 10},
+        defaultExpandKeys: [],
         isUpdate: false,
         dialogVisible: false,
         layout: { enabled: 'N' },
@@ -30,20 +30,21 @@ new Vue({
         this.getThumbnails();
     },
     methods: {
-        getLayoutList(pageNo = 1) {
+        getLayoutList() {
             let me = this;
-            service.get('/layout/treeList', {
-                params: {
-                    pageNo: pageNo,
-                    pageSize: this.pageInfo.pageSize
-                }
-            }).then(function (res) {
+            service.get('/layout/treeList').then(function (res) {
                 if (!res.data.success) {
                     me.$message.error(res.data.message);
                     return;
                 }
                 me.layoutList = res.data.result;
-                me.pageInfo.total = res.data.total;
+                if (me.graphLayoutId) {
+                    //若已经选中了layout进行更新，则数据重新load完成之后，要默认选中
+                    me.defaultExpandKeys.push(me.graphLayoutId);
+                    me.$nextTick(function(){
+                        me.$refs.tree.setCurrentKey(me.graphLayoutId);
+                    })
+                }
             }).catch(err => {
                 me.$message.error("获取布局列表数据失败！");
             })
@@ -226,11 +227,6 @@ new Vue({
                 message: msg,
                 type: 'success'
             });
-        },
-        getPageLayoutList(pageNo) {
-            let me = this;
-            me.pageInfo.pageNo = pageNo;
-            me.getLayoutList(pageNo);
         },
         handleNodeClick(data) {
             this.graphLayoutId = data.id;

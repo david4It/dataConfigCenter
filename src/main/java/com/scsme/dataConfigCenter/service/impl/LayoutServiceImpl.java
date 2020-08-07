@@ -48,7 +48,7 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public List<LayoutVO> treeList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize) {
+    public List<LayoutVO> treePageList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize) {
         List<LayoutVO> vos = new ArrayList<>();
         Page<Layout> page = new Page<>(pageNo, pageSize);
         QueryWrapper<Layout> query = new QueryWrapper<>();
@@ -58,6 +58,22 @@ public class LayoutServiceImpl implements LayoutService {
         IPage<Layout> layoutIPage = layoutMapper.selectPage(page, query);
         result.setTotal(layoutIPage.getTotal());
         List<Layout> records = layoutIPage.getRecords();
+        records.forEach((r) -> {
+            LayoutVO vo = new LayoutVO().convert(r);
+            recursionBuildLayout(r.getId(), vo.getChildren());
+            vos.add(vo);
+        });
+        return vos;
+    }
+
+    @Override
+    public List<LayoutVO> treeList() {
+        List<LayoutVO> vos = new ArrayList<>();
+        QueryWrapper<Layout> query = new QueryWrapper<>();
+        //获取所有根节点数据，用于树形结构构建
+        query.eq("root", "Y");
+        query.orderByDesc("create_time");
+        List<Layout> records = layoutMapper.selectList(query);
         records.forEach((r) -> {
             LayoutVO vo = new LayoutVO().convert(r);
             recursionBuildLayout(r.getId(), vo.getChildren());
