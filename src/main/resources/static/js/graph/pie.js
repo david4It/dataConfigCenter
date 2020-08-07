@@ -6,8 +6,8 @@
  * @param data
  */
 function renderPie(id,title,legendData,data) {
-    var myCharts1 = echarts.init(document.getElementById(id));
-    var option1 = {
+    let myCharts1 = echarts.init(document.getElementById(id));
+    let option1 = {
         title: {
             text: title,
             left: 'center',
@@ -38,7 +38,88 @@ function renderPie(id,title,legendData,data) {
     };
     myCharts1.setOption(option1);
 }
+/**
+ * 渲染图片
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderBar(id,title,legendData,data) {
+    let myCharts1 = echarts.init(document.getElementById(id));
+    let option1 = {
+        title: {
+            text: title,
+            left: 'center',
+            top: 20,
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {d}%"
+        },
 
+        xAxis: {
+            type: 'category',
+            data: legendData
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series : [{
+            data: data,
+            type: 'bar',
+            radius: '55%',
+            center: ['50%', '60%'],
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+    myCharts1.setOption(option1);
+}
+/**
+ * 渲染图片
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderLine(id,title,legendData,data) {
+    let myCharts1 = echarts.init(document.getElementById(id));
+    let option1 = {
+        title: {
+            text: title,
+            left: 'center',
+            top: 20,
+        },
+
+        xAxis: {
+            type: 'category',
+            data: legendData
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series : [{
+            data: data,
+            type: 'line',
+            radius: '55%',
+            center: ['50%', '60%'],
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+    myCharts1.setOption(option1);
+}
 /**
  * build legendData & showed data.
  * @param data

@@ -23,7 +23,6 @@ layui.define(function(exports) {
 	});
 });
 
-let myData=new Array();
 let colsData;
 let model = {};
 let editor,viewId;
@@ -126,6 +125,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 				if (data.code == 0) {
 					//layer.msg("查询成功", {icon: 1, time: 1000});
 					//console.log(data.data.model);
+					model = data.data.model;
 					$('#valueType').empty();
 					$('#categoryType').empty();
 					let jsonModel = JSON.parse(data.data.model);
@@ -254,32 +254,30 @@ function cancel(){
 /**
  * 保存模型数据
  */
-function saveModel() {
-	//取数据模型
-	for(let i in colsData){
-		let one = {};
-		one.visualType=colsData[i].visualType;
-		one.modelType=colsData[i].modelType;
-		one.sqlType=colsData[i].type;
-		model[colsData[i].name]= one;
-	}
-	//console.log("model json: ", model);
-
-	//取data source
-	let sourceId = 1;//$("#source").val();
-	let sourceName = "eps";//$("#source").text;
-	let source = {};
-	source.id = sourceId;
-	source.name=sourceName;
-
+function saveWidget() {
 	let projectId = 1;
 	let name = $("#name").val();
 	let description = $("#description").val();
-	let sql = editor.getValue();
+	//取category columns
+	let ret = getCategoriesAndValues();
+	let aggregators = ret.aggregators;
+	let groups = ret.groups;
+
+	let config={};
+	config.mode="chart";
+	config.model = model;
+	config.cache = false;
+	config.expired = 300;
+	config.autoLoadData = true;
+	config.selectedChart = 3;
+	config.cols = buildCols(groups);
+	config.metrics = buildMetrics(aggregators);
+	config.filters = buildFilters();
+	config.control = buildControl();
 	$.ajax({
-		url: "/api/v3/views",
+		url: "/api/v3/widgets",
 		type: "Post",
-		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description}),
+		data: JSON.stringify({"projectId":projectId,"viewId":viewId,"name":name,"type":1,"uid":$.cookie("uid"),"config":JSON.stringify(config),"description":description,"publish":true}),
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		xhrFields: {
@@ -451,7 +449,22 @@ function renderGraph(obj,type){
 	let retData = buildPieData(globalWidgetData);
 	let bizData = retData.showedData;
 	let legendData = retData.legendData;
-	renderPie("graphArea","饼图",legendData,bizData);
+	switch (type) {
+		case "pie":
+			renderPie("graphArea","",legendData,bizData);
+			break;
+		case "line":
+			renderLine("graphArea","",legendData,bizData);
+			break;
+		case "bar":
+			renderBar("graphArea","",legendData,bizData);
+			break;
+		case "map":
+			renderPie("graphArea","",legendData,bizData);
+			break;
+		default:
+			break;
+	}
 }
 /**
  * get view data by view id
@@ -547,4 +560,58 @@ function getCategoriesAndValues(){
 	ret.aggregators=aggregators;
 	ret.groups = groups;
 	return ret;
+}
+
+/**
+ * build cols to show graph
+ * @param groups []
+ * @returns {Array}
+ */
+function buildCols(groups){
+	let cols = [];
+	let i = 0;
+	let jsonModel = JSON.parse(model);
+	for( let prop in jsonModel){
+		for(let j in groups){
+			let group = groups[j];
+			if(prop !== group ) continue;
+			let oneCol = {};
+			oneCol.name = prop;
+			let tmp = jsonModel[prop];
+			oneCol.visualType = tmp.visualType;
+			oneCol.type = tmp.modeType;
+			oneCol.config = true;
+			oneCol.field={alias: "",desc:"",useExpression:false}
+			cols[i] = oneCol;
+		}
+	}
+	return cols;
+}
+function  buildMetrics(aggregators){
+	let cols = [];
+	let i = 0;
+	let jsonModel = JSON.parse(model);
+	for( let prop in jsonModel){
+		for(let j in aggregators){
+			let aggregator = aggregators[j].column;
+			if(prop !== aggregator ) continue;
+			let oneCol = {};
+			oneCol.name = prop;
+			let tmp = jsonModel[prop];
+			oneCol.visualType = tmp.visualType;
+			oneCol.type = "value";
+			oneCol.config = true;
+			oneCol.field={alias: "",desc:"",useExpression:false}
+			cols[i] = oneCol;
+		}
+	}
+	return cols;
+}
+function  buildFilters(){
+	let filters = [];
+	return filters;
+}
+function  buildControl(){
+	let control = [];
+	return control;
 }

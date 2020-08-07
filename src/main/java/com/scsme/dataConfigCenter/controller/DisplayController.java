@@ -75,7 +75,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity createDisplay(@Valid @RequestBody DisplayInfo displayInfo,
                                         @ApiIgnore BindingResult bindingResult,
                                         @ApiIgnore @CurrentUser User user,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -100,7 +102,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity updateDisplay(@Valid @RequestBody DisplayUpdate display,
                                         @ApiIgnore BindingResult bindingResult,
                                         @ApiIgnore @CurrentUser User user,
-                                        @PathVariable Long id, HttpServletRequest request) {
+                                        @PathVariable Long id, HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -128,7 +132,9 @@ public class DisplayController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteDisplay(@PathVariable Long id,
                                         @ApiIgnore @CurrentUser User user,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid display id");
@@ -157,7 +163,9 @@ public class DisplayController extends BaseController {
                                              @ApiIgnore BindingResult bindingResult,
                                              @PathVariable("id") Long displayId,
                                              @ApiIgnore @CurrentUser User user,
-                                             HttpServletRequest request) {
+                                             HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -188,7 +196,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity updateDisplaySlide(@Valid @RequestBody DisplaySlide[] displaySlides,
                                              @ApiIgnore BindingResult bindingResult,
                                              @ApiIgnore @CurrentUser User user,
-                                             @PathVariable("id") Long displayId, HttpServletRequest request) {
+                                             @PathVariable("id") Long displayId, HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -222,7 +232,9 @@ public class DisplayController extends BaseController {
     @DeleteMapping("/slides/{slideId}")
     public ResponseEntity deleteDisplaySlide(@PathVariable("slideId") Long slideId,
                                              @ApiIgnore @CurrentUser User user,
-                                             HttpServletRequest request) {
+                                             HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(slideId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid display slide id");
@@ -252,7 +264,9 @@ public class DisplayController extends BaseController {
                                                     @Valid @RequestBody MemDisplaySlideWidgetCreate[] slideWidgetCreates,
                                                     @ApiIgnore BindingResult bindingResult,
                                                     @ApiIgnore @CurrentUser User user,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request,
+                                                    @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(displayId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid display id");
@@ -307,7 +321,9 @@ public class DisplayController extends BaseController {
                                                        @Valid @RequestBody MemDisplaySlideWidgetDto[] memDisplaySlideWidgets,
                                                        @ApiIgnore BindingResult bindingResult,
                                                        @ApiIgnore @CurrentUser User user,
-                                                       HttpServletRequest request) {
+                                                       HttpServletRequest request,
+                                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(displayId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid display id");
@@ -361,7 +377,9 @@ public class DisplayController extends BaseController {
                                                       @Valid @RequestBody MemDisplaySlideWidget memDisplaySlideWidget,
                                                       @ApiIgnore BindingResult bindingResult,
                                                       @ApiIgnore @CurrentUser User user,
-                                                      HttpServletRequest request) {
+                                                      HttpServletRequest request,
+                                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -390,7 +408,9 @@ public class DisplayController extends BaseController {
     @DeleteMapping("/slides/widgets/{relationId}")
     public ResponseEntity deleteMemDisplaySlideWidget(@PathVariable("relationId") Long relationId,
                                                       @ApiIgnore @CurrentUser User user,
-                                                      HttpServletRequest request) {
+                                                      HttpServletRequest request,
+                                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(relationId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid relation id");
@@ -413,7 +433,9 @@ public class DisplayController extends BaseController {
     @GetMapping
     public ResponseEntity getDisplays(@RequestParam Long projectId,
                                       @ApiIgnore @CurrentUser User user,
-                                      HttpServletRequest request) {
+                                      HttpServletRequest request,
+                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(projectId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid project id");
@@ -436,7 +458,9 @@ public class DisplayController extends BaseController {
     @GetMapping("/{id}/slides")
     public ResponseEntity getDisplaySlide(@PathVariable Long id,
                                           @ApiIgnore @CurrentUser User user,
-                                          HttpServletRequest request) {
+                                          HttpServletRequest request,
+                                          @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid Display id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -460,7 +484,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity getDisplaySlideWidgets(@PathVariable("displayId") Long displayId,
                                                  @PathVariable("slideId") Long slideId,
                                                  @ApiIgnore @CurrentUser User user,
-                                                 HttpServletRequest request) {
+                                                 HttpServletRequest request,
+                                                 @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(displayId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid Display id");
@@ -492,7 +518,9 @@ public class DisplayController extends BaseController {
                                                    @PathVariable("slideId") Long slideId,
                                                    @RequestBody Long[] ids,
                                                    @ApiIgnore @CurrentUser User user,
-                                                   HttpServletRequest request) {
+                                                   HttpServletRequest request,
+                                                   @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(displayId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid Display id");
@@ -526,7 +554,6 @@ public class DisplayController extends BaseController {
     public ResponseEntity uploadAvatar(@RequestParam("coverImage") MultipartFile file,
                                        HttpServletRequest request) {
 
-
         if (file.isEmpty() || StringUtils.isEmpty(file.getOriginalFilename())) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("file can not be EMPTY");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -551,7 +578,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity uploadSlideBGImage(@PathVariable Long slideId,
                                              @RequestParam("backgroundImage") MultipartFile file,
                                              @ApiIgnore @CurrentUser User user,
-                                             HttpServletRequest request) {
+                                             HttpServletRequest request,
+                                             @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(slideId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid slide id");
@@ -581,7 +610,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity uploadSlideSubWidgetBGImage(@PathVariable Long relationId,
                                                       @RequestParam("backgroundImage") MultipartFile file,
                                                       @ApiIgnore @CurrentUser User user,
-                                                      HttpServletRequest request) {
+                                                      HttpServletRequest request,
+                                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(relationId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid relation id");
@@ -611,7 +642,9 @@ public class DisplayController extends BaseController {
     public ResponseEntity shareDisplay(@PathVariable Long id,
                                        @RequestParam(required = false) String username,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -669,7 +702,9 @@ public class DisplayController extends BaseController {
                                       @Valid @RequestBody DisplayCopy copy,
                                       @ApiIgnore BindingResult bindingResult,
                                       @ApiIgnore @CurrentUser User user,
-                                      HttpServletRequest request) {
+                                      HttpServletRequest request,
+                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");

@@ -66,7 +66,9 @@ public class WidgetController extends BaseController {
     @GetMapping
     public ResponseEntity getWidgets(@RequestParam Long projectId,
                                      @ApiIgnore @CurrentUser User user,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request,
+                                     @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(projectId)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid project id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -89,7 +91,9 @@ public class WidgetController extends BaseController {
     @GetMapping("/{id}")
     public ResponseEntity getWidgetInfo(@PathVariable Long id,
                                         @ApiIgnore @CurrentUser User user,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -113,7 +117,9 @@ public class WidgetController extends BaseController {
     public ResponseEntity createWidgets(@Valid @RequestBody WidgetCreate widget,
                                         @ApiIgnore BindingResult bindingResult,
                                         @ApiIgnore @CurrentUser User user,
-                                        HttpServletRequest request) {
+                                        HttpServletRequest request,
+                                        @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -140,7 +146,9 @@ public class WidgetController extends BaseController {
                                        @Valid @RequestBody WidgetUpdate widget,
                                        @ApiIgnore BindingResult bindingResult,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (bindingResult.hasErrors()) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message(bindingResult.getFieldErrors().get(0).getDefaultMessage());
@@ -169,7 +177,9 @@ public class WidgetController extends BaseController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteWidget(@PathVariable Long id,
                                        @ApiIgnore @CurrentUser User user,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request,
+                                       @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
 
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
@@ -196,7 +206,9 @@ public class WidgetController extends BaseController {
                                          @Valid @RequestBody ViewExecuteParam executeParam,
                                          @ApiIgnore BindingResult bindingResult,
                                          @ApiIgnore @CurrentUser User user,
-                                         HttpServletRequest request) {
+                                         HttpServletRequest request,
+                                         @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
@@ -226,7 +238,9 @@ public class WidgetController extends BaseController {
     public ResponseEntity shareWidget(@PathVariable Long id,
                                       @RequestParam(required = false) String username,
                                       @ApiIgnore @CurrentUser User user,
-                                      HttpServletRequest request) {
+                                      HttpServletRequest request,
+                                      @CookieValue("uid") String uid) {
+        user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
