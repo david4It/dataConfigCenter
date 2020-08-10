@@ -109,7 +109,7 @@ public class LayoutServiceImpl implements LayoutService {
                     c.setLink(null);
                     result = componentMapper.updateById(c) > 0;
                     if (!result) {
-                        return false;
+                        throw new RuntimeException("更新组件的link属性失败！");
                     }
                 }
             }
@@ -122,14 +122,14 @@ public class LayoutServiceImpl implements LayoutService {
                     if (c.getLink() != null) {
                        result = deleteLayout(c.getLink());
                        if (!result) {
-                           return false;
+                           throw new RuntimeException("递归删除组件失败！");
                        }
                     }
+                    componentMapper.deleteById(c.getId());
                 }
-                result = componentMapper.deletComponenets(id) > 0;
             }
         }
-        return result;
+        return true;
     }
 
     @Override

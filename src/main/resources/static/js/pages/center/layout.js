@@ -180,6 +180,7 @@ new Vue({
                         return;
                     }
                     me.dialogVisible = false;
+                    me.graphLayoutId = null;
                     me.successMsg(res.data.message);
                     me.getLayoutList();
                 }).catch(err => {

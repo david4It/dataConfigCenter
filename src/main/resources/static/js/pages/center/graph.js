@@ -47,6 +47,8 @@ Vue.component('graph', {
         layout_id(val) {
            if (val) {
                this.loadComponents(val);
+           } else {
+               this.components.length = 0;
            }
         }
     },
