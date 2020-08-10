@@ -181,6 +181,7 @@ new Vue({
                     }
                     me.dialogVisible = false;
                     me.graphLayoutId = null;
+                    me.graphLayoutTitle = null;
                     me.successMsg(res.data.message);
                     me.getLayoutList();
                 }).catch(err => {

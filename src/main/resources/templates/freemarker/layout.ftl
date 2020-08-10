@@ -10,4 +10,4 @@
     </dv-border-box-8>
     <dv-loading><span style="font-size: 16px;color: white">Loading...</span></dv-loading>
 </div>
-</#list>+
+</#list>

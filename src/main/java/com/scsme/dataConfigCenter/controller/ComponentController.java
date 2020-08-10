@@ -1,5 +1,6 @@
 package com.scsme.dataConfigCenter.controller;
 
+import com.scsme.dataConfigCenter.graphical.GraphicalFactory;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.Result;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/component")

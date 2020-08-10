@@ -76,9 +76,12 @@ public class SqlParserController {
             }
             result.success("解析SQL语句成功！");
             result.setResult(list);
+        } catch (JSQLParserException e) {
+            e.printStackTrace();
+            result.error500("SQL存在语法错误！");
         } catch (Exception e) {
             e.printStackTrace();
-            result.error500("解析SQL语句失败！");
+            result.error500("校验SQL语句失败！");
         }
         return result;
     }

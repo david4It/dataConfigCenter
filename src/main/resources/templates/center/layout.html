@@ -23,7 +23,7 @@
             height: 720px;
             margin: 50px 0 0 0;
             padding: 10px;
-            text-align: center;
+            /*text-align: center;*/
         }
 
         .el-scrollbar .el-scrollbar__wrap {
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div style="float: right; width: calc(100% - 330px); height: 40px;">
-            <div style="color: #adc1da; font-size: 18px; font-weight: bold">{{ graphLayoutTitle }}</div>
+            <div style="color: #adc1da; font-size: 18px; font-weight: bold; text-align: center">{{ graphLayoutTitle }}</div>
         </div>
         <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
             <graph :layout_id="graphLayoutId"></graph>
