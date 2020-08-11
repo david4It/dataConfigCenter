@@ -9,6 +9,6 @@ import java.util.Map;
 
 @Mapper
 public interface LayoutMapper extends BaseMapper<Layout> {
-    @Select("SELECT url, enabled FROM Layout WHERE id = #{id}")
+    @Select("SELECT url, enabled, title FROM Layout WHERE id = #{id}")
     Map<String, String> getLayoutUrl(Long id);
 }

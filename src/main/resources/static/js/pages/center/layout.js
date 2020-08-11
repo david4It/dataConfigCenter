@@ -4,7 +4,7 @@ new Vue({
         defaultExpandKeys: [],
         isUpdate: false,
         dialogVisible: false,
-        layout: { enabled: 'N', root: 'Y' },
+        layout: {},
         graphLayoutId: null,
         graphLayoutTitle: null,
         layoutList: [],

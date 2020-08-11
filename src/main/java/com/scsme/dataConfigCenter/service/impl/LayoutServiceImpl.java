@@ -107,6 +107,7 @@ public class LayoutServiceImpl implements LayoutService {
             if (componentList != null && componentList.size() > 0) {
                 for (Component c: componentList) {
                     c.setLink(null);
+                    c.setParams(null);
                     result = componentMapper.updateById(c) > 0;
                     if (!result) {
                         throw new RuntimeException("更新组件的link属性失败！");
@@ -134,6 +135,8 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Boolean saveLayout(LayoutVO layout) {
+        layout.setRoot("Y");
+        layout.setEnabled("N");
         Layout beSave = layout.transLayout();
         beSave.setCreateTime(LocalDateTime.now());
         return layoutMapper.insert(beSave) > 0;
@@ -142,6 +145,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public Long saveSubLayout(LayoutVO layout) {
         layout.setRoot("N");
+        layout.setEnabled("N");
         if (saveLayout(layout)) {
             QueryWrapper<Layout> query = new QueryWrapper<>();
             query.eq("url", layout.getUrl());

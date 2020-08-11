@@ -149,7 +149,7 @@ Vue.component('graph', {
             components: [],
             component: {},
             params: [],
-            subLayout: { enabled: 'N'},
+            subLayout: {},
             thumbnails: [],
             isUpdate: false,
             selections: [],
@@ -191,7 +191,7 @@ Vue.component('graph', {
             if (!val) {
                 this.resetCheckbox();
                 this.$refs["subDataForm"].clearValidate();
-                this.layout = { enabled: 'N'};
+                this.subLayout = {};
                 if (JSON.stringify(this.subLayout) === '{}') {
                     this.component.redirect = 'N';
                 }
@@ -228,20 +228,6 @@ Vue.component('graph', {
         }
     },
     methods: {
-        getThumbnails() {
-            let me = this;
-            service.get('/layout/template/thumbnails').then(function (res) {
-                if (!res.data.success) {
-                    me.$message.error(res.data.message);
-                    return;
-                }
-                res.data.result.forEach((name) => {
-                    me.thumbnails.push({checked: false, value: name})
-                });
-            }).catch(err => {
-                me.$message.error("获取缩略图数据失败！");
-            })
-        },
         loadComponents(id) {
             let me = this;
             me.components.length = 0;
@@ -256,6 +242,11 @@ Vue.component('graph', {
                 }
                 res.data.result.forEach(item => {
                     me.components.push(item);
+                    if (item.link) {
+                        item.redirect = 'Y';
+                    } else {
+                        item.redirect = 'N';
+                    }
                     item.desField = item.categoryValuePattern.split(":")[0];
                     item.valueField = item.categoryValuePattern.split(":")[1];
                     item.i = item.locationIndex;
@@ -269,6 +260,11 @@ Vue.component('graph', {
         editComponent(c) {
             let me = this;
             me.isUpdate = true;
+            if (c.link) {
+                me.subLayout.url = c.linkUrl;
+                me.subLayout.title = c.linkTitle;
+                me.params = c.params.split(",");
+            }
             me.component = Object.assign({}, c);
             me.currentSql = c.query;
             me.dialogVisible = true;
@@ -382,6 +378,20 @@ Vue.component('graph', {
                 callback();
             }
         },
+        getThumbnails() {
+            let me = this;
+            service.get('/layout/template/thumbnails').then(function (res) {
+                if (!res.data.success) {
+                    me.$message.error(res.data.message);
+                    return;
+                }
+                res.data.result.forEach((name) => {
+                    me.thumbnails.push({checked: false, value: name})
+                });
+            }).catch(err => {
+                me.$message.error("获取缩略图数据失败！");
+            })
+        },
         deleteComponent(i) {
             let me = this;
             this.$confirm('若此组件包含跳转的子页面，则子页面也会一并被删除，是否继续此操作？', '提示', {
@@ -433,34 +443,29 @@ Vue.component('graph', {
             let me = this;
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
-                    let beSaved = null;
+                    me.component.params = me.params.length > 0 ? me.params.toString() : null;
                     if (!me.isUpdate) {
                         //新增组件位置默认在第一个位置
                         let baseInfo = {x: 0, y: 0, w: 25, h: 5, i: me.components.length};
                         let result = Object.assign(baseInfo, me.component);
                         me.components.push(result);
-                        beSaved = result;
+                        if (JSON.stringify(me.subLayout) !== "{}") {
+                            service.post("/layout/createSubLayout", me.subLayout).then(res => {
+                                if (!res.data.success) {
+                                    me.$message.error(res.data.message);
+                                    return;
+                                }
+                                beSaved.link = res.data.result;
+                                me.saveComponents();
+                            }).catch(err => {
+                                me.$message.error("保存子页面失败！");
+                            })
+                        }
                     } else {
                         let index = me.components.findIndex(c => {
                             return c.i === me.component.i;
                         });
                         me.components[index] = me.component;
-                        beSaved = me.components[index];
-                    }
-                    if (JSON.stringify(me.subLayout) !== "{}") {
-                        //保存子页面对象
-                        service.post("/layout/createSubLayout", me.subLayout).then(res => {
-                            if (!res.data.success) {
-                                me.$message.error(res.data.message);
-                                return;
-                            }
-                            beSaved.link = res.data.result;
-                            beSaved.params = me.params.toString();
-                            me.saveComponents();
-                        }).catch(err => {
-                            me.$message.error("保存子页面失败！");
-                        })
-                    } else {
                         me.saveComponents();
                     }
                 } else {
@@ -483,7 +488,7 @@ Vue.component('graph', {
             let me = this;
             me.subDialogVisible = val === 'Y';
             if (val === 'N') {
-                me.subLayout = {enabled: 'N'};
+                me.subLayout = {};
             }
         },
         successMsg(msg) {

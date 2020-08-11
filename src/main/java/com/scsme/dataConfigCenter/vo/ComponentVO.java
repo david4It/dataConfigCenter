@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @Data
 public class ComponentVO extends Component {
     private String linkUrl;
+    private String linkTitle;
+    private String linkEnabled;
     public Component trans(){
         Component component = new Component();
         component.setLayoutId(this.getLayoutId());

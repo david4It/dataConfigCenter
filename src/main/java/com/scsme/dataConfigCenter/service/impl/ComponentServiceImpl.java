@@ -46,9 +46,9 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
             ComponentVO convert = new ComponentVO().convert(c);
             if (c.getLink() != null) {
                 Map<String, String> resultMap = layoutMapper.getLayoutUrl(c.getLink());
-                if ("Y".equals(resultMap.get("enabled"))) {
-                    convert.setLinkUrl(resultMap.get("url"));
-                }
+                convert.setLinkEnabled(resultMap.get("enabled"));
+                convert.setLinkUrl(resultMap.get("url"));
+                convert.setLinkTitle(resultMap.get("title"));
             }
             vos.add(convert);
         });

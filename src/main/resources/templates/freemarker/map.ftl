@@ -14,7 +14,7 @@
                     data: chengdu.list
                 }]
             });
-            <#if vo.getLinkUrl()??>
+            <#if vo.getLinkEnabled() == "Y">
             myChart.on("click", (param) => {
                 console.log(param);
                 forwardUrl({areaCode: param.data.areaCode}, "${vo.getLinkUrl()}")
