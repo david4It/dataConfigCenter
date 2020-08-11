@@ -25,70 +25,133 @@ Vue.component('graph', {
                 </div>
             </div>
         </grid-item>
-        <div v-show="layout_id" style="z-index: 9999; position:fixed; right: 40px; top: 60%;" title="新增">
-           <el-button type="primary" icon="el-icon-plus" circle @click="addComponent"></el-button>
+        <div v-show="layout_id" style="z-index: 1; position:fixed; right: 40px; top: 60%;" title="新增">
+           <el-button type="primary" icon="el-icon-plus" circle @click="dialogVisible = true"></el-button>
         </div>        
-        <div v-show="layout_id" style="z-index: 9999; position:fixed; right: 40px; top: 66%;" title="保存">
+        <div v-show="layout_id && components.length > 0" style="z-index: 1; position:fixed; right: 40px; top: 66%;" title="保存">
            <el-button type="success" icon="el-icon-check" circle @click="saveComponents"></el-button>
         </div>
-            <el-dialog
-                title="编辑"
-                :visible.sync="dialogVisible"
-                width="30%"
-                :show-close="false">
-            <el-form ref="dataForm" :model="component" label-width="140px" :rules="rules">
-                <el-form-item label="标题" prop="title">
-                    <el-input v-model="component.title"></el-input>
+        
+        <el-dialog 
+            title="新增子页面"
+            :visible.sync="subDialogVisible"
+            width="30%"
+            :show-close="false">
+            <el-form ref="subDataForm" :model="subLayout" label-width="140px">
+                <el-form-item label="标题" prop="title"
+                            :rules="[{required: true, validator: validateTitle}]">
+                    <el-input v-model="subLayout.title"></el-input>
+                 </el-form-item>
+                <el-form-item label="模板" prop="templateName"
+                          :rules="[{required: true, validator: validateCheckbox}]">
+                    <div style="overflow: hidden; height: 150px; overflow-y:scroll;">
+                        <el-checkbox v-model="thumb.checked" v-for="thumb in thumbnails" :key="thumb.value" @change="checkboxChanged(thumb.value)" bordar>
+                            <el-popover
+                                    placement="right"
+                                    trigger="hover">
+                                <img style="width: 800px" :src="'/img/center/template/' + thumb.value"/>
+                                <img slot="reference" :src="'/img/center/template/' + thumb.value"  style="width: 200px">
+                            </el-popover>
+                        </el-checkbox>
+                    </div>
                 </el-form-item>
-                <el-form-item label="图表类型" prop="type">
-                    <el-select v-model="component.type" placeholder="请选择">
-                        <el-option
-                          v-for="item in options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                </el-form-item>
-                <el-form-item label="SQL语句" prop="query"
-                    :rules="[{required: true, validator: validateSql, trigger: 'blur'}]">
-                    <el-input type="textarea"
-                     :autosize="{ minRows: 3, maxRows: 6}"
-                     v-model="component.query"></el-input>
-                </el-form-item>
-                <el-form-item v-if="selections.length > 0" label="描述字段" prop="desField"
-                    :rules="[{required: true, validator: validateDesField, trigger: 'blur'}]">
-                    <el-select v-model="component.desField" placeholder="请选择">
-                        <el-option
-                          v-for="item in selections"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                </el-form-item>
-                <el-form-item v-if="selections.length > 0" label="数值字段" prop="valueField"
-                    :rules="[{required: true, validator: validateValueField, trigger: 'blur'}]">
-                    <el-select v-model="component.valueField" placeholder="请选择">
-                        <el-option
-                          v-for="item in selections"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
+                <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
+                    <el-input v-model="subLayout.url"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="confirmComponent">确 定</el-button>
-                    <el-button @click="dialogVisible = false">取 消</el-button>
-                </span>
+                <el-button @click="subDialogVisible = false; subLayout = {}">取 消</el-button>
+                <el-button type="primary" @click="createSubLayout">创 建</el-button>
+            </span>
         </el-dialog>
+        
+        <el-dialog
+            :title="isUpdate ? '编辑' : '新增'"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :show-close="false">
+        <el-form ref="dataForm" :model="component" label-width="140px" :rules="rules">
+            <el-form-item label="标题" prop="title">
+                <el-input v-model="component.title"></el-input>
+            </el-form-item>
+            <el-form-item label="图表类型" prop="type">
+                <el-select v-model="component.type" placeholder="请选择">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item label="SQL语句" prop="query"
+                :rules="[{required: true, validator: validateSql, trigger: 'blur'}]">
+                <el-input type="textarea"
+                 :autosize="{ minRows: 3, maxRows: 6}"
+                 v-model="component.query"></el-input>
+            </el-form-item>
+            <el-form-item v-if="selections.length > 0" label="描述字段" prop="desField"
+                :rules="[{required: true, validator: validateDesField, trigger: 'blur'}]">
+                <el-select v-model="component.desField" placeholder="请选择">
+                    <el-option
+                      v-for="item in selections"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item v-if="selections.length > 0" label="数值字段" prop="valueField"
+                :rules="[{required: true, validator: validateValueField, trigger: 'blur'}]">
+                <el-select v-model="component.valueField" placeholder="请选择">
+                    <el-option
+                      v-for="item in selections"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item label="页面跳转" prop="redirect">
+                <el-select v-model="component.redirect" placeholder="请选择" @change="redirectChanged">
+                    <el-option
+                      key="N"
+                      label="否"
+                      value="N">
+                    </el-option>
+                    <el-option
+                      key="Y"
+                      label="是"
+                      value="Y">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="selections.length > 0 && component.redirect === 'Y'" label="页面传参">
+                <el-checkbox-group v-model="params">
+                    <el-checkbox v-for="item in selections" :key="item.value" :label="item.label"></el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+            <el-form-item v-if="subLayout.title" label="子页面名称">
+                <el-input v-model="subLayout.title" disabled></el-input>
+            </el-form-item>
+            <el-form-item v-if="subLayout.url" label="子页面Url">
+                <el-input v-model="subLayout.url" disabled></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="confirmComponent">确 定</el-button>
+                <el-button @click="dialogVisible = false">取 消</el-button>
+            </span>
+    </el-dialog>
     </grid-layout>`,
     data: function () {
         return {
             components: [],
             component: {},
+            params: [],
+            subLayout: { enabled: 'N'},
+            thumbnails: [],
+            isUpdate: false,
             selections: [],
             currentSql: null,
             options:[
@@ -100,10 +163,12 @@ Vue.component('graph', {
                 {label: '地图', value: 'map'}
             ],
             dialogVisible: false,
+            subDialogVisible: false,
             rules: {
                 title :[{required: true, message: '标题不能为空！', trigger: 'blur'},
                     {max: 255, message: '长度超过255个字符限制！'}],
-                type :[{required: true, message: '类型不能为空！', trigger: 'blur'}]
+                type :[{required: true, message: '请选择图表类型！', trigger: 'blur'}],
+                redirect :[{required: true, message: '该选项不能为空！', trigger: 'blur'}],
             }
         }
     },
@@ -117,13 +182,28 @@ Vue.component('graph', {
         layout_id(val) {
            if (val) {
                this.loadComponents(val);
+               this.getThumbnails();
            } else {
                this.components.length = 0;
            }
         },
+        subDialogVisible(val) {
+            if (!val) {
+                this.resetCheckbox();
+                this.$refs["subDataForm"].clearValidate();
+                this.layout = { enabled: 'N'};
+                if (JSON.stringify(this.subLayout) === '{}') {
+                    this.component.redirect = 'N';
+                }
+            }
+        },
         dialogVisible(val) {
             if (!val) {
+                this.currentSql = null;
                 this.component = {};
+                this.params = [];
+                this.subLayout = {};
+                this.isUpdate = false;
                 this.$refs["dataForm"].clearValidate();
                 this.selections = [];
             } else {
@@ -148,6 +228,20 @@ Vue.component('graph', {
         }
     },
     methods: {
+        getThumbnails() {
+            let me = this;
+            service.get('/layout/template/thumbnails').then(function (res) {
+                if (!res.data.success) {
+                    me.$message.error(res.data.message);
+                    return;
+                }
+                res.data.result.forEach((name) => {
+                    me.thumbnails.push({checked: false, value: name})
+                });
+            }).catch(err => {
+                me.$message.error("获取缩略图数据失败！");
+            })
+        },
         loadComponents(id) {
             let me = this;
             me.components.length = 0;
@@ -172,19 +266,9 @@ Vue.component('graph', {
                 me.$message.error("获取组件列表数据失败！");
             })
         },
-        addComponent() {
-            let me = this;
-            let component = {x: 0, y: 0, w: 25, h: 5, i: 0};
-            //新增组件位置始终保证在左下方第一个
-            component.i = me.components.length;
-            if (component.i > 0) {
-                let last = me.components[component.i-1];
-                component.y = last.y + last.h;
-            }
-            me.components.push(component);
-        },
         editComponent(c) {
             let me = this;
+            me.isUpdate = true;
             me.component = Object.assign({}, c);
             me.currentSql = c.query;
             me.dialogVisible = true;
@@ -206,6 +290,7 @@ Vue.component('graph', {
                                 callback(new Error("请明确SQL中查询字段，不要使用SELECT * 语句！"));
                             } else {
                                 //SQL变化导致下拉选项发生变化，需清空数据重新选择
+                                me.params = [];
                                 me.selections = [];
                                 me.currentSql = value;
                                 if (me.component.desField) {
@@ -224,6 +309,63 @@ Vue.component('graph', {
                 } else {
                     callback();
                 }
+            }
+        },
+        resetCheckbox() {
+            let me = this;
+            me.thumbnails.forEach((item) => {
+                item.checked = false;
+            });
+        },
+        checkboxChanged(value) {
+            //最多只能选择一个
+            let me = this;
+            me.thumbnails.forEach((item) => {
+                item.checked = item.value === value;
+            });
+            me.subLayout.templateName = value.split(".")[0];
+            if (me.$refs["subDataForm"]) {
+                me.$refs["subDataForm"].$children[1].clearValidate();
+            }
+        },
+        validateTitle(rule, value, callback) {
+            if (!value || value.trim() === '') {
+                callback(new Error("标题不能为空！"));
+            } else if (value.length > 255) {
+                callback(new Error("长度超过255个字符限制"));
+            } else {
+                callback();
+            }
+        },
+        validateUrl(rule, value, callback) {
+            if (!value || value.trim() === '') {
+                callback(new Error("Url不能为空！"));
+            } else if (value.length > 255) {
+                callback(new Error("长度超过255个字符限制"));
+            } else {
+                service.get('/layout/checkUrl', {
+                    params: {
+                        url: value,
+                        id: this.subLayout.id
+                    }
+                }).then(res => {
+                    if (!res.data.success) {
+                        callback(new Error("Url校验失败！"));
+                    } else {
+                        if (res.data.result) {
+                            callback();
+                        } else {
+                            callback(new Error("Url重复！"));
+                        }
+                    }
+                })
+            }
+        },
+        validateCheckbox(rule, value, callback) {
+            if (this.subLayout.templateName || !this.subDialogVisible) {
+                callback();
+            } else {
+                callback(new Error("请选择模板！"))
             }
         },
         validateDesField(rule, value, callback) {
@@ -268,7 +410,6 @@ Vue.component('graph', {
                 return v1.y - v2.y;
             });
             me.components.forEach((ele, index) => {
-                debugger
                ele.locationIndex = index;
                ele.layoutId = me.layout_id;
                ele.categoryValuePattern = ele.desField + ":" + ele.valueField;
@@ -281,6 +422,9 @@ Vue.component('graph', {
                     return;
                 }
                 me.successMsg(res.data.message);
+                if (me.dialogVisible) {
+                    me.dialogVisible = false;
+                }
             }).catch(err => {
                 console.log(err);
             })
@@ -289,15 +433,58 @@ Vue.component('graph', {
             let me = this;
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
-                    let index = me.components.findIndex(c => {
-                        return c.i === this.component.i;
-                    });
-                    me.components[index] = me.component;
-                    me.dialogVisible = false;
+                    let beSaved = null;
+                    if (!me.isUpdate) {
+                        //新增组件位置默认在第一个位置
+                        let baseInfo = {x: 0, y: 0, w: 25, h: 5, i: me.components.length};
+                        let result = Object.assign(baseInfo, me.component);
+                        me.components.push(result);
+                        beSaved = result;
+                    } else {
+                        let index = me.components.findIndex(c => {
+                            return c.i === me.component.i;
+                        });
+                        me.components[index] = me.component;
+                        beSaved = me.components[index];
+                    }
+                    if (JSON.stringify(me.subLayout) !== "{}") {
+                        //保存子页面对象
+                        service.post("/layout/createSubLayout", me.subLayout).then(res => {
+                            if (!res.data.success) {
+                                me.$message.error(res.data.message);
+                                return;
+                            }
+                            beSaved.link = res.data.result;
+                            beSaved.params = me.params.toString();
+                            me.saveComponents();
+                        }).catch(err => {
+                            me.$message.error("保存子页面失败！");
+                        })
+                    } else {
+                        me.saveComponents();
+                    }
                 } else {
                     this.$message.error('请完善表单后再次提交！');
                 }
             });
+        },
+        createSubLayout() {
+            let me = this;
+            me.$refs["subDataForm"].validate((valid) => {
+                if (valid) {
+                    //保存在内存中，并不提交到后台
+                    me.subDialogVisible = false;
+                } else {
+                    this.$message.error('请完善表单后再次提交！');
+                }
+            });
+        },
+        redirectChanged(val) {
+            let me = this;
+            me.subDialogVisible = val === 'Y';
+            if (val === 'N') {
+                me.subLayout = {enabled: 'N'};
+            }
         },
         successMsg(msg) {
             this.$message({

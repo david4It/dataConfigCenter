@@ -39,6 +39,24 @@ public class LayoutController {
         return result;
     }
 
+    @PostMapping("/createSubLayout")
+    public Result<Long> createSubLayout(@RequestBody LayoutVO layout) {
+        Result<Long> result = new Result<>();
+        try {
+            Long id = layoutService.saveSubLayout(layout);
+            result.setResult(id);
+            if (id != null) {
+                result.success("保存子布局数据成功！");
+            } else {
+                result.error500("保存子布局数据失败！");
+            }
+        } catch (Exception e) {
+            result.error500("保存布局数据失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
     @GetMapping("/list")
     public Result<List<LayoutVO>> list(@RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
                                      @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {

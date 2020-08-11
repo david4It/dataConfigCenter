@@ -136,17 +136,21 @@ public class LayoutServiceImpl implements LayoutService {
     public Boolean saveLayout(LayoutVO layout) {
         Layout beSave = layout.transLayout();
         beSave.setCreateTime(LocalDateTime.now());
-        boolean isRoot = layout.getParentComponentId() == null;
-        beSave.setRoot(isRoot ?  "Y" : "N");
-        int insert = layoutMapper.insert(beSave);
-        if (!isRoot) {
-            Layout saved = getLayout(layout.getUrl(), null);
-            Component component = new Component();
-            component.setId(layout.getParentComponentId());
-            component.setLink(saved.getId());
-            componentMapper.updateById(component);
+        return layoutMapper.insert(beSave) > 0;
+    }
+
+    @Override
+    public Long saveSubLayout(LayoutVO layout) {
+        layout.setRoot("N");
+        if (saveLayout(layout)) {
+            QueryWrapper<Layout> query = new QueryWrapper<>();
+            query.eq("url", layout.getUrl());
+            Layout result = layoutMapper.selectOne(query);
+            if (result != null) {
+                return result.getId();
+            }
         }
-        return insert > 0;
+        return null;
     }
 
     @Override

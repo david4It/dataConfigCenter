@@ -10,8 +10,6 @@ import java.util.List;
 public class LayoutVO extends Layout {
     private List<ComponentVO> components = new ArrayList<>();
     private List<LayoutVO> children = new ArrayList<>();
-    //下钻布局中需要保存父组件的id，以形成对应关系
-    private Long parentComponentId;
     public Layout transLayout() {
         Layout layout = new Layout();
         layout.setId(this.getId());
