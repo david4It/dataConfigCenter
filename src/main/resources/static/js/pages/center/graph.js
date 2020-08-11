@@ -60,7 +60,7 @@ Vue.component('graph', {
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="subDialogVisible = false; subLayout = {}">取 消</el-button>
+                <el-button @click="cancelSubLayout">取 消</el-button>
                 <el-button type="primary" @click="createSubLayout">创 建</el-button>
             </span>
         </el-dialog>
@@ -116,25 +116,25 @@ Vue.component('graph', {
                 <el-select v-model="component.redirect" placeholder="请选择" @change="redirectChanged">
                     <el-option
                       key="N"
-                      label="否"
+                      label="禁用"
                       value="N">
                     </el-option>
                     <el-option
                       key="Y"
-                      label="是"
+                      label="启用"
                       value="Y">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="selections.length > 0 && component.redirect === 'Y'" label="页面传参">
+            <el-form-item v-if="selections.length > 0 && component.hasSubLayout" label="页面传参">
                 <el-checkbox-group v-model="params">
                     <el-checkbox v-for="item in selections" :key="item.value" :label="item.label"></el-checkbox>
                 </el-checkbox-group>
             </el-form-item>
-            <el-form-item v-if="subLayout.title" label="子页面名称">
+            <el-form-item v-if="component.hasSubLayout" label="子页面名称">
                 <el-input v-model="subLayout.title" disabled></el-input>
             </el-form-item>
-            <el-form-item v-if="subLayout.url" label="子页面Url">
+            <el-form-item v-if="component.hasSubLayout" label="子页面Url">
                 <el-input v-model="subLayout.url" disabled></el-input>
             </el-form-item>
         </el-form>
@@ -191,21 +191,20 @@ Vue.component('graph', {
             if (!val) {
                 this.resetCheckbox();
                 this.$refs["subDataForm"].clearValidate();
-                this.subLayout = {};
-                if (JSON.stringify(this.subLayout) === '{}') {
-                    this.component.redirect = 'N';
-                }
             }
         },
         dialogVisible(val) {
             if (!val) {
-                this.currentSql = null;
-                this.component = {};
-                this.params = [];
-                this.subLayout = {};
-                this.isUpdate = false;
-                this.$refs["dataForm"].clearValidate();
-                this.selections = [];
+                //使用setTimeout避免显示问题
+                setTimeout(()=> {
+                    this.currentSql = null;
+                    this.component = {};
+                    this.params = [];
+                    this.subLayout = {};
+                    this.isUpdate = false;
+                    this.$refs["dataForm"].clearValidate();
+                    this.selections = [];
+                }, 500);
             } else {
                 //编辑操作，若sql存在，需要获取到selections相关数据
                 if (this.component.query) {
@@ -244,8 +243,11 @@ Vue.component('graph', {
                     me.components.push(item);
                     if (item.link) {
                         item.redirect = 'Y';
+                        item.hasSubLayout = true;
+                        me.params = item.params.split(",");
                     } else {
                         item.redirect = 'N';
+                        item.hasSubLayout = false;
                     }
                     item.desField = item.categoryValuePattern.split(":")[0];
                     item.valueField = item.categoryValuePattern.split(":")[1];
@@ -385,6 +387,7 @@ Vue.component('graph', {
                     me.$message.error(res.data.message);
                     return;
                 }
+                me.thumbnails.length = 0;
                 res.data.result.forEach((name) => {
                     me.thumbnails.push({checked: false, value: name})
                 });
@@ -443,29 +446,63 @@ Vue.component('graph', {
             let me = this;
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
+                    let result = null;
                     me.component.params = me.params.length > 0 ? me.params.toString() : null;
                     if (!me.isUpdate) {
                         //新增组件位置默认在第一个位置
                         let baseInfo = {x: 0, y: 0, w: 25, h: 5, i: me.components.length};
-                        let result = Object.assign(baseInfo, me.component);
-                        me.components.push(result);
-                        if (JSON.stringify(me.subLayout) !== "{}") {
-                            service.post("/layout/createSubLayout", me.subLayout).then(res => {
-                                if (!res.data.success) {
-                                    me.$message.error(res.data.message);
-                                    return;
-                                }
-                                beSaved.link = res.data.result;
-                                me.saveComponents();
-                            }).catch(err => {
-                                me.$message.error("保存子页面失败！");
-                            })
-                        }
+                        let component = Object.assign(baseInfo, me.component);
+                        me.components.push(component);
+                        result = component;
                     } else {
+                        //更新操作则直接在components中查找
                         let index = me.components.findIndex(c => {
                             return c.i === me.component.i;
                         });
                         me.components[index] = me.component;
+                        result = me.component;
+                    }
+                    if (JSON.stringify(me.subLayout) !== "{}" && !me.component.link) {
+                        //新增子页面
+                        service.post("/layout/createSubLayout", me.subLayout).then(res => {
+                            if (!res.data.success) {
+                                me.$message.error(res.data.message);
+                                return;
+                            }
+                            result.link = res.data.result;
+                            me.saveComponents();
+                        }).catch(err => {
+                            me.$message.error("保存子页面失败！");
+                        })
+                    } else if (me.component.link && me.component.redirect === 'N') {
+                        //删除子页面
+                        me.$confirm('此组件包含跳转的子页面，禁用页面跳转会级联删除子页面以及对应的组件，是否继续？', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            service.delete("/layout/delete", {
+                                params: {
+                                    id: me.component.link
+                                }
+                            }).then(res => {
+                                if (!res.data.success) {
+                                    me.$message.error(res.data.message);
+                                    return;
+                                }
+                                result.link = null;
+                                result.params = null;
+                                me.saveComponents();
+                            }).catch(err => {
+                                me.$message.error("删除子页面失败！");
+                            })
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消操作'
+                            });
+                        });
+                    } else {
                         me.saveComponents();
                     }
                 } else {
@@ -473,12 +510,20 @@ Vue.component('graph', {
                 }
             });
         },
+        cancelSubLayout() {
+            let me = this;
+            me.subDialogVisible = false;
+            me.component.hasSubLayout = false;
+            me.component.redirect = 'N';
+            me.subLayout = {}
+        },
         createSubLayout() {
             let me = this;
             me.$refs["subDataForm"].validate((valid) => {
                 if (valid) {
                     //保存在内存中，并不提交到后台
                     me.subDialogVisible = false;
+                    me.component.hasSubLayout = true;
                 } else {
                     this.$message.error('请完善表单后再次提交！');
                 }
@@ -486,9 +531,19 @@ Vue.component('graph', {
         },
         redirectChanged(val) {
             let me = this;
-            me.subDialogVisible = val === 'Y';
             if (val === 'N') {
-                me.subLayout = {};
+                if (!me.component.link) {
+                    me.params = [];
+                    me.subLayout = {};
+                }
+                me.component.hasSubLayout = false;
+            } else {
+                if (!me.component.link) {
+                    me.subDialogVisible = true;
+                }
+                if (me.isUpdate) {
+                    me.component.hasSubLayout = true;
+                }
             }
         },
         successMsg(msg) {

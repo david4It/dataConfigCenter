@@ -25,6 +25,7 @@ public class LayoutController {
     public Result<Boolean> create(@RequestBody LayoutVO layout) {
         Result<Boolean> result = new Result<>();
         try {
+            layout.setRoot("Y");
             Boolean saved = layoutService.saveLayout(layout);
             result.setResult(saved);
             if (saved) {
@@ -43,6 +44,7 @@ public class LayoutController {
     public Result<Long> createSubLayout(@RequestBody LayoutVO layout) {
         Result<Long> result = new Result<>();
         try {
+            layout.setRoot("N");
             Long id = layoutService.saveSubLayout(layout);
             result.setResult(id);
             if (id != null) {

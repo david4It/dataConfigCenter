@@ -165,7 +165,7 @@ new Vue({
         },
         handleDelete(row) {
             let me = this;
-            this.$confirm('删除布局会级联删除此布局对应子页面的布局数据，请谨慎操作！', '提示', {
+            me.$confirm('删除布局会级联删除此布局对应子页面的布局数据，请谨慎操作！', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

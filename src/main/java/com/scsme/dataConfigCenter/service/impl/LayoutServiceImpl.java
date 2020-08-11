@@ -135,7 +135,6 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Boolean saveLayout(LayoutVO layout) {
-        layout.setRoot("Y");
         layout.setEnabled("N");
         Layout beSave = layout.transLayout();
         beSave.setCreateTime(LocalDateTime.now());
@@ -144,8 +143,6 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Long saveSubLayout(LayoutVO layout) {
-        layout.setRoot("N");
-        layout.setEnabled("N");
         if (saveLayout(layout)) {
             QueryWrapper<Layout> query = new QueryWrapper<>();
             query.eq("url", layout.getUrl());
