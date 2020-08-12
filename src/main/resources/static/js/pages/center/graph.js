@@ -18,15 +18,15 @@ Vue.component('graph', {
                    :h="item.h"
                    :i="item.i"
                    :key="item.i">
-<!--            <div style="border-bottom: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; top: 0">-->
-<!--                <div style="padding-top: 6px; text-align: center">-->
-<!--                   <span style="color: white;font-weight: bold;">{{item.title}}</span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div style="position: absolute; width: 100%; height: calc(100% - 80px); top: 40px; -->
-<!--                        display: flex; display: -webkit-flex; justify-content: center;align-items:center;">-->
-<!--                <img src="/img/center/template/table.png">-->
-<!--            </div>-->
+            <div style="border-bottom: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; top: 0">
+                <div style="padding-top: 6px; text-align: center">
+                   <span style="color: white;font-weight: bold;">{{item.title}}</span>
+                </div>
+            </div>
+            <div style="position: absolute; width: 100%; height: calc(100% - 80px); top: 40px; 
+                        display: flex; display: -webkit-flex; justify-content: center;align-items:center;">
+                <img :src="'/img/center/type/' + item.type + '.png'">
+            </div>
             <div style="border-top: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; bottom: 0">
                 <div style="padding-top: 6px; text-align: center">
                    <el-button size="mini" type="primary" icon="el-icon-setting" @click="editComponent(item)">编辑</el-button>
@@ -284,7 +284,6 @@ Vue.component('graph', {
                     return;
                 }
                 res.data.result.forEach(item => {
-                    me.components.push(item);
                     if (item.link) {
                         //展示已配置的子页面信息
                         item.redirect = 'Y';
@@ -297,6 +296,7 @@ Vue.component('graph', {
                     item.i = item.locationIndex;
                     item.w = item.width;
                     item.h = item.height;
+                    me.components.push(Object.assign({}, item));
                 });
             }).catch(err => {
                 me.$message.error("获取组件列表数据失败！");
