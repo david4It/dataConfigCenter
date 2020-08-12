@@ -26,6 +26,10 @@
             /*text-align: center;*/
         }
 
+        .el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
+            overflow: scroll;
+        }
+
         .el-scrollbar .el-scrollbar__wrap {
             overflow-x: hidden;
         }
@@ -104,7 +108,7 @@
             <div style="color: #adc1da; font-size: 18px; font-weight: bold; text-align: center">{{ graphLayoutTitle }}</div>
         </div>
         <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
-            <graph :layout_id="graphLayoutId"></graph>
+            <graph @refresh_layout_list="getLayoutList" :layout_id="graphLayoutId"></graph>
         </div>
     </div>
 
@@ -124,14 +128,14 @@
                         <el-popover
                                 placement="right"
                                 trigger="hover">
-                            <img style="width: 800px" :src="'/img/center/template/' + thumb.value"/>
+                            <img style="width: 400px" :src="'/img/center/template/' + thumb.value"/>
                             <img slot="reference" :src="'/img/center/template/' + thumb.value"  style="width: 200px">
                         </el-popover>
                     </el-checkbox>
                 </div>
             </el-form-item>
             <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
-                <el-input v-model="layout.url"></el-input>
+                <el-input v-model="layout.url" onkeyup="value=value.replace(/[^\w_]/g,'')"></el-input>
             </el-form-item>
             <el-form-item label="创建时间" v-show="isUpdate">
                 <el-input v-model="layout.createTime" disabled></el-input>

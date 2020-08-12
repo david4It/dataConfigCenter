@@ -81,6 +81,7 @@ new Vue({
             }
         },
         clearForm() {
+            //清除验证以及初始化相关值
             this.resetCheckbox();
             this.$refs["dataForm"].clearValidate();
             this.layout = { enabled: 'N'};
@@ -91,6 +92,7 @@ new Vue({
             } else if (value.length > 255) {
                 callback(new Error("长度超过255个字符限制"));
             } else {
+                //url的唯一性校验
                 service.get('/layout/checkUrl', {
                     params: {
                         url: value,
@@ -160,12 +162,13 @@ new Vue({
             let me = this;
             me.dialogVisible = true;
             me.isUpdate = true;
+            //更新操作时，显示的对象要使用Object.assign复制一份，避免内存对象污染
             me.layout = Object.assign({}, row);
             me.checkboxChanged(me.layout.templateName + ".png");
         },
         handleDelete(row) {
             let me = this;
-            me.$confirm('删除布局会级联删除此布局对应子页面的布局数据，请谨慎操作！', '提示', {
+            me.$confirm('删除布局会级联删除此布局对应子页面的布局数据，是否继续？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'

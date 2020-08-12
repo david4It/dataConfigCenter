@@ -8,6 +8,7 @@ import com.scsme.dataConfigCenter.mapper.ComponentMapper;
 import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
+import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
@@ -32,6 +33,8 @@ public class LayoutServiceImpl implements LayoutService {
     LayoutMapper layoutMapper;
     @Autowired
     ComponentMapper componentMapper;
+    @Autowired
+    ComponentService componentService;
 
     @Override
     public List<LayoutVO> list(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize) {
@@ -163,6 +166,7 @@ public class LayoutServiceImpl implements LayoutService {
         if (result) {
             //生成或者删除页面
             if ("Y".equals(layout.getEnabled())) {
+                layout.setComponents(componentService.componentList(layout.getId()));
                 HTMLCreationExecutor.generatedHTMLFile(layout, layoutMapper);
             } else {
                 HTMLCreationExecutor.deleteHTMLFile(layout, layoutMapper);

@@ -49,14 +49,14 @@ Vue.component('graph', {
                             <el-popover
                                     placement="right"
                                     trigger="hover">
-                                <img style="width: 800px" :src="'/img/center/template/' + thumb.value"/>
+                                <img style="width: 400px" :src="'/img/center/template/' + thumb.value"/>
                                 <img slot="reference" :src="'/img/center/template/' + thumb.value"  style="width: 200px">
                             </el-popover>
                         </el-checkbox>
                     </div>
                 </el-form-item>
                 <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
-                    <el-input v-model="subLayout.url"></el-input>
+                    <el-input v-model="subLayout.url"  onkeyup="value=value.replace(/[^\\w_]/g,'')"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -218,6 +218,7 @@ Vue.component('graph', {
             if (!val) {
                 //使用setTimeout避免显示问题
                 setTimeout(()=> {
+                    //清空对应属性的值，确保渲染的正确性
                     this.currentSql = null;
                     this.component = {};
                     this.params = [];
@@ -289,6 +290,7 @@ Vue.component('graph', {
                 me.subLayout.title = c.linkTitle;
                 me.params = c.params.split(",");
             }
+            //根据不同图表类型，对数据进行预处理
             switch (c.type) {
                 case 'line':
                 case 'pie':
@@ -374,6 +376,7 @@ Vue.component('graph', {
         },
         resetCheckbox() {
             let me = this;
+            //重置模板选择项
             me.thumbnails.forEach((item) => {
                 item.checked = false;
             });
@@ -393,6 +396,7 @@ Vue.component('graph', {
             } else if (value.length > 255) {
                 callback(new Error("长度超过255个字符限制"));
             } else {
+                //url的唯一性校验
                 service.get('/layout/checkUrl', {
                     params: {
                         url: value,
@@ -449,6 +453,7 @@ Vue.component('graph', {
                 || me.component.type === 'radar');
         },
         getThumbnails() {
+            //缩略图获取
             let me = this;
             service.get('/layout/template/thumbnails').then(function (res) {
                 if (!res.data.success) {
@@ -522,6 +527,8 @@ Vue.component('graph', {
                     me.dialogVisible = false;
                 }
                 me.loadComponents(me.layout_id);
+                //因为可能存在新建子页面的情况，故需要刷新layout列表，确保展示的正确性
+                me.$emit('refresh_layout_list');
             }).catch(err => {
                 console.log(err);
             })
@@ -532,6 +539,8 @@ Vue.component('graph', {
                 if (valid) {
                     let result = null;
                     if (!me.component.params) {
+                        //当component.type!='map'并且component.link!=null的情况下，需要手动将params的值封装到component.params中
+                        //当component.type='map'并且component.link!=null的情况下，component.params的值已经存在了，无需赋值
                         me.component.params = me.params.length > 0 ? me.params.toString() : null;
                     }
                     switch (me.component.type) {
@@ -653,6 +662,8 @@ Vue.component('graph', {
         redirectChanged(val) {
             let me = this;
             if (val === 'N') {
+                //当component.link为空时，需要清除掉相关的值，让用户重新选择；
+                // 反之则保留，以确保来回切换时，已存在数据库中的值能正确显示。
                 if (!me.component.link) {
                     me.params = [];
                     me.multiValueFields = [];
@@ -660,9 +671,11 @@ Vue.component('graph', {
                 }
                 me.component.hasSubLayout = false;
             } else {
+                //若link无值的情况下，需要弹出子页面添加窗口，以便用户添加子页面
                 if (!me.component.link) {
                     me.subDialogVisible = true;
                 }
+                //更新操作且link有值的情况下，则直接将原始的值显示出来即可
                 if (me.isUpdate && me.component.link) {
                     me.component.hasSubLayout = true;
                 }
