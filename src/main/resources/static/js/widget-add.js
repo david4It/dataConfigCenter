@@ -23,9 +23,8 @@ layui.define(function(exports) {
 	});
 });
 
-let colsData;
 let model = {};
-let editor,viewId;
+let editor,viewId,selectedChartIndex;
 let globalWidgetData;
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
@@ -269,7 +268,7 @@ function saveWidget() {
 	config.cache = false;
 	config.expired = 300;
 	config.autoLoadData = true;
-	config.selectedChart = 3;
+	config.selectedChart = selectedChartIndex;
 	config.cols = buildCols(groups);
 	config.metrics = buildMetrics(aggregators);
 	config.filters = buildFilters();
@@ -441,26 +440,34 @@ function moniteChartsChange(){
 /**
  * render graphics
  */
-function renderGraph(obj,type){
+function renderGraph(obj,type,id){
+	if(id == null || id  === "") id="graphArea";
 	console.log("type = "  + type);
 	//改变颜色  mouseclick-icon
-	console.log("this class = " + obj);
 	getDataByViewId(layer,null);
 	let retData = buildPieData(globalWidgetData);
 	let bizData = retData.showedData;
 	let legendData = retData.legendData;
 	switch (type) {
-		case "pie":
-			renderPie("graphArea","",legendData,bizData);
-			break;
-		case "line":
-			renderLine("graphArea","",legendData,bizData);
+		case "area":
+			selectedChartIndex = 1;
+			renderAreaLine(id,"",legendData,bizData);
 			break;
 		case "bar":
-			renderBar("graphArea","",legendData,bizData);
+			selectedChartIndex = 2;
+			renderBar(id,"",legendData,bizData);
+			break;
+		case "line":
+			selectedChartIndex = 3;
+			renderLine(id,"",legendData,bizData);
+			break;
+		case "pie":
+			selectedChartIndex = 4;
+			renderPie(id,"",legendData,bizData);
 			break;
 		case "map":
-			renderPie("graphArea","",legendData,bizData);
+			selectedChartIndex = 5;
+			renderPie(id,"",legendData,bizData);
 			break;
 		default:
 			break;

@@ -20,13 +20,26 @@ function renderPie(id,title,legendData,data) {
         legend: {
             orient: 'vertical',
             left: 'right',
-            data: legendData
+            data: legendData,
+            textStyle:{
+                rich:{
+                    a:{
+                        fontSize:8,
+                        color:"#EA5504",
+                        padding:5
+                    },
+                    b:{
+                        fontSize:8,
+                        color:"#333"
+                    }
+                }
+            }
         },
         series : [{
             data: data,
             type: 'pie',
             radius: '55%',
-            center: ['50%', '60%'],
+            center: ['40%', '50%'],
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
@@ -160,4 +173,45 @@ function buildPieData(data) {
     retData.legendData = legendData;
     retData.showedData = showedData;
     return retData;
+}
+/**
+ * 渲染面积图
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderAreaLine(id,title,legendData,data) {
+    let myCharts1 = echarts.init(document.getElementById(id));
+    let option1 = {
+        title: {
+            text: title,
+            left: 'center',
+            top: 20,
+        },
+
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: legendData
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series : [{
+            data: data,
+            type: 'line',
+            radius: '55%',
+            center: ['50%', '60%'],
+            areaStyle: {},
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }]
+    };
+    myCharts1.setOption(option1);
 }

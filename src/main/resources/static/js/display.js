@@ -111,7 +111,8 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			return false;
 		});
     });
-
+	var screenWith = document.body.clientWidth;
+	var w0 = (screenWith-44) / 5;
 	table.render({
 		elem: '#orgList'  //绑定table id
 		,url:'/api/v3/displays?projectId=1'  //数据请求路径
@@ -121,14 +122,14 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		headers: {
 			"Authorization": token //此处放置请求到的用户token
 		}
-		,cellMinWidth: 80
+		,cellMinWidth: 0.2*w0
 		,cols: [[
-			{field:'id', width:50, title: 'ID', sort: true}
-			,{field:'orgId', width:180, title: '组织'}
-			,{field:'name', width:280, title: '名称'}
-			,{field:'description', width:320, title: '描述', sort: true}
-			,{field:'visibility', width:80, title: '可见', sort: true}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
+			{field:'id', width:0.2*w0, title: 'ID', sort: true}
+			,{field:'name', width:0.5*w0, title: '名称'}
+			,{field:'description', width:1*w0, title: '描述', sort: true}
+			,{field:'publish', width:0.2*w0, title: '发布情况', sort: true}
+			,{field:'config', width:3*w0, title: '配置', sort: true}
+			,{fixed: 'right',title: '操作', width:1*w0, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
 		]]
 		,page: true   //开启分页
 		,response:{

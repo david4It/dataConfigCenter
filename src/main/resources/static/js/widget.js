@@ -120,48 +120,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		});
     });
 
-	/**
-	 * 操作管理--文件上传
-	 * @param upload_pictures 需要上传事件ID
-	 * @param place 文件存放位置
-	 * @param layui_progress 进度条事件
-	 * @param images_url 返回路径赋值图片ID
-	 * @return json code 0:操作成功；1:操作失败；route 返回的图片路径
-	 */
-    upload.render({
-        elem: '#upload_pictures',
-		url: '',
-		data:{
-			file_place: function (){
-				return $(this).data('place');
-			}
-        },
-		multiple: true,
-		progress: function(n){
-            var percent = n + '%';
-            element.progress('layui_progress', percent);
-        },
-		before: function(obj){
-            layer.load();
-        },
-		done: function (data) {
-            layer.closeAll('loading');
-            if (data.code == 0) {
-                layer.msg(data.msg, {icon: 1, time: 1000});
-                $('#images_url').attr('src', data.route);
-                var id_name = $(this)[0]['elem'][0]['attributes'][2]['value'];
-                $('#' + id_name).val(data.route);
-				return false;
-            } else {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-                return false;
-            }
-        },
-		error: function(e){
-            layer.closeAll('loading');
-            layer.msg(e.responseText, {icon: 2, time: 1000});
-        }
-    });
 	var screenWith = document.body.clientWidth;
 	var w0 = (screenWith-44) / 5;
 	console.log(screenWith,w0);
@@ -195,16 +153,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		}
 
 	});
-	/*table.render({
-		elem: '#test'
-		,url:'/demo/table/user/'
-		,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-		,cols: [[
-			{field:'key', width:80, title: 'key', sort: true}
-			,{field:'value', width:80, title: 'value'}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
-		]]
-	});*/
+
 	//监听工具条
 	table.on('tool(demo)', function(obj){
 		var data = obj.data;
