@@ -33,7 +33,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
             });
             return saveOrUpdateBatch(componentList);
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -66,5 +66,10 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     @Override
     public Boolean deleteComponents(Long layoutId) {
         return componentMapper.deletComponenets(layoutId) > 0;
+    }
+
+    @Override
+    public Boolean deleteComponent(Long componentId) {
+        return componentMapper.deleteById(componentId) > 0;
     }
 }

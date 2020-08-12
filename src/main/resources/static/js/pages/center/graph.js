@@ -39,7 +39,7 @@ Vue.component('graph', {
             :show-close="false">
             <el-form ref="subDataForm" :model="subLayout" label-width="140px">
                 <el-form-item label="标题" prop="title"
-                            :rules="[{required: true, validator: validateTitle}]">
+                            :rules="[{required: true, validator: validateTitle, trigger: 'blur'}]">
                     <el-input v-model="subLayout.title"></el-input>
                  </el-form-item>
                 <el-form-item label="模板" prop="templateName"
@@ -75,7 +75,7 @@ Vue.component('graph', {
                 <el-input v-model="component.title"></el-input>
             </el-form-item>
             <el-form-item label="图表类型" prop="type">
-                <el-select v-model="component.type" placeholder="请选择">
+                <el-select v-model="component.type" placeholder="请选择" @change="typeChanged">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -84,33 +84,21 @@ Vue.component('graph', {
                     </el-option>
                   </el-select>
             </el-form-item>
-            <el-form-item label="SQL语句" prop="query"
+            <el-form-item v-if="component.type === 'map'" label="地区选择" prop="area"
+                :rules="[{required: true, validator: validateArea, trigger: 'blur'}]">
+                <el-select v-model="component.area" placeholder="请选择">
+                    <el-option
+                      key="cdArea"
+                      label="成都"
+                      value="cdArea">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="component.type !== 'map'" label="SQL语句" prop="query"
                 :rules="[{required: true, validator: validateSql, trigger: 'blur'}]">
                 <el-input type="textarea"
                  :autosize="{ minRows: 3, maxRows: 6}"
                  v-model="component.query"></el-input>
-            </el-form-item>
-            <el-form-item v-if="selections.length > 0" label="描述字段" prop="desField"
-                :rules="[{required: true, validator: validateDesField, trigger: 'blur'}]">
-                <el-select v-model="component.desField" placeholder="请选择">
-                    <el-option
-                      v-for="item in selections"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-            </el-form-item>
-            <el-form-item v-if="selections.length > 0" label="数值字段" prop="valueField"
-                :rules="[{required: true, validator: validateValueField, trigger: 'blur'}]">
-                <el-select v-model="component.valueField" placeholder="请选择">
-                    <el-option
-                      v-for="item in selections"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
             </el-form-item>
             <el-form-item label="页面跳转" prop="redirect">
                 <el-select v-model="component.redirect" placeholder="请选择" @change="redirectChanged">
@@ -126,10 +114,41 @@ Vue.component('graph', {
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="selections.length > 0 && component.hasSubLayout" label="页面传参">
+            <el-form-item v-if="displayDesField()" label="描述字段" prop="desField"
+                :rules="[{required: true, validator: validateDesField, trigger: 'blur'}]">
+                <el-select v-model="component.desField" placeholder="请选择">
+                    <el-option
+                      v-for="item in selections"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item v-if="displaySingleValueField()" label="数值字段" prop="valueField"
+                :rules="[{required: true, validator: validateValueField, trigger: 'blur'}]">
+                <el-select v-model="component.valueField" placeholder="请选择">
+                    <el-option
+                      v-for="item in selections"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>            
+            <el-form-item v-if="displayMultiValueField()" label="数值字段" prop="multiValueFields"
+                :rules="[{required: true, validator: validateMultiValueField, trigger: 'blur'}]">
+                <el-checkbox-group v-model="multiValueFields">
+                    <el-checkbox v-for="item in selections" :key="item.value" :label="item.label"></el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
+            <el-form-item v-if="selections.length > 0 && component.hasSubLayout && component.type !== 'map'" label="页面传参">
                 <el-checkbox-group v-model="params">
                     <el-checkbox v-for="item in selections" :key="item.value" :label="item.label"></el-checkbox>
                 </el-checkbox-group>
+            </el-form-item>
+            <el-form-item v-if="component.hasSubLayout && component.type === 'map'" label="页面传参">
+                <el-checkbox v-model="component.params" true-label="areaCode" checked disabled>areaCode</el-checkbox>
             </el-form-item>
             <el-form-item v-if="component.hasSubLayout" label="子页面名称">
                 <el-input v-model="subLayout.title" disabled></el-input>
@@ -149,6 +168,7 @@ Vue.component('graph', {
             components: [],
             component: {},
             params: [],
+            multiValueFields: [],
             subLayout: {},
             thumbnails: [],
             isUpdate: false,
@@ -189,6 +209,7 @@ Vue.component('graph', {
         },
         subDialogVisible(val) {
             if (!val) {
+                //重置选中框以及表单验证
                 this.resetCheckbox();
                 this.$refs["subDataForm"].clearValidate();
             }
@@ -200,6 +221,7 @@ Vue.component('graph', {
                     this.currentSql = null;
                     this.component = {};
                     this.params = [];
+                    this.multiValueFields = [];
                     this.subLayout = {};
                     this.isUpdate = false;
                     this.$refs["dataForm"].clearValidate();
@@ -242,6 +264,7 @@ Vue.component('graph', {
                 res.data.result.forEach(item => {
                     me.components.push(item);
                     if (item.link) {
+                        //展示已配置的子页面信息
                         item.redirect = 'Y';
                         item.hasSubLayout = true;
                         me.params = item.params.split(",");
@@ -249,8 +272,6 @@ Vue.component('graph', {
                         item.redirect = 'N';
                         item.hasSubLayout = false;
                     }
-                    item.desField = item.categoryValuePattern.split(":")[0];
-                    item.valueField = item.categoryValuePattern.split(":")[1];
                     item.i = item.locationIndex;
                     item.w = item.width;
                     item.h = item.height;
@@ -263,13 +284,45 @@ Vue.component('graph', {
             let me = this;
             me.isUpdate = true;
             if (c.link) {
+                //展示已配置的子页面信息
                 me.subLayout.url = c.linkUrl;
                 me.subLayout.title = c.linkTitle;
                 me.params = c.params.split(",");
             }
-            me.component = Object.assign({}, c);
+            switch (c.type) {
+                case 'line':
+                case 'pie':
+                case 'bar':
+                    c.desField = c.categoryValuePattern.split(":")[0];
+                    c.valueField = c.categoryValuePattern.split(":")[1];
+                    me.component = Object.assign({}, c);
+                    break;
+                case 'radar':
+                    c.desField = c.categoryValuePattern.split(":")[0];
+                    me.multiValueFields = c.categoryValuePattern.split(":")[1].split(",");
+                    me.component = Object.assign({}, c);
+                    break;
+                case 'table':
+                    me.multiValueFields = c.categoryValuePattern.split(",");
+                    me.component = Object.assign({}, c);
+                    break;
+                case 'map':
+                    c.area = c.query;
+                    me.component = Object.assign({}, c);
+                    me.component.query = null;
+                    break;
+            }
             me.currentSql = c.query;
             me.dialogVisible = true;
+        },
+        validateArea(rule, value, callback) {
+          let me = this;
+            if (!value || value.trim() === '') {
+                me.selections = [];
+                callback(new Error("请选择地区！"));
+            } else {
+                callback();
+            }
         },
         validateSql(rule, value, callback) {
             let me = this;
@@ -277,6 +330,7 @@ Vue.component('graph', {
                 me.selections = [];
                 callback(new Error("SQL不能为空！"));
             } else {
+                //sql语句发生变化时，才重新获取相关的select字段信息
                 if (me.currentSql !== me.component.query) {
                     service.post('/sql/selections', {
                         sql: value
@@ -289,6 +343,7 @@ Vue.component('graph', {
                             } else {
                                 //SQL变化导致下拉选项发生变化，需清空数据重新选择
                                 me.params = [];
+                                me.multiValueFields = [];
                                 me.selections = [];
                                 me.currentSql = value;
                                 if (me.component.desField) {
@@ -309,22 +364,19 @@ Vue.component('graph', {
                 }
             }
         },
+        validateMultiValueField(rule, value, callback) {
+            let me = this;
+            if (me.multiValueFields.length === 0) {
+                callback(new Error("数值字段不能为空！"));
+            } else {
+                callback();
+            }
+        },
         resetCheckbox() {
             let me = this;
             me.thumbnails.forEach((item) => {
                 item.checked = false;
             });
-        },
-        checkboxChanged(value) {
-            //最多只能选择一个
-            let me = this;
-            me.thumbnails.forEach((item) => {
-                item.checked = item.value === value;
-            });
-            me.subLayout.templateName = value.split(".")[0];
-            if (me.$refs["subDataForm"]) {
-                me.$refs["subDataForm"].$children[1].clearValidate();
-            }
         },
         validateTitle(rule, value, callback) {
             if (!value || value.trim() === '') {
@@ -375,10 +427,26 @@ Vue.component('graph', {
         },
         validateValueField(rule, value, callback) {
             if (!value) {
-                callback(new Error("值字段不能为空"));
+                callback(new Error("数值字段不能为空"));
             } else {
                 callback();
             }
+        },
+        displayDesField() {
+            let me = this;
+            return me.selections.length > 0 && (me.component.type === 'line'
+                || me.component.type === 'bar' || me.component.type === 'pie'
+                || me.component.type === 'radar');
+        },
+        displaySingleValueField() {
+            let me = this;
+            return me.selections.length > 0 && (me.component.type === 'line'
+                || me.component.type === 'bar' || me.component.type === 'pie');
+        },
+        displayMultiValueField() {
+            let me = this;
+            return me.selections.length > 0 && (me.component.type === 'table'
+                || me.component.type === 'radar');
         },
         getThumbnails() {
             let me = this;
@@ -397,16 +465,31 @@ Vue.component('graph', {
         },
         deleteComponent(i) {
             let me = this;
-            this.$confirm('若此组件包含跳转的子页面，则子页面也会一并被删除，是否继续此操作？', '提示', {
+            let index = me.components.findIndex(c => {
+                return c.i === i;
+            });
+            let component = me.components[index];
+            let message = component.link !== null ? '此组件包含跳转的子页面，若删除此组件，则子页面也将被删除，是否继续？'
+                : '是否删除此组件？';
+            me.$confirm(message, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                let index = me.components.findIndex(c => {
-                    return c.i === i;
+                service.delete('/component/delete', {
+                    params: {
+                        id: component.id
+                    }
+                }).then(res => {
+                    if (!res.data.success) {
+                        me.$message.error(res.data.message);
+                        return;
+                    }
+                    me.components.splice(index, 1);
+                    me.saveComponents();
+                }).catch(err => {
+                    me.$message.error("删除组件失败！");
                 });
-                me.components.splice(index, 1);
-                me.saveComponents();
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -416,6 +499,7 @@ Vue.component('graph', {
         },
         saveComponents() {
             let me = this;
+            //组件按x,y排序
             me.components.sort((v1,v2) => {
                 return v1.x - v2.x;
             });
@@ -425,7 +509,6 @@ Vue.component('graph', {
             me.components.forEach((ele, index) => {
                ele.locationIndex = index;
                ele.layoutId = me.layout_id;
-               ele.categoryValuePattern = ele.desField + ":" + ele.valueField;
                ele.width = ele.w;
                ele.height = ele.h;
             });
@@ -438,6 +521,7 @@ Vue.component('graph', {
                 if (me.dialogVisible) {
                     me.dialogVisible = false;
                 }
+                me.loadComponents(me.layout_id);
             }).catch(err => {
                 console.log(err);
             })
@@ -447,7 +531,26 @@ Vue.component('graph', {
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
                     let result = null;
-                    me.component.params = me.params.length > 0 ? me.params.toString() : null;
+                    if (!me.component.params) {
+                        me.component.params = me.params.length > 0 ? me.params.toString() : null;
+                    }
+                    switch (me.component.type) {
+                        case 'line':
+                        case 'pie':
+                        case 'bar':
+                            me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField;
+                            break;
+                        case 'radar':
+                            me.component.categoryValuePattern = me.component.desField + ":" + me.multiValueFields.toString();
+                            break;
+                        case 'table':
+                            me.component.categoryValuePattern = me.multiValueFields.toString();
+                            break;
+                        case 'map':
+                            me.component.query = me.component.area;
+                            me.component.categoryValuePattern = null;
+                            break;
+                    }
                     if (!me.isUpdate) {
                         //新增组件位置默认在第一个位置
                         let baseInfo = {x: 0, y: 0, w: 25, h: 5, i: me.components.length};
@@ -476,7 +579,7 @@ Vue.component('graph', {
                         })
                     } else if (me.component.link && me.component.redirect === 'N') {
                         //删除子页面
-                        me.$confirm('此组件包含跳转的子页面，禁用页面跳转会级联删除子页面以及对应的组件，是否继续？', '提示', {
+                        me.$confirm('此组件包含跳转的子页面，禁用页面跳转会删除子页面以及其对应的组件，是否继续？', '提示', {
                             confirmButtonText: '确定',
                             cancelButtonText: '取消',
                             type: 'warning'
@@ -497,6 +600,8 @@ Vue.component('graph', {
                                 me.$message.error("删除子页面失败！");
                             })
                         }).catch(() => {
+                            result.hasSubLayout = true;
+                            result.redirect = 'Y';
                             this.$message({
                                 type: 'info',
                                 message: '已取消操作'
@@ -512,6 +617,7 @@ Vue.component('graph', {
         },
         cancelSubLayout() {
             let me = this;
+            //清除子页面相关信息
             me.subDialogVisible = false;
             me.component.hasSubLayout = false;
             me.component.redirect = 'N';
@@ -529,11 +635,27 @@ Vue.component('graph', {
                 }
             });
         },
+        checkboxChanged(value) {
+            //最多只能选择一个
+            let me = this;
+            me.thumbnails.forEach((item) => {
+                item.checked = item.value === value;
+            });
+            me.subLayout.templateName = value.split(".")[0];
+            if (me.$refs["subDataForm"]) {
+                me.$refs["subDataForm"].$children[1].clearValidate();
+            }
+        },
+        typeChanged(val) {
+            let me = this;
+            me.$refs["dataForm"].clearValidate();
+        },
         redirectChanged(val) {
             let me = this;
             if (val === 'N') {
                 if (!me.component.link) {
                     me.params = [];
+                    me.multiValueFields = [];
                     me.subLayout = {};
                 }
                 me.component.hasSubLayout = false;
@@ -541,7 +663,7 @@ Vue.component('graph', {
                 if (!me.component.link) {
                     me.subDialogVisible = true;
                 }
-                if (me.isUpdate) {
+                if (me.isUpdate && me.component.link) {
                     me.component.hasSubLayout = true;
                 }
             }

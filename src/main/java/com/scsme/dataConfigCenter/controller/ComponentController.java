@@ -6,6 +6,7 @@ import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,20 @@ public class ComponentController {
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             result.error500("保存组件失败！");
+        }
+        return result;
+    }
+
+    @DeleteMapping("/delete")
+    public Result<Boolean> delete(@RequestParam("id") Long id) {
+        Result<Boolean> result = new Result<>();
+        try {
+            Boolean deleted = componentService.deleteComponent(id);
+            result.setResult(deleted);
+            result.success(deleted ? "删除组件成功！" : "删除组件失败！");
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+            result.error500("删除组件失败！");
         }
         return result;
     }

@@ -11,4 +11,5 @@ public interface ComponentService extends IService<Component> {
     List<ComponentVO> componentList(Long layoutId);
     Boolean updateComponent(Long componentId, Long childLayoutId);
     Boolean deleteComponents(Long layoutId);
+    Boolean deleteComponent(Long componentId);
 }
