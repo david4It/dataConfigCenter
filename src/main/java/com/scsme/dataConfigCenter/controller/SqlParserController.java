@@ -64,7 +64,7 @@ public class SqlParserController {
         Result<List<String>> result = new Result<>();
         try {
             List<String> list = new ArrayList<>();
-            Select stmt = (Select) CCJSqlParserUtil.parse(vo.getSql());
+            Select stmt = (Select) CCJSqlParserUtil.parse(SQLParserUtil.parseSqlWithParams(vo.getSql(), vo.getParams()));
             SelectBody selectBody = stmt.getSelectBody();
             if (selectBody instanceof PlainSelect) {
                 addSelectionName((PlainSelect) selectBody, list);

@@ -214,6 +214,9 @@ public class LayoutServiceImpl implements LayoutService {
                 Layout layout = layoutMapper.selectById(id);
                 if (layout != null) {
                     LayoutVO vo = new LayoutVO().convert(layout);
+                    if (c.getParams() != null) {
+                        vo.getSqlParams().addAll(Arrays.asList(c.getParams().split(",")));
+                    }
                     children.add(vo);
                     recursionBuildLayout(layout.getId(), vo.getChildren());
                 }

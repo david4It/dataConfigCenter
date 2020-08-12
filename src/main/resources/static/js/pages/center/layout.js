@@ -6,6 +6,7 @@ new Vue({
         dialogVisible: false,
         layout: {},
         graphLayoutId: null,
+        sqlParams: [],
         graphLayoutTitle: null,
         layoutList: [],
         thumbnails: [],
@@ -184,6 +185,7 @@ new Vue({
                     }
                     me.dialogVisible = false;
                     me.graphLayoutId = null;
+                    me.sqlParams = [];
                     me.graphLayoutTitle = null;
                     me.successMsg(res.data.message);
                     me.getLayoutList();
@@ -235,6 +237,7 @@ new Vue({
         },
         handleNodeClick(data) {
             this.graphLayoutId = data.id;
+            this.sqlParams = data.sqlParams;
             this.graphLayoutTitle = data.title;
         }
     }

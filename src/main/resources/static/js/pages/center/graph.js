@@ -18,6 +18,15 @@ Vue.component('graph', {
                    :h="item.h"
                    :i="item.i"
                    :key="item.i">
+<!--            <div style="border-bottom: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; top: 0">-->
+<!--                <div style="padding-top: 6px; text-align: center">-->
+<!--                   <span style="color: white;font-weight: bold;">{{item.title}}</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div style="position: absolute; width: 100%; height: calc(100% - 80px); top: 40px; -->
+<!--                        display: flex; display: -webkit-flex; justify-content: center;align-items:center;">-->
+<!--                <img src="/img/center/template/table.png">-->
+<!--            </div>-->
             <div style="border-top: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; bottom: 0">
                 <div style="padding-top: 6px; text-align: center">
                    <el-button size="mini" type="primary" icon="el-icon-setting" @click="editComponent(item)">编辑</el-button>
@@ -93,6 +102,12 @@ Vue.component('graph', {
                       value="cdArea">
                     </el-option>
                 </el-select>
+            </el-form-item>
+            <el-form-item v-if="component.type !== 'map' && sql_params.length > 0" label="页面参数">
+                <el-tag v-for="param in sql_params" :key="param">{{param}}</el-tag>
+                <el-tooltip class="item" effect="dark" :content="tips" placement="top-start">
+                    <i class="el-icon-info" style="font-size: 18px;"></i>
+                </el-tooltip>
             </el-form-item>
             <el-form-item v-if="component.type !== 'map'" label="SQL语句" prop="query"
                 :rules="[{required: true, validator: validateSql, trigger: 'blur'}]">
@@ -182,6 +197,7 @@ Vue.component('graph', {
                 {label: '雷达图', value: 'radar'},
                 {label: '地图', value: 'map'}
             ],
+            tips: '页面参数可以直接在SQL中进行使用，使用方式为${}，如${param}',
             dialogVisible: false,
             subDialogVisible: false,
             rules: {
@@ -196,7 +212,11 @@ Vue.component('graph', {
         layout_id: {
           type: Number,
           default: null
-      }
+      },
+        sql_params: {
+            type: Array,
+            default: ()=>[]
+        }
     },
     watch: {
         layout_id(val) {
@@ -232,7 +252,8 @@ Vue.component('graph', {
                 //编辑操作，若sql存在，需要获取到selections相关数据
                 if (this.component.query) {
                     service.post('/sql/selections', {
-                        sql: this.component.query
+                        sql: this.component.query,
+                        params: this.sql_params
                     }).then(res => {
                         if (!res.data.success) {
                             this.$message({
@@ -335,7 +356,8 @@ Vue.component('graph', {
                 //sql语句发生变化时，才重新获取相关的select字段信息
                 if (me.currentSql !== me.component.query) {
                     service.post('/sql/selections', {
-                        sql: value
+                        sql: value,
+                        params: me.sql_params
                     }).then(res => {
                         if (!res.data.success) {
                             callback(new Error(res.data.message));
@@ -538,7 +560,7 @@ Vue.component('graph', {
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
                     let result = null;
-                    if (!me.component.params) {
+                    if (me.component.type !== 'map') {
                         //当component.type!='map'并且component.link!=null的情况下，需要手动将params的值封装到component.params中
                         //当component.type='map'并且component.link!=null的情况下，component.params的值已经存在了，无需赋值
                         me.component.params = me.params.length > 0 ? me.params.toString() : null;

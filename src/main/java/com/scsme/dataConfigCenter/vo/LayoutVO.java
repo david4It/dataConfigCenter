@@ -10,6 +10,7 @@ import java.util.List;
 public class LayoutVO extends Layout {
     private List<ComponentVO> components = new ArrayList<>();
     private List<LayoutVO> children = new ArrayList<>();
+    private List<String> sqlParams = new ArrayList<>();
     public Layout transLayout() {
         Layout layout = new Layout();
         layout.setId(this.getId());
