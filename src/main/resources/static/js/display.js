@@ -33,13 +33,15 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
     form.on('submit(execute)', function(data) {
         layer.confirm('确认要保存吗？',function(index) {
 			layer.load();
-            var url = data.field.request_url;
-			console.log(url);
+            let url = "/api/v3/displays";
 			let uid=$.cookie("uid");
-			data.field.id=uid;
+			data.field.uid=uid;
+			data.field.config='{"displayParams":{"autoPlay":true,"autoSlide":10,"transitionStyle":"fade","transitionSpeed":"default","grid":[10,10]}}';
+			data.field.projectId=1;//TODO:
+			data.field.publish=1;
+			data.field.roleIds=[];
             $.ajax({
                 url:'' + url + '',
-
                 type:'Post',
                 data:JSON.stringify(data.field),
                 dataType: "json",
@@ -54,11 +56,12 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 					layer.closeAll('loading');
                     if (data.code == 0) {
                         layer.msg(data.msg, {icon: 1, time: 1000});
-                        setTimeout(function () {
+                        /*setTimeout(function () {
                             window.parent.location.reload();
                             var index = parent.layer.getFrameIndex(window.name);
                             parent.layer.close(index);
-                        }, 1000);
+                        }, 1000);*/
+						window.location.href="display-list";
                     } else {
                         layer.msg(data.msg, {icon: 2, time: 1000});
                         return false;
@@ -125,9 +128,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		,cellMinWidth: 0.2*w0
 		,cols: [[
 			{field:'id', width:0.2*w0, title: 'ID', sort: true}
-			,{field:'name', width:0.5*w0, title: '名称'}
+			,{field:'name', width:0.6*w0, title: '名称'}
 			,{field:'description', width:1*w0, title: '描述', sort: true}
-			,{field:'publish', width:0.2*w0, title: '发布情况', sort: true}
+			,{field:'publish', width:0.5*w0, title: '发布情况', sort: true}
 			,{field:'config', width:3*w0, title: '配置', sort: true}
 			,{fixed: 'right',title: '操作', width:1*w0, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
 		]]

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>布局组件</title>
+    <!-- 引入gridstack样式 -->
+    <link rel="stylesheet" href="lib/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="/css/framework/gridstack.min.css" />
+    <link rel="stylesheet" href="/css/framework/gridstack-extra.css"/>
+    <!-- 引入gridstack组件库 -->
+    <script src="js/framework/gridstack.js"></script>
+    <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" media="all" />
+    <style>
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .pading-right{
+            margin-right: 0.2rem;
+        }
+        .pad-top{
+            margin-top: 0.5rem;
+        }
+        .grapPad{
+            margin-right: 0.5rem;
+            font-size: 2rem;
+        }
+        .editArea{
+            border:1px dashed #d9d9d9;
+            border-radius: 0.2rem;
+            width: 100%;
+            float: left;
+            min-height: 7rem;
+        }
+        .display-icon{
+        // color: #e54746;
+            background-image: linear-gradient(135deg,
+            #eb8c96 0%,
+            #6570e8 67%,
+            #1512e5 100%);
+            -webkit-background-clip: text;
+            color:transparent;
+        }
+        .mouseclick-icon{
+        // color: #e54746;
+            background-image: linear-gradient(135deg,
+            #6ceb38 0%,
+            #82e5e8 67%,
+            #e5861d 100%);
+            -webkit-background-clip: text;
+            color:transparent;
+        }
+        .display-background{
+            width: 400px;
+            height: 200px;
+            border: 1px solid #000;
+            background-image: linear-gradient(
+                    90deg,
+                    rgba(0, 255, 213, 0.15) 10%,
+                    rgba(0, 0, 0, 0) 10%
+            ),
+            linear-gradient(rgba(0, 255, 213, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+            background-size: 10px 10px;
+        }
+        .contain-arrange{
+            float: left;
+            margin-left: 0.2rem;
+        }
+        .grid-stack {
+            height: 100%;
+            /*border: 1px solid #bfbfbf;*/
+            background-image: linear-gradient(90deg, rgba(173, 178, 183, 0.15) 10%, rgba(0, 0, 0, 0) 10%),
+            linear-gradient(rgba(145, 182, 232, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
+            background-size: 10px 10px;
+        }
+        .grid-stack-item-content { background-color: whitesmoke; }
+    </style>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-col-md12" style="margin-bottom: 0.5rem;">
+    <div class="layui-navs">
+						<span class="layui-breadcrumb" lay-separator="—">
+							<a href="javascript:;">基础管理</a>
+							<a href="javascript:;">Widget管理</a>
+							<a><cite>Widget视图</cite></a>
+						</span>
+
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:saveLayout();" title="保存">
+            <i class="layui-icon layui-icon-ok" style="line-height:2.3rem;font-size: 1rem;">保存</i>
+        </a>
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:setEnv();" title="设置">
+            <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">预览</i>
+        </a>
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:execute_open('选择图表', 'display-widget-select.html', '1000', '750');" title="设置">
+            <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">图表</i>
+        </a>
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:setEnv();" title="设置">
+            <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">大屏设置</i>
+        </a>
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:addWidget();" title="新增Widget">
+            <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">新增Widget</i>
+        </a>
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:addWidget();" title="新增Widget">
+            <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">新增Slide</i>
+        </a>
+    </div>
+</div>
+<fieldset class="layui-elem-field layui-field-title" style="padding-top: 3rem;">
+    <legend></legend>
+</fieldset>
+<div id="main"  class="layui-body" >
+    <div  class="layui-layout"  style="float: left; width: 9%; height: 97%;  text-align: center">
+        <!--<buttononclick="saveLayout()">保存</button>-->
+
+    </div>
+
+    <div class="contain-arrange" style="width: 70%;height: 100%; ">
+        <div id="graphArea" class="grid-stack grid-stack-10" style="min-height: 100%">
+
+        </div>
+    </div>
+    <div class="contain-arrange"  style="width: 9%;height: 97.5%; border-left: solid 1px #bfbfbf; ">
+        <div class="grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)"></div>
+    </div>
+    <div class="contain-arrange"  style="width: 9%;height: 97.5%; border-left: solid 1px #bfbfbf; ">
+        <div class=" grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)"></div>
+    </div>
+<!--    <div  style="float: left;width: 97.8%;min-height: 3rem;margin-top:0.2rem; border: solid 1px #bfbfbf; ">
+    </div>-->
+</div>
+</body>
+
+<script type="text/javascript" src="/js/framework/axios.js"></script>
+<script type="text/javascript" src="/js/framework/vue.js"></script>
+<!--<script type="text/javascript" src="/js/framework/httpVueLoader.js"></script>
+<script type="text/javascript" src="/js/framework/datav.min.vue.js"></script>-->
+<script type="text/javascript" src="/js/pages/request.js"></script>
+<script type="text/javascript" src="/js/pages/global.js"></script>
+<script src="js/jquery-3.4.1.min.js"></script>
+<script src="lib/layui/layui.js"></script>
+<script src="js/jquery.cookie.min.js"></script>
+<script src="js/framework/echarts.min.js"></script>
+<script src="js/graph/pie.js"></script>
+<script src="js/display-add.js"></script>
+<script src="js/common.js"></script>
+<script type="text/javascript">
+    let selectedWidgets= [];
+    let retData,catsAndVal,globalViewData,projetId=1;
+    let grid = GridStack.init({column: 10});
+    function addWidget() {
+        grid.addWidget(widgetHTML(), {minWidth: 3, minHeight: 4});
+
+    }
+    function borderDisplay(event) {
+        $('.grid-stack-item-content').each((index, item) => {
+            $(item).css('border', '');
+        });
+        $(event).css('border', '3px solid #F08080');
+    }
+    function editTitle(msg) {
+        let text = $(msg).text();
+        $(msg).html("<input type='text' name='album' value='"+ text +"' size=20>");
+        $("input[name='album']").focus();
+        $("input[name='album']").blur(function(){
+            let name = $(this).val();
+            if(name.indexOf(" ") >= 0 || name === ""){
+                $(msg).html("标题");
+            }else{
+                $(msg).html(name);
+            }
+        });
+    }
+    function remove(div) {
+        grid.removeWidget(div.parentElement.parentElement);
+        //http://localhost:9089/api/v3/displays/1/slides/1/widgets
+        //TODO: removeMemWidget();
+    }
+    function widgetHTML() {
+        return '<div>' +
+            '<div class="grid-stack-item-content" onclick="borderDisplay(this)">' +
+            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div>' +
+            '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
+            '</div>' +
+            '</div>';
+    }
+    function saveLayout() {
+        let layout = {title: '测试', url: '/project'+ projetId , components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
+        $(grid.engine.nodes).each((index, ele) => {
+            let childs =  $( "div[data-gs-x="+ele.x+"][data-gs-y="+ele.y+"]" ).children();
+            let viewId,graphType,widgetId;
+            for(let prop in childs){
+                //console.log("childs[prop] = " + childs[prop]);
+                viewId = childs[prop].getAttribute("view-id");
+                graphType = childs[prop].getAttribute("widget-type");
+                widgetId = childs[prop].getAttribute("widget-id");
+                if(viewId != null && viewId !="") break;
+            }
+            //console.log("viewId = " + viewId);
+            getViewByViewID(viewId);
+            widgetId = widgetId.substring(widgetId.indexOf("_")+1);
+            let query = globalTempView != null ? globalTempView.sql:"";
+/*            let component_type = checkGraphType(graphType);
+            console.log("graphType=" + graphType,"component_type=" + component_type)*/
+            layout.components.push({height: ele.height, width: Math.floor(ele.width/grid.column() * 100), x: Math.floor(ele.x/grid.column() * 100), y: ele.y, type: graphType, query: query, params: '', title: $(ele.el).find('[id=title]').html(), createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()),widgetId:widgetId})
+        });
+        layout.components.sort((v1,v2) => {
+            return v1.x - v2.x;
+        });
+        layout.components.sort((v1,v2) => {
+            return v1.y - v2.y;
+        });
+        $(layout.components).each((index, ele) => {
+            ele.locationIndex = index;
+        });
+        service.post('/layout/create', layout).then(res => {
+            if (!res.data.success) {
+                return;
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+    /**
+     * 制作大屏页面调用，用户勾选后保存。
+     * @param obj
+     */
+    function saveDispWidget(selectedWidgets) {
+        //console.log("selected widgets",selectedWidgets)
+        // display select widget to canvas
+        for(let prop in selectedWidgets){
+            //console.log("prop",prop,selectedWidgets[prop]);
+            let grahpId = "displayWidget_" + selectedWidgets[prop].id;
+            let widgetViewId = selectedWidgets[prop].viewId;
+            let config = JSON.parse(selectedWidgets[prop].config)
+            let graphType=config.selectedChart;
+            addGraphWidget(grahpId,widgetViewId,graphType);
+            //渲染图形
+            switch (graphType) {
+                case 1:
+                    //面积图
+                    renderDispGraph(selectedWidgets[prop],"area",grahpId);
+                    break;
+                case 2:
+                    //柱状图
+                    renderDispGraph(selectedWidgets[prop],"bar",grahpId);
+                    break;
+                case 3:
+                    //折线图
+                    renderDispGraph(selectedWidgets[prop],"line",grahpId);
+                    break;
+                case 4:
+                    //饼图
+                    renderDispGraph(selectedWidgets[prop],"pie",grahpId);
+                    break;
+                case 5:
+                    //地图
+                    renderDispGraph(selectedWidgets[prop],"map",grahpId);
+                    break;
+                case 6:
+                    break;
+                default:
+                    break;
+            }
+            //保存数据
+            //TODO: saveDisplay();
+            //保存数据
+            //TODO: saveSlide();
+
+            //保存
+            //http://localhost:9089/api/v3/displays/1/slides/1/widgets
+            //TODO: saveSlideMemWidget();
+        }
+    }
+
+    /**
+     *
+     * @param displayWidgetId
+     */
+    function addGraphWidget(displayWidgetId,widgetViewId,widgetType) {
+        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType), {minWidth: 5, minHeight: 5});
+
+    }
+
+    /**
+     *
+     * @param displayWidgetId
+     * @returns {string}
+     */
+    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType) {
+        return '<div>' +
+            '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
+            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div>' +
+            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 90%;">内容</div>' +
+            '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
+            '</div>' +
+            '</div>';
+    }
+    /**
+     * render graphics
+     */
+    function renderDispGraph(obj,type,id){
+        if(id == null || id  === "")
+            id="graphArea";
+        //console.log("type = "  + type);
+        //改变颜色  mouseclick-icon
+        catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
+        getDataByViewId(obj);
+        let graphData = buildGraphData(globalViewData);
+        let bizData = graphData.showedData;
+        let legendData = graphData.legendData;
+
+        switch (type) {
+            case "area":
+                renderAreaLine(id,"",legendData,bizData);
+                break;
+            case "pie":
+                renderPie(id,"",legendData,bizData);
+                break;
+            case "line":
+                renderLine(id,"",legendData,bizData);
+                break;
+            case "bar":
+                renderBar(id,"",legendData,bizData);
+                break;
+            case "map":
+                renderPie(id,"",legendData,bizData);
+                break;
+            default:
+                break;
+        }
+    }
+    /**
+     * get view data by view id
+     * /1/getdata
+     */
+    function getDataByViewId(widgetData) {
+        // 构造request data
+        let aggregators = [],
+            groups=[],
+            cache=false,
+            expired=0,
+            filters= [],
+            flush= false,
+            nativeQuery=false,
+            orders= [],
+            pageNo=0,
+            pageSize= 0;
+
+        //取category columns
+        aggregators = catsAndVal.aggregators;
+        groups = catsAndVal.groups;
+        //取 Filters columns //TODO:
+        let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
+            flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
+        $.ajax({
+            url: "/api/v3/views/"+ widgetData.viewId + "/getdata",
+            type: "POST",
+            dataType: "json",
+            data: data,
+            contentType: "application/json;charset=utf-8",
+            xhrFields: {
+                withCredentials: true //允许跨域带Cookie
+            },
+            async: false,
+            headers: {
+                "Authorization":$.cookie("token")//此处放置请求到的用户token
+            },
+            success: function (data) {
+                if (data.code == 0) {
+                    //layer.msg("查询成功", {icon: 1, time: 1000});
+                    //console.log(data);
+
+                    $.cookie("token",data.token,{
+                        expires: 10
+                    });
+                    globalViewData = data;
+                    return false;
+                } else {
+                    //layer.msg("查询失败", {icon: 2, time: 1000});
+                    return false;
+                }
+            },
+            fail: function (data) {
+                //layer.msg("查询失败", {icon: 2, time: 1000});
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 获取要展示的维度和指标
+     */
+    function getCategoriesAndValuesFromWidgetData(widgetData){
+        let aggregators = [],
+            groups=[];
+        let ret={};
+        //console.log("#### widgetData.config : ",widgetData.config)
+        let config = JSON.parse(widgetData.config)
+        //取category columns
+        let cateoryNodes = config.cols;
+        let j = 0;
+        for(let i=0;i<cateoryNodes.length;i++){
+            let oneCategory = cateoryNodes[i];
+            let dataValue = oneCategory.name;
+            if(dataValue != null){
+                groups[j] = dataValue;
+                j++;
+            }
+        }
+        //取 value columns
+        let valueNodes = config.metrics;
+        let k = 0;
+        for(let i=0;i<valueNodes.length;i++){
+            let oneMetrics = valueNodes[i];
+            let dataValue = oneMetrics.name;
+            if(dataValue != null){
+                let temp = {};
+                temp.column = dataValue;
+                temp.func = "sum";
+                aggregators[k] = temp;
+                k++;
+            }
+        }
+        ret.aggregators=aggregators;
+        ret.groups = groups;
+        return ret;
+    }
+    /**
+     * build legendData & showed data.
+     * @param data
+     */
+    function buildGraphData(data) {
+        let legendData=[], showedData=[];
+        let bizData = data.data.resultList;
+        //取category columns
+       // let ret = getCategoriesAndValuesFromWidgetData(data);
+        let categories = catsAndVal.groups;
+        let values = catsAndVal.aggregators;
+        for(let i in bizData){
+            let mapData = {};
+            //get legendData
+            let key = "";
+            let oneData = bizData[i];
+            for(let prop in categories){
+               // console.log("categories[prop] --> " ,categories[prop]);
+                //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
+                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            }
+            legendData[i]= key;
+            //build value key
+            for(let prop in values){
+                let valueKey = "";
+                if(values[prop].func != null && values[prop].func.length > 0){
+                    valueKey = values[prop].func  + "(" + values[prop].column + ")";
+                }else{
+                    valueKey += values[prop].column;
+                }
+                //get biz data
+                mapData.name=key;
+                mapData.value=oneData[valueKey]==null?0:oneData[valueKey];
+                showedData[i] = mapData;
+            }
+        }
+        let retData ={};
+        retData.legendData = legendData;
+        retData.showedData = showedData;
+        return retData;
+    }
+
+    /**
+     * according to widgetId fetch viewId.
+     * @param widgetId
+     * @returns {null}
+     */
+    function getViewIdByWidgetId(widgetId) {
+        let viewId = null ;
+        for(let prop in selectedWidgets) {
+            //console.log("prop",prop,selectedWidgets[prop]);
+            let grahpId = "displayWidget" + selectedWidgets[prop].id;
+            if(widgetId === grahpId){
+                viewId = selectedWidgets[prop].viewId;
+                break;
+            }
+        }
+        return viewId;
+    }
+</script>
+</html>

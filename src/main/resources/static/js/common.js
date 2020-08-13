@@ -27,4 +27,36 @@ function close() {
 function cancelDoNothing(){
    //do nothing.
 }
-
+function checkGraphType(graphType){
+    let type = "area";
+    graphType = parseInt(graphType);
+    switch (graphType) {
+        case 1:
+            //面积图
+            type = "area";
+            break;
+        case 2:
+            //柱状图
+            type = "bar";
+            break;
+        case 3:
+            //折线图
+            type = "line";
+            break;
+        case 4:
+            //饼图
+            type = "pie";
+            break;
+        case 5:
+            //地图
+            type = "map";
+            break;
+        case 6:
+            type = "area";//TODO: 避免数据库值为空
+            break;
+        default:
+            type = "area";
+            break;
+    }
+    return type;
+}
