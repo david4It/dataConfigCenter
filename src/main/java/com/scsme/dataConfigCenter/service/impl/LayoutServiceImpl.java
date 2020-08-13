@@ -232,7 +232,7 @@ public class LayoutServiceImpl implements LayoutService {
         layout.setLastUpdateTime(LocalDateTime.now());
         result = layoutMapper.updateById(layout) > 0;
         if (!result) {
-            return false;
+            throw new RuntimeException("更新布局失败！");
         }
         LayoutVO vo = new LayoutVO().convert(layout);
         List<ComponentVO> componentVOS = componentService.componentList(layout.getId());
@@ -250,7 +250,7 @@ public class LayoutServiceImpl implements LayoutService {
                     result = recursionLayoutPage(subLayout, enabled);
                     if (!result) {
                         //递归更新数据失败
-                        return false;
+                        throw new RuntimeException("递归更新数据失败！");
                     }
                 }
             }

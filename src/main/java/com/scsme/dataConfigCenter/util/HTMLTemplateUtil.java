@@ -5,6 +5,7 @@ import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedWriter;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class HTMLTemplateUtil {
     private static final String TEMPLATES_DIR = "/templates/";
     private static final String FREEMARKER_DIR = "/templates/freemarker/";
@@ -34,6 +36,8 @@ public class HTMLTemplateUtil {
                 layoutMapper.removeLayoutFile(layoutId);
             }
         } catch (Exception e) {
+            log.error("删除HTML失败....");
+            log.error(e.getLocalizedMessage());
             e.printStackTrace();
         }
     }
@@ -58,6 +62,8 @@ public class HTMLTemplateUtil {
                 layoutMapper.updateById(layout);
             }
         } catch (Exception e) {
+            log.error("生成HTML失败....");
+            log.error(e.getLocalizedMessage());
             e.printStackTrace();
         }
     }
