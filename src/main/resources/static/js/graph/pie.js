@@ -15,38 +15,37 @@ function renderPie(id,title,legendData,data) {
         },
         tooltip : {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {d}%"
+           // formatter: "{a} <br/>{b} : {d}%"
         },
         legend: {
-            orient: 'vertical',
-            left: 'right',
+            //orient: 'vertical',
+            //left: 'right',
             data: legendData,
-            textStyle:{
-                rich:{
-                    a:{
-                        fontSize:8,
-                        color:"#EA5504",
-                        padding:5
-                    },
-                    b:{
-                        fontSize:8,
-                        color:"#333"
-                    }
-                }
-            }
+            top: "5%",
+            right:"2%",
+            width:"20%",
+            textStyle: {
+                color: '#f2f2f2',
+                fontSize: 12,
+            },
         },
         series : [{
             data: data,
             type: 'pie',
             radius: '55%',
-            center: ['40%', '50%'],
+            center: ['40%', '60%'],
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        shadowColor: 'rgba(255,255,255,0.55)'
                 }
-            }
+            },
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#cccccc'
+            },
         }]
     };
     myCharts1.setOption(option1);
@@ -68,21 +67,33 @@ function renderBar(id,title,legendData,data) {
         },
         tooltip : {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {d}%"
+           // formatter: "{a} <br/>{b} : {d}%"
         },
 
         xAxis: {
             type: 'category',
-            data: legendData
+            data: legendData,
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
         },
         series : [{
             data: data,
             type: 'bar',
             radius: '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '40%'],
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
@@ -112,23 +123,45 @@ function renderLine(id,title,legendData,data) {
 
         xAxis: {
             type: 'category',
-            data: legendData
+            data: legendData,
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
+            // 设置X轴数据旋转倾斜
+            axisLabel: {
+                rotate: 30, // 旋转角度
+                interval: 3  //设置X轴数据间隔几个显示一个，为0表示都显示
+            }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
         },
         series : [{
             data: data,
             type: 'line',
             radius: '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '40%'],
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
                     shadowOffsetX: 0,
                     shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
-            }
+            },
+            textStyle:{
+                fontSize:12,
+                fontWeight:'bolder',
+                color:'#cccccc'
+            },
         }]
     };
     myCharts1.setOption(option1);
@@ -193,16 +226,33 @@ function renderAreaLine(id,title,legendData,data) {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: legendData
+            data: legendData,
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
+            // 设置X轴数据旋转倾斜
+            axisLabel: {
+                rotate: 30, // 旋转角度
+                interval: 3  //设置X轴数据间隔几个显示一个，为0表示都显示
+            }
         },
         yAxis: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                lineStyle: {
+                    // 设置x轴颜色
+                    color: '#ffffff'
+                }
+            },
         },
         series : [{
             data: data,
             type: 'line',
             radius: '55%',
-            center: ['50%', '60%'],
+            center: ['50%', '40%'],
             areaStyle: {},
             emphasis: {
                 itemStyle: {

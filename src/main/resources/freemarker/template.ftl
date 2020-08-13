@@ -79,7 +79,11 @@
         mounted: function() {
         //应该注意的是，使用mounted 并不能保证钩子函数中的 this.$el 在 document 中。为此还应该引入       Vue.nextTick/vm.$nextTick
             <#list components as vo>
-            showGraph(${ vo.getWidgetId()});
+                <#if vo.getWidgetId()??>
+             showGraph(${ vo.getWidgetId()});
+                <#else>
+            showGraph("1");
+                 </#if>
             </#list>
         },
         methods: {
