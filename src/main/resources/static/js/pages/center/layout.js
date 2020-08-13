@@ -235,6 +235,15 @@ new Vue({
                 type: 'success'
             });
         },
+        loadSubLayout(layoutId) {
+            let me = this;
+            me.graphLayoutId = layoutId;
+            me.defaultExpandKeys.length = 0;
+            me.defaultExpandKeys.push(me.graphLayoutId);
+            me.$nextTick(function(){
+                me.$refs.tree.setCurrentKey(me.graphLayoutId);
+            })
+        },
         handleNodeClick(data) {
             this.graphLayoutId = data.id;
             this.sqlParams = data.sqlParams;

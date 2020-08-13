@@ -1,6 +1,7 @@
 package com.scsme.dataConfigCenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.scsme.dataConfigCenter.executor.HTMLCreationExecutor;
@@ -109,9 +110,7 @@ public class LayoutServiceImpl implements LayoutService {
             List<Component> componentList = componentMapper.selectList(query);
             if (componentList != null && componentList.size() > 0) {
                 for (Component c: componentList) {
-                    c.setLink(null);
-                    c.setParams(null);
-                    result = componentMapper.updateById(c) > 0;
+                    result = componentMapper.updateComponent(c.getId()) > 0;
                     if (!result) {
                         throw new RuntimeException("更新组件的link属性失败！");
                     }

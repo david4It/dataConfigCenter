@@ -31,6 +31,7 @@ Vue.component('graph', {
                 <div style="padding-top: 6px; text-align: center">
                    <el-button size="mini" type="primary" icon="el-icon-setting" @click="editComponent(item)">编辑</el-button>
                    <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteComponent(item.i)">删除</el-button>
+                   <el-button v-if="item.link" title="子页面" size="mini" type="success" icon="el-icon-link" circle @click="loadSubLayout(item.link)"></el-button>
                 </div>
             </div>
         </grid-item>
@@ -548,7 +549,7 @@ Vue.component('graph', {
                 if (me.dialogVisible) {
                     me.dialogVisible = false;
                 }
-                me.loadComponents(me.layout_id);
+                // me.loadComponents(me.layout_id);
                 //因为可能存在新建子页面的情况，故需要刷新layout列表，确保展示的正确性
                 me.$emit('refresh_layout_list');
             }).catch(err => {
@@ -702,6 +703,10 @@ Vue.component('graph', {
                     me.component.hasSubLayout = true;
                 }
             }
+        },
+        loadSubLayout(layoutId) {
+            let me = this;
+            me.$emit('load_sub_layout', layoutId);
         },
         successMsg(msg) {
             this.$message({
