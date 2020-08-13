@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface ComponentMapper extends BaseMapper<Component> {
     @Delete("DELETE FROM Component WHERE layout_id = #{layoutId}")
-    int deletComponenets(Long layoutId);
+    void deleteComponents(Long layoutId);
 
     @Update("UPDATE Component SET link = NULL AND params = NULL WHERE id = #{id}")
     int updateComponent(Long id);

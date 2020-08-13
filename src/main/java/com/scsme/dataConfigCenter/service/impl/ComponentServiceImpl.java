@@ -34,10 +34,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
         if (components.size() > 0) {
             Boolean result;
             Long layoutId = components.get(0).getLayoutId();
-            result = deleteComponents(layoutId);
-            if (!result) {
-                return false;
-            }
+            deleteComponents(layoutId);
             List<Component> componentList = new ArrayList<>();
             components.forEach(c -> {
                 componentList.add(c.trans());
@@ -82,8 +79,8 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     }
 
     @Override
-    public Boolean deleteComponents(Long layoutId) {
-        return componentMapper.deletComponenets(layoutId) > 0;
+    public void deleteComponents(Long layoutId) {
+        componentMapper.deleteComponents(layoutId);
     }
 
     @Override

@@ -10,6 +10,6 @@ public interface ComponentService extends IService<Component> {
     Boolean saveComponents(List<ComponentVO> components);
     List<ComponentVO> componentList(Long layoutId);
     Boolean updateComponent(Long componentId, Long childLayoutId);
-    Boolean deleteComponents(Long layoutId);
+    void deleteComponents(Long layoutId);
     Boolean deleteComponent(Long componentId);
 }

@@ -240,7 +240,9 @@ new Vue({
             me.graphLayoutId = layoutId;
             me.defaultExpandKeys.length = 0;
             me.defaultExpandKeys.push(me.graphLayoutId);
-            me.sqlParams = me.recursionFindLayout(me.layoutList, layoutId).sqlParams;
+            let subLayout = me.recursionFindLayout(me.layoutList, layoutId);
+            me.sqlParams = subLayout.sqlParams;
+            me.graphLayoutTitle = subLayout.title + ' (' + subLayout.url + ')';
             me.$nextTick(function(){
                 me.$refs.tree.setCurrentKey(me.graphLayoutId);
             })
@@ -265,7 +267,7 @@ new Vue({
         handleNodeClick(data) {
             this.graphLayoutId = data.id;
             this.sqlParams = data.sqlParams;
-            this.graphLayoutTitle = data.title;
+            this.graphLayoutTitle = data.title + ' (' + data.url + ')';
         }
     }
 });
