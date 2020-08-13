@@ -208,7 +208,7 @@ new Vue({
                 type: 'warning'
             }).then(() => {
                 row.enabled = status;
-                service.post("/layout/update", row).then(function(res){
+                service.post("/layout/enabled", row).then(function(res){
                     if (!res.data.success) {
                         me.$message.error(res.data.message);
                         return;
@@ -217,7 +217,7 @@ new Vue({
                     me.successMsg(res.data.message);
                     me.getLayoutList();
                 }).catch(err => {
-                    me.$message.error("更新布局数据失败！");
+                    me.$message.error("更新布局状态失败！");
                 });
             }).catch(() => {
                 this.$message({
@@ -240,9 +240,27 @@ new Vue({
             me.graphLayoutId = layoutId;
             me.defaultExpandKeys.length = 0;
             me.defaultExpandKeys.push(me.graphLayoutId);
+            me.sqlParams = me.recursionFindLayout(me.layoutList, layoutId).sqlParams;
             me.$nextTick(function(){
                 me.$refs.tree.setCurrentKey(me.graphLayoutId);
             })
+        },
+        recursionFindLayout(list, layoutId) {
+            let me = this;
+            let index = list.findIndex((i) => {
+                return i.id === layoutId;
+            });
+            if (index !== -1) {
+                return list[index];
+            }
+            for (let i = 0; i < list.length; i++) {
+                if (list[i].children.length > 0) {
+                    let result = me.recursionFindLayout(list[i].children, layoutId);
+                    if (result) {
+                        return result;
+                    }
+                }
+            }
         },
         handleNodeClick(data) {
             this.graphLayoutId = data.id;

@@ -1,7 +1,6 @@
 package com.scsme.dataConfigCenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.scsme.dataConfigCenter.executor.HTMLCreationExecutor;
@@ -11,6 +10,8 @@ import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
+import com.scsme.dataConfigCenter.util.HTMLTemplateUtil;
+import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
 import com.scsme.dataConfigCenter.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +102,11 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Boolean deleteLayout(Long id) {
-        //删除布局对应的组件节点
+        //删除布局对应的组件节点，同时删除已经生成的页面
+        Layout layout = layoutMapper.selectById(id);
+        if (layout != null) {
+            HTMLCreationExecutor.deleteHTMLFile(layout.getId(), layout.getUrl(), null);
+        }
         boolean result = layoutMapper.deleteById(id) > 0;
         if (result) {
             //更新所有引用了此布局的component组件的link为null
@@ -158,20 +163,18 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public Boolean updateLayout(LayoutVO layout) {
-        boolean result = false;
-        Layout beSave = layout.transLayout();
-        beSave.setLastUpdateTime(LocalDateTime.now());
-        result = layoutMapper.updateById(beSave) > 0;
-        if (result) {
-            //生成或者删除页面
-            if ("Y".equals(layout.getEnabled())) {
-                layout.setComponents(componentService.componentList(layout.getId()));
-                HTMLCreationExecutor.generatedHTMLFile(layout, layoutMapper);
-            } else {
-                HTMLCreationExecutor.deleteHTMLFile(layout, layoutMapper);
-            }
+        //删除旧页面
+        Layout old = layoutMapper.selectById(layout.getId());
+        if (old != null) {
+            HTMLTemplateUtil.deleteHTMLFile(old.getId(), old.getUrl(), null);
         }
-        return result;
+        //更新布局会递归的新增或者删除子页面
+        return recursionLayoutPage(layout.transLayout(), "N");
+    }
+
+    @Override
+    public void enabled(LayoutVO layout) {
+        recursionLayoutPage(layout.transLayout(), layout.getEnabled());
     }
 
     @Override
@@ -221,5 +224,37 @@ public class LayoutServiceImpl implements LayoutService {
                 }
             }
         });
+    }
+
+    private boolean recursionLayoutPage(Layout layout, String enabled) {
+        boolean result;
+        layout.setEnabled(enabled);
+        layout.setLastUpdateTime(LocalDateTime.now());
+        result = layoutMapper.updateById(layout) > 0;
+        if (!result) {
+            return false;
+        }
+        LayoutVO vo = new LayoutVO().convert(layout);
+        List<ComponentVO> componentVOS = componentService.componentList(layout.getId());
+        if ("N".equals(enabled)) {
+            HTMLCreationExecutor.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
+        } else {
+            vo.setComponents(componentVOS);
+            HTMLCreationExecutor.generatedHTMLFile(vo, layoutMapper);
+        }
+        for (ComponentVO c : componentVOS) {
+            Long id = c.getLink();
+            if (id != null) {
+                Layout subLayout = layoutMapper.selectById(id);
+                if (subLayout != null) {
+                    result = recursionLayoutPage(subLayout, enabled);
+                    if (!result) {
+                        //递归更新数据失败
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

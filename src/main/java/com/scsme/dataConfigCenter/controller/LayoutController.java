@@ -139,6 +139,20 @@ public class LayoutController {
         return result;
     }
 
+    @PostMapping("/enabled")
+    public Result<Boolean> enable(@RequestBody LayoutVO layout) {
+        Result<Boolean> result = new Result<>();
+        try {
+            layoutService.enabled(layout);
+            result.setResult(true);
+            result.success("Y".equals(layout.getEnabled()) ? "启用布局成功！" : "禁用布局成功！");
+        } catch (Exception e) {
+            result.error500("更新布局状态失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
     @GetMapping("/checkUrl")
     public Result<Boolean> checkUrl(@RequestParam String url, @RequestParam(required = false) String id) {
         Result<Boolean> result = new Result<>();

@@ -26,13 +26,12 @@ public class HTMLTemplateUtil {
     private static final String TITLE = "title";
     private static final String COMPONENTS = "components";
 
-    public static void deleteHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
+    public static void deleteHTMLFile(Long layoutId, String url, LayoutMapper layoutMapper) {
         try {
-            File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + layout.getUrl() + HTML_SUFFIX);
+            File file = new File(new ClassPathResource(TEMPLATES_DIR).getURI().getPath() + url + HTML_SUFFIX);
             file.delete();
             if (layoutMapper != null) {
-                layout.setFile(null);
-                layoutMapper.updateById(layout);
+                layoutMapper.removeLayoutFile(layoutId);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -289,7 +289,6 @@ Vue.component('graph', {
                         //展示已配置的子页面信息
                         item.redirect = 'Y';
                         item.hasSubLayout = true;
-                        me.params = item.params.split(",");
                     } else {
                         item.redirect = 'N';
                         item.hasSubLayout = false;

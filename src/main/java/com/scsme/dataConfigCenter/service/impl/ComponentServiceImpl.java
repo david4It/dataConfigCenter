@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.scsme.dataConfigCenter.mapper.ComponentMapper;
 import com.scsme.dataConfigCenter.mapper.LayoutMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
+import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.ComponentService;
+import com.scsme.dataConfigCenter.service.LayoutService;
+import com.scsme.dataConfigCenter.util.HTMLTemplateUtil;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
+import com.scsme.dataConfigCenter.vo.LayoutVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +26,30 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     ComponentMapper componentMapper;
     @Autowired
     LayoutMapper layoutMapper;
+    @Autowired
+    LayoutService layoutService;
     @Override
     public Boolean saveComponents(List<ComponentVO> components) {
         //先清除当前layout下所有components，然后再保存
         if (components.size() > 0) {
-            deleteComponents(components.get(0).getLayoutId());
+            Boolean result;
+            Long layoutId = components.get(0).getLayoutId();
+            result = deleteComponents(layoutId);
+            if (!result) {
+                return false;
+            }
             List<Component> componentList = new ArrayList<>();
             components.forEach(c -> {
                 componentList.add(c.trans());
             });
-            return saveOrUpdateBatch(componentList);
+            Layout layout = layoutMapper.selectById(layoutId);
+            result = saveOrUpdateBatch(componentList);
+            if (!result) {
+                return false;
+            }
+            //保存组件需要重新生成页面，以及将所有页面和子页面设置为禁用状态
+            result = layoutService.updateLayout(new LayoutVO().convert(layout));
+            return result;
         }
         return true;
     }
@@ -70,6 +88,17 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
 
     @Override
     public Boolean deleteComponent(Long componentId) {
-        return componentMapper.deleteById(componentId) > 0;
+        boolean result = false;
+        //组件删除，需要更新layout.enabled=N，同时删除已经存在的页面
+        Layout layout = layoutMapper.selectLayoutId(componentId);
+        if (layout != null) {
+            HTMLTemplateUtil.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
+            layout.setEnabled("N");
+            result = layoutMapper.updateById(layout) > 0;
+            if (result) {
+                result = componentMapper.deleteById(componentId) > 0;
+            }
+        }
+        return result;
     }
 }

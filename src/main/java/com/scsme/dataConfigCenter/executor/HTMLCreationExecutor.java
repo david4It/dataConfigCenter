@@ -33,18 +33,17 @@ public class HTMLCreationExecutor {
             }
         });
     }
-    public static void deleteHTMLFile(LayoutVO layout, LayoutMapper layoutMapper) {
+    public static void deleteHTMLFile(Long layoutId, String url, LayoutMapper layoutMapper) {
         service.submit(() -> {
-            Long id = layout.getId();
             while (true) {
-                if (!identity.contains(id)) {
+                if (!identity.contains(layoutId)) {
                     try {
                         lock.lock();
-                        identity.add(id);
-                        HTMLTemplateUtil.deleteHTMLFile(layout, layoutMapper);
+                        identity.add(layoutId);
+                        HTMLTemplateUtil.deleteHTMLFile(layoutId, url, layoutMapper);
                         break;
                     } finally {
-                        identity.remove(id);
+                        identity.remove(layoutId);
                         lock.unlock();
                     }
                 }

@@ -15,6 +15,7 @@ public interface LayoutService {
     Boolean saveLayout(LayoutVO layout);
     Long saveSubLayout(LayoutVO layout);
     Boolean updateLayout(LayoutVO layout);
+    void enabled(LayoutVO layout);
     Boolean checkUrl(String url, String id);
     List<String> thumbnails() throws IOException;
 }
