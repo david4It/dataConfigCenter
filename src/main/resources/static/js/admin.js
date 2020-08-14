@@ -29,10 +29,8 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	//获取URL参数
 	//console.log("projectId: "+ getUrlParam("projectId"))
 	//共享projectID
-	$.cookie("projectId",getUrlParam("projectId"),{
-		expires: 10
-	});
-
+	localStorage.setItem('projectId', getUrlParam("projectId"));
+	console.log("projectId: "+localStorage.getItem("projectId"))
 	/**
 	 * 操作管理--数据操作
 	 * @param String url 请求路径

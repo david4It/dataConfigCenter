@@ -37,7 +37,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			let uid=$.cookie("uid");
 			data.field.uid=uid;
 			data.field.config='{"displayParams":{"autoPlay":true,"autoSlide":10,"transitionStyle":"fade","transitionSpeed":"default","grid":[10,10]}}';
-			data.field.projectId=$.cookie("projectId");//TODO:
+			data.field.projectId=localStorage.getItem("projectId");//TODO:
 			data.field.publish=1;
 			data.field.roleIds=[];
             $.ajax({
@@ -118,7 +118,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	var w0 = (screenWith-44) / 5;
 	table.render({
 		elem: '#orgList'  //绑定table id
-		,url:'/api/v3/displays?projectId='+$.cookie("projectId")  //数据请求路径
+		,url:'/api/v3/displays?projectId='+localStorage.getItem("projectId")  //数据请求路径
 		,xhrFields: {
 			withCredentials: true //允许跨域带Cookie
 		},

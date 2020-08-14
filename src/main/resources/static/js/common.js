@@ -65,3 +65,36 @@ function checkGraphType(graphType){
     }
     return type;
 }
+function getGraphName(graphType){
+    let type = "饼图";
+    graphType = parseInt(graphType);
+    switch (graphType) {
+        case 1:
+            //面积图
+            type = "面积图";
+            break;
+        case 2:
+            //柱状图
+            type = "柱状图";
+            break;
+        case 3:
+            //折线图
+            type = "折线图";
+            break;
+        case 4:
+            //饼图
+            type = "饼图";
+            break;
+        case 5:
+            //地图
+            type = "地图";
+            break;
+        case 6:
+            type = "面积图";//TODO: 避免数据库值为空
+            break;
+        default:
+            type = "面积图";
+            break;
+    }
+    return type;
+}

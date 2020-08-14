@@ -55,7 +55,7 @@ function getSampleDisps(projectId){
 function getDisplays(htmlElementId){
     let ret = null;
     $.ajax({
-        url: "api/v3/displays?projectId="+	$.cookie("projectId"),
+        url: "api/v3/displays?projectId="+	localStorage.getItem("projectId"),
         type: "GET",
         dataType: "json",
         contentType: "application/json;charset=utf-8",

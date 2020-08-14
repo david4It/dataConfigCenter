@@ -86,9 +86,9 @@ public interface RoleMapper {
 
 
     @Select({
-            "SELECT DISTINCT r.id FROM role r INNER JOIN rel_role_project rrp on rrp.role_id = r.id",
-            "INNER JOIN display d on d.project_id = rrp.project_id ",
-            "INNER JOIN rel_role_user rru on rru.role_id = r.id",
+            "SELECT DISTINCT r.id FROM daav_role r INNER JOIN daav_rel_role_project rrp on rrp.role_id = r.id",
+            "INNER JOIN daav_display d on d.project_id = rrp.project_id ",
+            "INNER JOIN daav_rel_role_user rru on rru.role_id = r.id",
             "WHERE d.id = #{displayId} and rru.user_id = #{userId}"
     })
     List<Long> getRolesByUserAndDisplay(@Param("userId") Long userId, @Param("displayId") Long displayId);

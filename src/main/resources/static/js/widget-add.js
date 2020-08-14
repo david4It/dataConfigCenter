@@ -57,7 +57,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			//console.log(data.field);
 			let uid=$.cookie("uid");
 			data.field.id=uid;
-			data.field.projectId=$.cookie("projectId");
+			data.field.projectId=localStorage.getItem("projectId");
 			/*let config={};
 			config.username=data.field.username;
 			config.password = data.field.password;
@@ -254,7 +254,7 @@ function cancel(){
  * 保存模型数据
  */
 function saveWidget() {
-	let projectId = $.cookie("projectId");
+	let projectId = localStorage.getItem("projectId");
 	let name = $("#name").val();
 	let description = $("#description").val();
 	//取category columns
@@ -310,7 +310,7 @@ function saveWidget() {
  * get views by project id
  */
 function getViewsByProjectId(layer,form) {
-	let projectId = $.cookie("projectId");
+	let projectId = localStorage.getItem("projectId");
 	$.ajax({
 		url: "/api/v3/views",
 		type: "GET",

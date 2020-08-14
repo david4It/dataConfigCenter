@@ -26,16 +26,21 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 	$(".layui-table-body").css('overflow','visible');
 	$(".layui-table-box").css('overflow','visible');
 	$(".layui-table-view").css('overflow','visible');
-
+	//共享displayID
+	//console.log("displayId=" + getUrlParam("displayId"));
+	if(getUrlParam("displayId") != null ) {
+		localStorage.setItem('displayId', getUrlParam("displayId"))
+	}
 	let token = $.cookie("token");
-
+	let projectId = localStorage.getItem("projectId");
+	//console.log("projectId=" + projectId);
 	var screenWith = document.body.clientWidth;
 	var w0 = (screenWith-44) / 5;
 	//console.log(screenWith,w0);
 	table.render({
 		id: 'idTest',
 		elem: '#widgetSelect'  //绑定table id
-		,url:'/api/v3/widgets?projectId=' + $.cookie("projectId")  //数据请求路径
+		,url:'/api/v3/widgets?projectId=' + projectId  //数据请求路径
 		,xhrFields: {
 			withCredentials: true //允许跨域带Cookie
 		},
@@ -102,7 +107,12 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 		return selectedWidget;
 	}
 	//end select widgets
+	//获取slide
+	let firstSlideId = querySlides();
+	//end
+	//获取memslidewidgets
 
+	//end
 });
 
 function queryData(){
@@ -147,4 +157,47 @@ function getViewByViewID(viewId){
 			return false;
 		}
 	});
+}
+function querySlides(){
+	// 通过data.elem.dataset可以得到保存的对象id
+	// data.elem.value可以得到下拉框选择的文本
+	let firstSlideId = 1;
+	let displayId = localStorage.getItem("displayId");
+	if(displayId === "") return false;
+	$.ajax({
+		url: "/api/v3/displays/"+ displayId +"/slides",
+		type: "GET",
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		xhrFields: {
+			withCredentials: true //允许跨域带Cookie
+		},
+		async: false,
+		headers: {
+			"Authorization":$.cookie("token")//此处放置请求到的用户token
+		},
+		success: function (data) {
+			if (data.code == 0) {
+				//layer.msg("查询成功", {icon: 1, time: 1000});
+				let models = data.data.slides;
+				let htmlStr = "";
+				for(let prop in models) {
+					let one = models[prop];
+					firstSlideId = one.id;
+					htmlStr += '<div style="background-color: #6570e8;display:block;width: 8rem;height: 6rem;margin-top: 0.6rem "> '+ one.id +'</div>';
+
+				}
+				$('#slideDiv').html(htmlStr);
+				$.cookie("token",data.token,{
+					expires: 10
+				});
+			} else {
+				layer.msg("查询失败", {icon: 2, time: 1000});
+			}
+		},
+		fail: function (data) {
+			layer.msg("查询失败", {icon: 2, time: 1000});
+		}
+	});
+	return firstSlideId;
 }
