@@ -193,16 +193,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		}
 
 	});
-	/*table.render({
-		elem: '#test'
-		,url:'/demo/table/user/'
-		,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-		,cols: [[
-			{field:'key', width:80, title: 'key', sort: true}
-			,{field:'value', width:80, title: 'value'}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
-		]]
-	});*/
+
 	//监听工具条
 	table.on('tool(demo)', function(obj){
 		var data = obj.data;

@@ -49,17 +49,23 @@
 		<div class="layui-fluid">
 			<blockquote class="layui-elem-quote">欢迎XXX：
 				<span class="x-red">xxxxxxx</span>&nbsp;&nbsp;&nbsp;&nbsp;上次登录时间：xxxxxxx
-				<button class="layui-btn" onclick="execute_open('创建大屏', 'display-add.html', '1000', '750')"><i class="layui-icon"></i>创建大屏</button>
+				<button style="float:right;" class="layui-btn" onclick="execute_open('创建项目', 'project-add.html', '1000', '750')"><i class="layui-icon"></i>创建项目</button>
 
 			</blockquote>
 
 			<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
 				<ul class="layui-tab-title">
-					<li  class="layui-this">定制大屏</li>
+					<li class="layui-this">我的项目</li>
+					<li>定制大屏</li>
 					<li>模板大屏</li>
 				</ul>
 				<div class="layui-tab-content" style="height: 100px;">
-					<div class="layui-tab-item  layui-show">
+					<div class="layui-tab-item layui-show">
+						<div class="flex-images" id="projectId">
+
+						</div>
+					</div>
+					<div class="layui-tab-item">
 						<div class="flex-images" id="displayId">
 
 						</div>
@@ -78,7 +84,7 @@
 <script src="js/jquery-3.4.1.min.js"></script>
 <script src="lib/layui/layui.js"></script>
 <script src="js/jquery.cookie.min.js"></script>
-<script src="js/console.js"></script>
+<script src="js/portal.js"></script>
 <script src="js/common.js"></script>
 <script src="js/project.js"></script>
 <script src="js/biz-common.js"></script>

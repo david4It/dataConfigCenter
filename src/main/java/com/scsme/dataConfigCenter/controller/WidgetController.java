@@ -93,11 +93,11 @@ public class WidgetController extends BaseController {
                                         @ApiIgnore @CurrentUser User user,
                                         HttpServletRequest request,
                                         @CookieValue("uid") String uid) {
-        user.setId(Long.valueOf(uid));
+        /*user.setId(Long.valueOf(uid));
         if (invalidId(id)) {
             ResultMap resultMap = new ResultMap(tokenUtils).failAndRefreshToken(request).message("Invalid id");
             return ResponseEntity.status(resultMap.getCode()).body(resultMap);
-        }
+        }*/
         Widget widget = widgetService.getWidget(id, user);
         return ResponseEntity.ok(new ResultMap(tokenUtils).successAndRefreshToken(request).payload(widget));
     }

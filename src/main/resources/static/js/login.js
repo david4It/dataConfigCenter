@@ -37,7 +37,7 @@ function login() {
                     expires: 10
                 });
                 setTimeout(function () {
-                    window.location.href = "/manager";
+                    window.location.href = "/portal";
                 }, 1000);
                 return false;
             } else {

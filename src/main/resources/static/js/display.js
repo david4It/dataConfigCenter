@@ -160,7 +160,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			layer.alert('编辑行：<br>'+ JSON.stringify(data))
 		}
 	});
-
+	//获取用户大屏
+	getDisplays("displayId");
+	//end
 });
 
 /**

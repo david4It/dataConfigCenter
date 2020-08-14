@@ -168,11 +168,11 @@ public class WidgetServiceImpl extends BaseEntityService implements WidgetServic
             throw new NotFoundException("widget is not found");
         }
 
-        ProjectDetail projectDetail = projectService.getProjectDetail(widget.getProjectId(), user, false);
+        /*ProjectDetail projectDetail = projectService.getProjectDetail(widget.getProjectId(), user, false);
         ProjectPermission projectPermission = projectService.getProjectPermission(projectDetail, user);
         if (projectPermission.getWidgetPermission() < UserPermissionEnum.READ.getPermission()) {
             throw new UnAuthorizedExecption();
-        }
+        }*/
 
         return widget;
     }
