@@ -3,10 +3,6 @@ package com.scsme.dataConfigCenter.graphical;
 import com.scsme.dataConfigCenter.pojo.Component;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GraphicalFactory {

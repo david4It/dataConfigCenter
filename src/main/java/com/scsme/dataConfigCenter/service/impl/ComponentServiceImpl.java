@@ -29,10 +29,9 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     @Autowired
     LayoutService layoutService;
     @Override
-    public Boolean saveComponents(List<ComponentVO> components) {
+    public void saveComponents(List<ComponentVO> components) throws Exception {
         //先清除当前layout下所有components，然后再保存
         if (components.size() > 0) {
-            Boolean result;
             Long layoutId = components.get(0).getLayoutId();
             deleteComponents(layoutId);
             List<Component> componentList = new ArrayList<>();
@@ -40,15 +39,13 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
                 componentList.add(c.trans());
             });
             Layout layout = layoutMapper.selectById(layoutId);
-            result = saveOrUpdateBatch(componentList);
+            boolean result = saveOrUpdateBatch(componentList);
             if (!result) {
-                return false;
+                throw new RuntimeException("批量保存组件失败！");
             }
             //保存组件需要重新生成页面，以及将所有页面和子页面设置为禁用状态
-            result = layoutService.updateLayout(new LayoutVO().convert(layout));
-            return result;
+            layoutService.updateLayout(new LayoutVO().convert(layout));
         }
-        return true;
     }
 
     @Override
@@ -71,11 +68,14 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     }
 
     @Override
-    public Boolean updateComponent(Long componentId, Long childLayoutId) {
+    public void updateComponent(Long componentId, Long childLayoutId) {
         Component component = new Component();
         component.setId(componentId);
         component.setLink(childLayoutId);
-        return componentMapper.updateById(component) > 0;
+        Boolean result = componentMapper.updateById(component) > 0;
+        if (!result) {
+            throw new RuntimeException("更新组件失败！");
+        }
     }
 
     @Override
@@ -84,18 +84,23 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     }
 
     @Override
-    public Boolean deleteComponent(Long componentId) {
-        boolean result = false;
+    public void deleteComponent(Long componentId) throws Exception {
         //组件删除，需要更新layout.enabled=N，同时删除已经存在的页面
         Layout layout = layoutMapper.selectLayoutId(componentId);
         if (layout != null) {
             HTMLTemplateUtil.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
             layout.setEnabled("N");
-            result = layoutMapper.updateById(layout) > 0;
+            boolean result = layoutMapper.updateById(layout) > 0;
             if (result) {
                 result = componentMapper.deleteById(componentId) > 0;
+                if (!result) {
+                    throw new RuntimeException("删除组件失败！");
+                }
+            } else {
+                throw new RuntimeException("更新布局失败！");
             }
+        } else {
+            throw new RuntimeException("组件对应的布局数据未找到！");
         }
-        return result;
     }
 }

@@ -7,9 +7,9 @@ import com.scsme.dataConfigCenter.vo.ComponentVO;
 import java.util.List;
 
 public interface ComponentService extends IService<Component> {
-    Boolean saveComponents(List<ComponentVO> components);
+    void saveComponents(List<ComponentVO> components) throws Exception;
     List<ComponentVO> componentList(Long layoutId);
-    Boolean updateComponent(Long componentId, Long childLayoutId);
+    void updateComponent(Long componentId, Long childLayoutId);
     void deleteComponents(Long layoutId);
-    Boolean deleteComponent(Long componentId);
+    void deleteComponent(Long componentId) throws Exception;
 }

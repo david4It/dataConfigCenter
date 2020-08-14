@@ -101,7 +101,7 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public Boolean deleteLayout(Long id) {
+    public Boolean deleteLayout(Long id) throws Exception {
         //删除布局对应的组件节点，同时删除已经生成的页面
         Layout layout = layoutMapper.selectById(id);
         if (layout != null) {
@@ -162,18 +162,18 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
-    public Boolean updateLayout(LayoutVO layout) {
+    public void updateLayout(LayoutVO layout) throws Exception {
         //删除旧页面
         Layout old = layoutMapper.selectById(layout.getId());
         if (old != null) {
             HTMLTemplateUtil.deleteHTMLFile(old.getId(), old.getUrl(), null);
         }
         //更新布局会递归的新增或者删除子页面
-        return recursionLayoutPage(layout.transLayout(), "N");
+        recursionLayoutPage(layout.transLayout(), "N");
     }
 
     @Override
-    public void enabled(LayoutVO layout) {
+    public void enabled(LayoutVO layout) throws Exception {
         recursionLayoutPage(layout.transLayout(), layout.getEnabled());
     }
 
@@ -226,7 +226,7 @@ public class LayoutServiceImpl implements LayoutService {
         });
     }
 
-    private boolean recursionLayoutPage(Layout layout, String enabled) {
+    private void recursionLayoutPage(Layout layout, String enabled) throws Exception {
         boolean result;
         layout.setEnabled(enabled);
         layout.setLastUpdateTime(LocalDateTime.now());
@@ -247,14 +247,9 @@ public class LayoutServiceImpl implements LayoutService {
             if (id != null) {
                 Layout subLayout = layoutMapper.selectById(id);
                 if (subLayout != null) {
-                    result = recursionLayoutPage(subLayout, enabled);
-                    if (!result) {
-                        //递归更新数据失败
-                        throw new RuntimeException("递归更新数据失败！");
-                    }
+                    recursionLayoutPage(subLayout, enabled);
                 }
             }
         }
-        return true;
     }
 }

@@ -39,7 +39,8 @@ public class ComponentController {
     public Result<Boolean> save(@RequestBody List<ComponentVO> components) {
         Result<Boolean> result = new Result<>();
         try {
-            result.setResult(componentService.saveComponents(components));
+            componentService.saveComponents(components);
+            result.setResult(true);
             result.success("保存组件成功！");
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
@@ -52,9 +53,9 @@ public class ComponentController {
     public Result<Boolean> delete(@RequestParam("id") Long id) {
         Result<Boolean> result = new Result<>();
         try {
-            Boolean deleted = componentService.deleteComponent(id);
-            result.setResult(deleted);
-            result.success(deleted ? "删除组件成功！" : "删除组件失败！");
+            componentService.deleteComponent(id);
+            result.setResult(true);
+            result.success("删除组件成功！");
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             result.error500("删除组件失败！");

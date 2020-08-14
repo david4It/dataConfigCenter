@@ -201,14 +201,15 @@ new Vue({
         },
         handleStatusChange(row, status) {
             let me = this;
+            let result = Object.assign({}, row);
             let msg = status === 'Y' ? '是否发布此布局页面？' : '是否禁用此布局页面？';
             this.$confirm(msg, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                row.enabled = status;
-                service.post("/layout/enabled", row).then(function(res){
+                result.enabled = status;
+                service.post("/layout/enabled", result).then(function(res){
                     if (!res.data.success) {
                         me.$message.error(res.data.message);
                         return;

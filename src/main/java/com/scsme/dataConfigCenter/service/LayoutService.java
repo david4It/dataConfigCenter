@@ -11,11 +11,11 @@ public interface LayoutService {
     List<LayoutVO> treePageList(Result<List<LayoutVO>> result, Integer pageNo, Integer pageSize);
     List<LayoutVO> treeList();
     List<LayoutVO> enabledLayouts();
-    Boolean deleteLayout(Long id);
+    Boolean deleteLayout(Long id) throws Exception;
     Boolean saveLayout(LayoutVO layout);
     Long saveSubLayout(LayoutVO layout);
-    Boolean updateLayout(LayoutVO layout);
-    void enabled(LayoutVO layout);
+    void updateLayout(LayoutVO layout) throws Exception;
+    void enabled(LayoutVO layout) throws Exception;
     Boolean checkUrl(String url, String id);
     List<String> thumbnails() throws IOException;
 }

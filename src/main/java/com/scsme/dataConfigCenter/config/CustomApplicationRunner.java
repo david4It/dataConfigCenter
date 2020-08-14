@@ -26,7 +26,11 @@ public class CustomApplicationRunner implements ApplicationRunner {
             layouts.forEach(layoutVO -> {
                 List<ComponentVO> componentVOS = componentService.componentList(layoutVO.getId());
                 layoutVO.setComponents(componentVOS);
-                HTMLCreationExecutor.generatedHTMLFile(layoutVO, null);
+                try {
+                    HTMLCreationExecutor.generatedHTMLFile(layoutVO, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
         } catch (Exception e) {
             e.printStackTrace();

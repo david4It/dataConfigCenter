@@ -125,13 +125,9 @@ public class LayoutController {
     public Result<Boolean> update(@RequestBody LayoutVO layout) {
         Result<Boolean> result = new Result<>();
         try {
-            Boolean updated = layoutService.updateLayout(layout);
-            result.setResult(updated);
-            if (updated) {
-                result.success("更新布局数据成功！");
-            } else {
-                result.error500("更新布局数据失败！");
-            }
+            layoutService.updateLayout(layout);
+            result.setResult(true);
+            result.success("更新布局数据成功！");
         } catch (Exception e) {
             result.error500("更新布局数据失败！");
             log.error(e.getLocalizedMessage());
