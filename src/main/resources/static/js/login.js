@@ -85,7 +85,7 @@ function register() {
                 ShowSuccess(data.msg);
                 //$.cookie('data',data,{ path: "/"});
                 setTimeout(function () {
-                    window.location.href = "/index";
+                    window.location.href = "/";
                 }, 1000);
                 return false;
             } else {
