@@ -12,7 +12,8 @@ public class SQLParserUtil {
             Pattern p = Pattern.compile(regex);
             Matcher matcher = p.matcher(sql);
             if (matcher.find()) {
-                sql = matcher.replaceAll(params[i]);
+                //将所有使用${}变量的值修改为1，仅为获取select字段；避免在类似LIMIT ${a} 替换变量时，造成语法解析错误
+                sql = matcher.replaceAll("1");
             }
         }
         return sql;

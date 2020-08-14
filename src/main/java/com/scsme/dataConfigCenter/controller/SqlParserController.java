@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("sql")
@@ -60,22 +62,22 @@ public class SqlParserController {
     }
 
     @PostMapping("/selections")
-    public Result<List<String>> selections(@RequestBody SqlVO vo) {
-        Result<List<String>> result = new Result<>();
+    public Result<Set<String>> selections(@RequestBody SqlVO vo) {
+        Result<Set<String>> result = new Result<>();
         try {
-            List<String> list = new ArrayList<>();
+            Set<String> set = new HashSet<>();
             Select stmt = (Select) CCJSqlParserUtil.parse(SQLParserUtil.parseSqlWithParams(vo.getSql(), vo.getParams()));
             SelectBody selectBody = stmt.getSelectBody();
             if (selectBody instanceof PlainSelect) {
-                addSelectionName((PlainSelect) selectBody, list);
+                addSelectionName((PlainSelect) selectBody, set);
             } else if (selectBody instanceof SetOperationList) {
                 List<SelectBody> selects = ((SetOperationList) selectBody).getSelects();
                 selects.forEach(s -> {
-                    addSelectionName((PlainSelect) s, list);
+                    addSelectionName((PlainSelect) s, set);
                 });
             }
             result.success("解析SQL语句成功！");
-            result.setResult(list);
+            result.setResult(set);
         } catch (JSQLParserException e) {
             e.printStackTrace();
             result.error500("SQL存在语法错误！");
@@ -86,16 +88,20 @@ public class SqlParserController {
         return result;
     }
 
-    private void addSelectionName(PlainSelect select, List<String> list) {
+    private void addSelectionName(PlainSelect select, Set<String> set) {
         List<SelectItem> selectItems = select.getSelectItems();
         selectItems.forEach(item -> {
             item.accept(new SelectItemVisitorAdapter() {
                 @Override
                 public void visit(SelectExpressionItem expressionItem) {
                     if (expressionItem.getAlias() != null) {
-                        list.add(expressionItem.getAlias().getName());
+                        String name = expressionItem.getAlias().getName();
+                        name = name.replaceAll("'", "");
+                        set.add(name);
                     } else {
-                        list.add(expressionItem.getExpression().toString());
+                        String name = expressionItem.getExpression().toString();
+                        name = name.replaceAll("'", "");
+                        set.add(name);
                     }
                 }
             });
