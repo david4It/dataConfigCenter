@@ -35,9 +35,9 @@ function getProjects(){
 				for(let prop in ret){
 					htmlContent +='<div class="layui-col-md6"> '
 						+ '<div class="layui-card"> '
-						+ '<div class="layui-card-header"> ' + ret[0].title + '</div> '
+						+ '<div class="layui-card-header"> <a href="' + ret[0].url +'" target="_blank"> ' + ret[0].title + '</a></div> '
 						+ '<div class="layui-card-body image-style"> '
-						+ ' <a href="' + ret[0].url +'"> <img src="images/project-default.png"> </a>'
+						+ ' <a href="' + ret[0].url +'" target="_blank"> <img src="images/project-default.png"> </a>'
 						+ '</div> '
 						+ '</div> '
 						+ '</div> '
