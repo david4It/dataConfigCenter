@@ -178,6 +178,11 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
+    public void preview(LayoutVO layout) throws Exception {
+        recursionPreviewLayoutPage(layout.transLayout(), layout.getEnabled());
+    }
+
+    @Override
     public Boolean checkUrl(String url, String id) {
         return getLayout(url, id) == null;
     }
@@ -248,6 +253,22 @@ public class LayoutServiceImpl implements LayoutService {
                 Layout subLayout = layoutMapper.selectById(id);
                 if (subLayout != null) {
                     recursionLayoutPage(subLayout, enabled);
+                }
+            }
+        }
+    }
+
+    private void recursionPreviewLayoutPage(Layout layout, String enabled) throws Exception {
+        LayoutVO vo = new LayoutVO().convert(layout);
+        List<ComponentVO> componentVOS = componentService.componentList(layout.getId());
+        vo.setComponents(componentVOS);
+        HTMLCreationExecutor.generatedPreviewHTMLFile(vo);
+        for (ComponentVO c : componentVOS) {
+            Long id = c.getLink();
+            if (id != null) {
+                Layout subLayout = layoutMapper.selectById(id);
+                if (subLayout != null) {
+                    recursionPreviewLayoutPage(subLayout, enabled);
                 }
             }
         }

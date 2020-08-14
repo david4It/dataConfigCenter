@@ -28,6 +28,24 @@ public class HTMLCreationExecutor {
             }
         }
     }
+
+    public static void generatedPreviewHTMLFile(LayoutVO layout) throws Exception {
+        Long id = layout.getId();
+        while (true) {
+            if (!identity.contains(id)) {
+                try {
+                    lock.lock();
+                    identity.add(id);
+                    HTMLTemplateUtil.generateHTMLFile(layout, null, true);
+                    break;
+                } finally {
+                    identity.remove(id);
+                    lock.unlock();
+                }
+            }
+        }
+    }
+
     public static void deleteHTMLFile(Long layoutId, String url, LayoutMapper layoutMapper) throws Exception {
         while (true) {
             if (!identity.contains(layoutId)) {

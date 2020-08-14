@@ -149,6 +149,20 @@ public class LayoutController {
         return result;
     }
 
+    @PostMapping("/preview")
+    public Result<Boolean> preview(@RequestBody LayoutVO layout) {
+        Result<Boolean> result = new Result<>();
+        try {
+            layoutService.preview(layout);
+            result.setResult(true);
+            result.success("生成预览页面成功！");
+        } catch (Exception e) {
+            result.error500("生成预览页面失败！");
+            log.error(e.getLocalizedMessage());
+        }
+        return result;
+    }
+
     @GetMapping("/checkUrl")
     public Result<Boolean> checkUrl(@RequestParam String url, @RequestParam(required = false) String id) {
         Result<Boolean> result = new Result<>();

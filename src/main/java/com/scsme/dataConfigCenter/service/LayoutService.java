@@ -16,6 +16,7 @@ public interface LayoutService {
     Long saveSubLayout(LayoutVO layout);
     void updateLayout(LayoutVO layout) throws Exception;
     void enabled(LayoutVO layout) throws Exception;
+    void preview(LayoutVO layout) throws Exception;
     Boolean checkUrl(String url, String id);
     List<String> thumbnails() throws IOException;
 }

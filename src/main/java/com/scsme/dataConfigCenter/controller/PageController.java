@@ -17,6 +17,11 @@ public class PageController {
         return new ModelAndView("center/" + split(page));
     }
 
+    @GetMapping("/preview/{page}")
+    public ModelAndView previewPage(@PathVariable("page") String page) {
+        return new ModelAndView("preview/" + split(page));
+    }
+
     private String split(String page){
         String[] split = page.split(":");
         if (split.length > 0) {

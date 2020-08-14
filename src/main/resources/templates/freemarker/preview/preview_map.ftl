@@ -17,7 +17,7 @@
             <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
             myChart.on("click", (param) => {
                 console.log(param);
-                forwardUrl({areaCode: param.data.areaCode}, "${vo.getLinkUrl()}")
+                forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
             });
             </#if>
             window.addEventListener("resize", function () {

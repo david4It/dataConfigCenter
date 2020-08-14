@@ -101,6 +101,13 @@
                                       icon="el-icon-document-delete"
                                       @click="() => handleStatusChange(data, 'N')">
                               </el-button>
+                              <el-button
+                                      style="color: blue"
+                                      title="预览"
+                                      type="text"
+                                      icon="el-icon-monitor"
+                                      @click="() => preview(data)">
+                              </el-button>
                             </span>
                         </span>
                     </el-tree>

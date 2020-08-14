@@ -51,7 +51,7 @@
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
                     myChart.resize();
                     myChart.setOption(option);
-                    <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()!="Y">
+                    <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
                         console.log(param);
                         forwardUrl(param.data.extData, "${vo.getLinkUrl()}")

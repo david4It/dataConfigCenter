@@ -227,6 +227,24 @@ new Vue({
                 });
             });
         },
+        preview(row) {
+            let me = this;
+            let result = Object.assign({}, row);
+            service.post("/layout/preview", result).then(function(res){
+                if (!res.data.success) {
+                    me.$message.error(res.data.message);
+                    return;
+                }
+                me.$confirm('预览页面已经生成，点击确定按钮进行查看', '提示', {
+                    confirmButtonText: '确定',
+                    type: 'success'
+                }).then(()=> {
+                    window.open(window.location.origin + "/preview/" + row.url,"_blank");
+                })
+            }).catch(err => {
+                me.$message.error("生成预览页面失败！");
+            });
+        },
         handleClose() {
             this.dialogVisible = false;
         },

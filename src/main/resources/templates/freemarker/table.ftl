@@ -25,7 +25,7 @@
             }
         });
     },
-    <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()!="Y">
+    <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
     rowClick(event) {
         forwardUrl(this.tableExtData[event.rowIndex], "${vo.getLinkUrl()}")
     },
