@@ -35,7 +35,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 	table.render({
 		id: 'idTest',
 		elem: '#widgetSelect'  //绑定table id
-		,url:'/api/v3/widgets?projectId=1'  //数据请求路径
+		,url:'/api/v3/widgets?projectId=' + $.cookie("projectId")  //数据请求路径
 		,xhrFields: {
 			withCredentials: true //允许跨域带Cookie
 		},

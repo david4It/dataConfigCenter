@@ -24,6 +24,15 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	});
 	let token = $.cookie("token");
 	//console.log("cookie: " , token);
+	let uid=$.cookie("uid");
+
+	//获取URL参数
+	//console.log("projectId: "+ getUrlParam("projectId"))
+	//共享projectID
+	$.cookie("projectId",getUrlParam("projectId"),{
+		expires: 10
+	});
+
 	/**
 	 * 操作管理--数据操作
 	 * @param String url 请求路径
@@ -35,7 +44,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			layer.load();
             var url = data.field.request_url;
 			console.log(url);
-			let uid=$.cookie("uid");
 			data.field.id=uid;
             $.ajax({
                 url:'' + url + '',
@@ -72,87 +80,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
             return false;
         });
         return false;
-    });
-
-	/**
-	 * 操作管理--数据状态
-	 * @param object switch 当前
-	 * @param int id 当前操作对象ID
-	 * @param int status 当前操作对象状态
-	 * @return json code 0:操作成功；1:value 返回操作后的状态
-	 */
-    form.on('switch', function(switchs) {
-		layer.confirm('确认要修改吗？', function(index) {
-			layer.load();
-			var id = $(switchs.elem).data('id');
-			var url = $(this).data('url');
-			var status = switchs.value;
-			$.ajax({
-				url:''+ url +'',
-				type:'Post',
-				data:{'id':id, 'status':status},
-				dataType:'json',
-				success:function(data) {
-					layer.closeAll('loading');
-					if(data.code == 0){
-						$(switchs.elem).attr('value', data.data);
-						layer.msg(data.msg,{icon:1,time:1000});
-						return false;
-					}else{
-						layer.msg(data.msg,{icon:2,time:1000});
-						return false;
-					}
-				},
-				error : function(e){
-					layer.closeAll('loading');
-					layer.msg(e.responseText, {icon: 2, time: 1000});
-				}
-			});
-			return false;
-		});
-    });
-
-	/**
-	 * 操作管理--文件上传
-	 * @param upload_pictures 需要上传事件ID
-	 * @param place 文件存放位置
-	 * @param layui_progress 进度条事件
-	 * @param images_url 返回路径赋值图片ID
-	 * @return json code 0:操作成功；1:操作失败；route 返回的图片路径
-	 */
-    upload.render({
-        elem: '#upload_pictures',
-		url: '',
-		data:{
-			file_place: function (){
-				return $(this).data('place');
-			}
-        },
-		multiple: true,
-		progress: function(n){
-            var percent = n + '%';
-            element.progress('layui_progress', percent);
-        },
-		before: function(obj){
-            layer.load();
-        },
-		done: function (data) {
-            layer.closeAll('loading');
-            if (data.code == 0) {
-                layer.msg(data.msg, {icon: 1, time: 1000});
-                $('#images_url').attr('src', data.route);
-                var id_name = $(this)[0]['elem'][0]['attributes'][2]['value'];
-                $('#' + id_name).val(data.route);
-				return false;
-            } else {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-                return false;
-            }
-        },
-		error: function(e){
-            layer.closeAll('loading');
-            layer.msg(e.responseText, {icon: 2, time: 1000});
-        }
     });
 
 	table.render({

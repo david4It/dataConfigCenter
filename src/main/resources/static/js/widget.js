@@ -39,7 +39,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			console.log(data.field);
 			let uid=$.cookie("uid");
 			data.field.id=uid;
-			data.field.projectId=1;
+			data.field.projectId=$.cookie("projectId");
 			/*let config={};
 			config.username=data.field.username;
 			config.password = data.field.password;
@@ -125,7 +125,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	console.log(screenWith,w0);
 	table.render({
 		elem: '#orgList'  //绑定table id
-		,url:'/api/v3/widgets?projectId=1'  //数据请求路径
+		,url:'/api/v3/widgets?projectId=' + $.cookie("projectId")  //数据请求路径
 		,xhrFields: {
 			withCredentials: true //允许跨域带Cookie
 		},
@@ -233,7 +233,7 @@ $('.layui-nav-child').find('dd').find('a').click(function () {
 function testDbConnetion() {
 	let username = $("#username").val();
 	let password = $("#password").val();
-	let projectId = 1;
+	let projectId = $.cookie("projectId");
 	let url = $("#url").val();
 	$.ajax({
 		url: "/api/v3/sources/test",
