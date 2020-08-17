@@ -29,8 +29,9 @@ Vue.component('graph', {
             </div>
             <div style="border-top: solid 1px #DCDCDC; position: absolute; width: 100%; height: 40px; left: 0; bottom: 0">
                 <div style="padding-top: 6px; text-align: center">
-                   <el-button size="mini" type="primary" icon="el-icon-setting" @click="editComponent(item)">编辑</el-button>
+                   <el-button size="mini" type="primary" icon="el-icon-edit" @click="editComponent(item)">编辑</el-button>
                    <el-button size="mini" type="danger" icon="el-icon-delete" @click="deleteComponent(item.i)">删除</el-button>
+                   <el-button size="mini" type="warning" icon="el-icon-setting" @click="editComponentStyle(item)">样式</el-button>
                    <el-button v-if="item.link" title="子页面" size="mini" type="success" icon="el-icon-link" circle @click="loadSubLayout(item.link)"></el-button>
                 </div>
             </div>
@@ -178,6 +179,8 @@ Vue.component('graph', {
                 <el-button @click="dialogVisible = false">取 消</el-button>
             </span>
     </el-dialog>
+    <line_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'line'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></line_style_form>
     </grid-layout>`,
     data: function () {
         return {
@@ -199,6 +202,7 @@ Vue.component('graph', {
                 {label: '地图', value: 'map'}
             ],
             tips: '页面参数可以直接在SQL中进行使用，使用方式为${}，如${param}',
+            styleDialogVisible: false,
             dialogVisible: false,
             subDialogVisible: false,
             rules: {
@@ -296,6 +300,7 @@ Vue.component('graph', {
                     item.i = item.locationIndex;
                     item.w = item.width;
                     item.h = item.height;
+                    item.configJson = JSON.parse(item.configJson);
                     me.components.push(Object.assign({}, item));
                 });
             }).catch(err => {
@@ -527,19 +532,27 @@ Vue.component('graph', {
         saveComponents() {
             let me = this;
             //组件按x,y排序
-            me.components.sort((v1,v2) => {
+            let result = [];
+            //使用Object.assign方法复制component对象，避免直接修改component对象造成的显示问题
+            me.components.forEach((ele) => {
+                result.push(Object.assign({}, ele));
+            });
+            result.sort((v1,v2) => {
                 return v1.x - v2.x;
             });
-            me.components.sort((v1,v2) => {
+            result.sort((v1,v2) => {
                 return v1.y - v2.y;
             });
-            me.components.forEach((ele, index) => {
+            result.forEach((ele, index) => {
                ele.locationIndex = index;
                ele.layoutId = me.layout_id;
                ele.width = ele.w;
                ele.height = ele.h;
+                if (ele.configJson) {
+                    ele.configJson = JSON.stringify(ele.configJson);
+                }
             });
-            service.post('/component/save', me.components).then(res => {
+            service.post('/component/save', result).then(res => {
                 if (!res.data.success) {
                     me.$message.error(res.data.message);
                     return;
@@ -706,6 +719,21 @@ Vue.component('graph', {
         loadSubLayout(layoutId) {
             let me = this;
             me.$emit('load_sub_layout', layoutId);
+        },
+        editComponentStyle(component) {
+          let me = this;
+          me.component = component;
+          me.styleDialogVisible = true;
+        },
+        cancelStyleEdit() {
+          let me = this;
+          me.styleDialogVisible = false;
+        },
+        saveComponentStyle(style) {
+            let me = this;
+            me.component.configJson = style;
+            me.styleDialogVisible = false;
+            me.saveComponents();
         },
         successMsg(msg) {
             this.$message({
