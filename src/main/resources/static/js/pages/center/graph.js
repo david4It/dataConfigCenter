@@ -183,6 +183,8 @@ Vue.component('graph', {
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></line_style_form>
     <bar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'bar'" 
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></bar_style_form>
+    <pie_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'pie'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></pie_style_form>
     </grid-layout>`,
     data: function () {
         return {

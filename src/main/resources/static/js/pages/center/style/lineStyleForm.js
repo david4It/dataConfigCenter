@@ -1,8 +1,11 @@
+//使用:close-on-press-escape="false"和:close-on-click-modal="false"，禁用点击Esc按钮和点击空白处关闭弹窗
 Vue.component('line_style_form', {
     template:`<el-dialog
             title="折线图属性配置"
             :visible.sync="visible"
             width="30%"
+            :close-on-press-escape="false"
+            :close-on-click-modal="false"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
             <el-form-item label="折线颜色">
