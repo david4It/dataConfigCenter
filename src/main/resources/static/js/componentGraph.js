@@ -250,3 +250,48 @@ function getWidgetByWidgetID(widgetId){
     });
     return ret;
 }
+/**
+ * 一致widgets,绘制widget图像 。
+ * @param obj
+ */
+function drawDispWidget(selectedWidgets) {
+    //console.log("selected widgets",selectedWidgets)
+    //保存数据
+    // display select widget to canvas
+    for(let prop in selectedWidgets){
+        //console.log("prop",prop,selectedWidgets[prop]);
+        let grahpId = "displayWidget_" + selectedWidgets[prop].id;
+        let widgetViewId = selectedWidgets[prop].viewId;
+        let config = JSON.parse(selectedWidgets[prop].config)
+        let graphType=config.selectedChart;
+        let widgetTitle = selectedWidgets[prop].name;
+        addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
+        //渲染图形
+        switch (graphType) {
+            case 1:
+                //面积图
+                renderDispGraph(selectedWidgets[prop],"area",grahpId);
+                break;
+            case 2:
+                //柱状图
+                renderDispGraph(selectedWidgets[prop],"bar",grahpId);
+                break;
+            case 3:
+                //折线图
+                renderDispGraph(selectedWidgets[prop],"line",grahpId);
+                break;
+            case 4:
+                //饼图
+                renderDispGraph(selectedWidgets[prop],"pie",grahpId);
+                break;
+            case 5:
+                //地图
+                renderDispGraph(selectedWidgets[prop],"map",grahpId);
+                break;
+            case 6:
+                break;
+            default:
+                break;
+        }
+    }
+}

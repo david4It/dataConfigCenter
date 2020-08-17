@@ -1,3 +1,7 @@
+/***
+ * invoked by display-setting.html, to draw display page elements
+ */
+
 layui.config({
 	base: '{/}./js/framework/gridstack.js' //wangEditor.min.js目录，根据自己存放位置修改
 });
@@ -107,12 +111,10 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 		return selectedWidget;
 	}
 	//end select widgets
-	//获取slide
-	let firstSlideId = querySlides();
-	//end
-	//获取memslidewidgets
+	//draw page
+	drawPage();
+	//end draw
 
-	//end
 });
 
 function queryData(){
@@ -184,7 +186,7 @@ function querySlides(){
 				for(let prop in models) {
 					let one = models[prop];
 					firstSlideId = one.id;
-					htmlStr += '<div style="background-color: #6570e8;display:block;width: 8rem;height: 6rem;margin-top: 0.6rem "> '+ one.id +'</div>';
+					htmlStr += '<div style="display:block;border: solid 1px #bfbfbf;width: 8rem;height: 6rem;margin-top: 0.6rem "> '+ one.id +'</div>';
 
 				}
 				$('#slideDiv').html(htmlStr);
@@ -200,4 +202,29 @@ function querySlides(){
 		}
 	});
 	return firstSlideId;
+}
+
+/**
+ * preview display
+ */
+function previewDisplay() {
+	saveLayout();
+	let displayId = localStorage.getItem("displayId");
+	window.location.href="display"+displayId;
+}
+
+/**
+ * open display and draw page
+ */
+function drawPage() {
+
+	let displayId = localStorage.getItem("displayId");
+	//获取slide
+	let firstSlideId = querySlides();
+	console.log(displayId,firstSlideId);
+	//获取memslidewidgets,views,widgets
+	let slidePageData = getWidgets(displayId,firstSlideId);
+	//
+	console.log("pageData: ", slidePageData);
+	drawDispWidget(slidePageData.widgets);
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
 <head>
     <meta charset="UTF-8">
     <title>布局组件</title>
@@ -11,6 +11,7 @@
     <!-- 引入gridstack组件库 -->
     <script src="js/framework/gridstack.js"></script>
     <link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" media="all" />
+    <link rel="shortcut icon" href="../resources/images/favicon.ico" th:href="@{/images/favicon.ico}">
     <style>
         .iconfont {
             font-family: "iconfont" !important;
@@ -94,7 +95,7 @@
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:saveLayout();" title="保存">
             <i class="layui-icon layui-icon-ok" style="line-height:2.3rem;font-size: 1rem;">保存</i>
         </a>
-        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:setEnv();" title="设置">
+        <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:previewDisplay();" title="设置">
             <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">预览</i>
         </a>
         <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:execute_open('选择图表', 'display-widget-select.html', '1000', '750');" title="设置">
@@ -148,12 +149,13 @@
 <script src="lib/layui/layui.js"></script>
 <script src="js/jquery.cookie.min.js"></script>
 <script src="js/common.js"></script>
+<script src="js/biz-common.js"></script>
 <script src="js/framework/echarts.min.js"></script>
 <script src="js/graph/pie.js"></script>
+<script src="js/componentGraph.js"></script>
 <script src="js/display-add.js"></script>
 <script type="text/javascript">
-    let selectedWidgets= [];
-    let retData,catsAndVal,globalViewData, projetId;
+    let catsAndVal,globalViewData;
 
     let grid = GridStack.init({column: 10});
     function addWidget() {
@@ -193,7 +195,7 @@
             '</div>';
     }
     function saveLayout() {
-        let layout = {title: '测试', url: '/project'+ localStorage.getItem("projectId") , components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
+        let layout = {title: '测试', url: '/display'+ localStorage.getItem("displayId") , components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
         $(grid.engine.nodes).each((index, ele) => {
             let childs =  $( "div[data-gs-x="+ele.x+"][data-gs-y="+ele.y+"]" ).children();
             let viewId,graphType,widgetId;
@@ -236,9 +238,6 @@
     function saveDispWidget(selectedWidgets) {
         //console.log("selected widgets",selectedWidgets)
         //保存数据
-       let slide = saveSlide();
-        //共享displayID
-        localStorage.setItem('slideId',slide.id);
         // display select widget to canvas
         for(let prop in selectedWidgets){
             //console.log("prop",prop,selectedWidgets[prop]);
@@ -246,7 +245,8 @@
             let widgetViewId = selectedWidgets[prop].viewId;
             let config = JSON.parse(selectedWidgets[prop].config)
             let graphType=config.selectedChart;
-            addGraphWidget(grahpId,widgetViewId,graphType);
+            let widgetTitle = selectedWidgets[prop].name;
+            addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
             //渲染图形
             switch (graphType) {
                 case 1:
@@ -287,8 +287,8 @@
      *
      * @param displayWidgetId
      */
-    function addGraphWidget(displayWidgetId,widgetViewId,widgetType) {
-        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType), {minWidth: 5, minHeight: 5});
+    function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
+        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle), {minWidth: 5, minHeight: 5});
 
     }
 
@@ -297,10 +297,10 @@
      * @param displayWidgetId
      * @returns {string}
      */
-    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType) {
+    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
         return '<div>' +
-            '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
-            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div>' +
+            '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
+            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
             '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 90%;">内容</div>' +
             '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
             '</div>' +
@@ -476,52 +476,6 @@
         retData.legendData = legendData;
         retData.showedData = showedData;
         return retData;
-    }
-
-    /**
-     * save display slide
-     * [{config: "{"slideParams":{"transitionSpeed":"default","backgroundColor":[255,255,255,50],"scaleMode":"scaleWidth","backgroundImage":"/image/display/1592470964516_89c1bcf9-147b-461d-a4bf-322e23f8608b.jpg","transitionGlobal":true,"transitionStyleOut":"none","autoSlideGlobal":true,"transitionStyleIn":"none","width":1920,"autoSlide":"10","autoPlay":true,"borderStyle":"dashed","height":1440}}"
-         displayId: 1
-         id: 8
-         index: 1}]
-     */
-    function saveSlide() {
-        let slide = null;
-        let displayId = localStorage.getItem("displayId");
-        let obj = {};
-        obj.index = 1;
-        obj.displayId = displayId;
-        obj.config='"slideParams":{"transitionSpeed":"default","backgroundColor":[255,255,255,50],"scaleMode":"scaleWidth","backgroundImage":"/image/display/1592470964516_89c1bcf9-147b-461d-a4bf-322e23f8608b.jpg","transitionGlobal":true,"transitionStyleOut":"none","autoSlideGlobal":true,"transitionStyleIn":"none","width":1920,"autoSlide":"10","autoPlay":true,"borderStyle":"dashed","height":1440}}';
-        $.ajax({
-            url: "/api/v3/displays/"+ displayId +"/slides",
-            type: "Post",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            contentType: "application/json;charset=utf-8",
-            xhrFields: {
-                withCredentials: true //允许跨域带Cookie
-            },
-            async: false,
-            headers: {
-                "Authorization":$.cookie("token")//此处放置请求到的用户token
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    layer.msg("数据库连接成功", {icon: 1, time: 1000});
-                    slide = data.data;
-                    console.log(slide);
-                    $.cookie("token",data.token,{
-                        expires: 10
-                    });
-                } else {
-                    layer.msg("保存失败", {icon: 2, time: 1000});
-                }
-            },
-            fail: function (data) {
-                layer.msg("保存失败", {icon: 2, time: 1000});
-            }
-        });
-        return slide;
     }
 
     /**

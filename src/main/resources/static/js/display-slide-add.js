@@ -24,6 +24,57 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	});
 	let token = $.cookie("token");
 	//console.log("cookie: " , token);
+	/**
+	 * 操作管理--数据操作
+	 * @param String url 请求路径
+	 * @param json data.field 提交的json数据
+	 * @return json code 0:操作成功；1:value 返回操作后的状态
+	 */
+    form.on('submit(execute)', function(data) {
+        layer.confirm('确认要保存吗？',function(index) {
+			layer.load();
+            let url = "/api/v3/displays";
+			let uid=$.cookie("uid");
+			data.field.uid=uid;
+			data.field.config='{"displayParams":{"autoPlay":true,"autoSlide":10,"transitionStyle":"fade","transitionSpeed":"default","grid":[10,10]}}';
+			data.field.projectId=localStorage.getItem("projectId");//TODO:
+			data.field.publish=1;
+			data.field.roleIds=[];
+            $.ajax({
+                url:'' + url + '',
+                type:'Post',
+                data:JSON.stringify(data.field),
+                dataType: "json",
+				contentType: "application/json;charset=utf-8",
+				xhrFields: {
+					withCredentials: true //允许跨域带Cookie
+				},
+				headers: {
+					"Authorization":$.cookie("token")//此处放置请求到的用户token
+				},
+                success: function (data) {
+					layer.closeAll('loading');
+                    if (data.code == 0) {
+                        layer.msg(data.msg, {icon: 1, time: 1000});
+                        //新增DisplaySlide
+						createSlideByDisplayId(data.data.id)
+						//end
+						window.location.href="display-list";
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 1000});
+                        return false;
+                    }
+                },
+				error : function(e){
+					layer.closeAll('loading');
+					layer.msg(e.responseText, {icon: 2, time: 1000});
+				}
+            });
+            return false;
+        });
+        return false;
+    });
+
 
 	var screenWith = document.body.clientWidth;
 	var w0 = (screenWith-44) / 5;
@@ -71,9 +122,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			layer.alert('编辑行：<br>'+ JSON.stringify(data))
 		}
 	});
-	//获取用户大屏
-	getDisplays("displayId");
-	//end
+
 });
 
 /**

@@ -144,3 +144,87 @@ function getProjects(htmlElementId){
     });
     return ret;
 }
+
+/**
+ * get widgets
+ * @param htmlElementId
+ * @returns {*}
+ */
+function getWidgets(displayId, displaySlideId){
+    let ret = null;
+    $.ajax({
+        url: "/api/v3/displays/" + displayId + "/slides/" + displaySlideId,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                ret = data.data;
+                //end
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+        }
+    });
+    return ret;
+}
+
+/**
+ * save display slide
+ * [{config: "{"slideParams":{"transitionSpeed":"default","backgroundColor":[255,255,255,50],"scaleMode":"scaleWidth","backgroundImage":"/image/display/1592470964516_89c1bcf9-147b-461d-a4bf-322e23f8608b.jpg","transitionGlobal":true,"transitionStyleOut":"none","autoSlideGlobal":true,"transitionStyleIn":"none","width":1920,"autoSlide":"10","autoPlay":true,"borderStyle":"dashed","height":1440}}"
+         displayId: 1
+         id: 8
+         index: 1}]
+ */
+function createSlideByDisplayId( displayId ) {
+    if(displayId == null || displayId === "") return;
+    let slide = null;
+    let obj = {};
+    obj.index = 1;
+    obj.displayId = displayId;
+    obj.config='"slideParams":{"transitionSpeed":"default","backgroundColor":[255,255,255,50],"scaleMode":"scaleWidth","backgroundImage":"/image/display/1592470964516_89c1bcf9-147b-461d-a4bf-322e23f8608b.jpg","transitionGlobal":true,"transitionStyleOut":"none","autoSlideGlobal":true,"transitionStyleIn":"none","width":1920,"autoSlide":"10","autoPlay":true,"borderStyle":"dashed","height":1440}}';
+    $.ajax({
+        url: "/api/v3/displays/"+ displayId +"/slides",
+        type: "Post",
+        data: JSON.stringify(obj),
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                layer.msg("数据保存成功", {icon: 1, time: 1000});
+                slide = data.data;
+                console.log(slide);
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("保存失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("保存失败", {icon: 2, time: 1000});
+        }
+    });
+    return slide;
+}
