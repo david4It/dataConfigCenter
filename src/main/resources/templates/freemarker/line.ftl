@@ -33,7 +33,7 @@
                             type: 'category',
                             data: [],
                             axisTick: {
-                                alignWithLabel: true
+                                alignWithLabel: false
                             },
                             axisLine: {
                                 lineStyle: {
@@ -43,7 +43,7 @@
                         },
                     yAxis:
                         {
-                            name: '单位（元）',
+                            name: '',
                             type: 'value',
                             axisLine: {
                                 lineStyle: {
@@ -55,7 +55,6 @@
                         {
                             name: '金额',
                             type: 'line',
-                            barWidth: '60%',
                             data: []
                         }
                 };

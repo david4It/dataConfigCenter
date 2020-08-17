@@ -181,6 +181,8 @@ Vue.component('graph', {
     </el-dialog>
     <line_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'line'" 
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></line_style_form>
+    <bar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'bar'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></bar_style_form>
     </grid-layout>`,
     data: function () {
         return {
@@ -561,7 +563,7 @@ Vue.component('graph', {
                 if (me.dialogVisible) {
                     me.dialogVisible = false;
                 }
-                // me.loadComponents(me.layout_id);
+                me.loadComponents(me.layout_id);
                 //因为可能存在新建子页面的情况，故需要刷新layout列表，确保展示的正确性
                 me.$emit('refresh_layout_list');
             }).catch(err => {

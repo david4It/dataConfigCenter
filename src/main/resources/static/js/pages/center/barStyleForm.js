@@ -1,11 +1,11 @@
-Vue.component('line_style_form', {
+Vue.component('bar_style_form', {
     template:`<el-dialog
-            title="折线图属性配置"
+            title="柱状图属性配置"
             :visible.sync="visible"
             width="30%"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
-            <el-form-item label="折线颜色">
+            <el-form-item label="柱状颜色">
                 <el-color-picker v-model="style.color[0]"></el-color-picker>
             </el-form-item>
             <el-form-item label="X轴文字颜色">
@@ -17,23 +17,23 @@ Vue.component('line_style_form', {
             <el-form-item label="Y轴描述名称">
                 <el-input v-model="style.yAxis.name"></el-input>
             </el-form-item>
-            <el-form-item label="折线平滑">
-                <el-select v-model="style.series.smooth" placeholder="请选择">
-                    <el-option
-                      key="true"
-                      label="是"
-                      :value="true">
-                    </el-option>
-                    <el-option
-                      key="false"
-                      label="否"
-                      :value="false">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="折线区域填充">
-                <el-color-picker v-model="style.series.areaStyle.color"></el-color-picker>
-            </el-form-item>
+<!--            <el-form-item label="显示柱状背景色">-->
+<!--                <el-select v-model="style.series.showBackground" placeholder="请选择">-->
+<!--                    <el-option-->
+<!--                      key="true"-->
+<!--                      label="是"-->
+<!--                      :value="true">-->
+<!--                    </el-option>-->
+<!--                    <el-option-->
+<!--                      key="false"-->
+<!--                      label="否"-->
+<!--                      :value="false">-->
+<!--                    </el-option>-->
+<!--                </el-select>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="柱状背景色" v-if="style.series.showBackground">-->
+<!--                <el-color-picker v-model="style.series.backgroundStyle.color"></el-color-picker>-->
+<!--            </el-form-item>-->
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="confirmStyle">确 定</el-button>
@@ -43,7 +43,7 @@ Vue.component('line_style_form', {
     data: function() {
         return {
             style: {
-                //折线颜色
+                //柱状颜色
                 color: [],
                 xAxis: {
                     axisLine: {
@@ -62,14 +62,13 @@ Vue.component('line_style_form', {
                     },
                     name: null
                 },
-                series: {
-                    //平滑折线
-                    smooth: false,
-                    //折线区域颜色
-                    areaStyle: {
-                        color: null
-                    }
-                }
+                // series: {
+                //     //柱状背景色
+                //     showBackground: false,
+                //     backgroundStyle: {
+                //         color: null,
+                //     }
+                // }
             }
         }
     },
@@ -88,7 +87,7 @@ Vue.component('line_style_form', {
             if (val) {
                 //每次赋值的时候，重新进行assign操作，防止因为值为空，属性被剔除掉，而导致整个form显示错误
                 Object.assign(this.style, {
-                    //折线颜色
+                    //柱状颜色
                     color: [],
                     xAxis: {
                         axisLine: {
@@ -107,14 +106,13 @@ Vue.component('line_style_form', {
                         },
                         name: null
                     },
-                    series: {
-                        //平滑折线
-                        smooth: false,
-                        //折线区域颜色
-                        areaStyle: {
-                            color: null
-                        }
-                    }
+                    // series: {
+                    //     //柱状背景色
+                    //     showBackground: false,
+                    //     backgroundStyle: {
+                    //         color: null,
+                    //     }
+                    // }
                 });
                 mergeRecursive(this.style, val);
             }

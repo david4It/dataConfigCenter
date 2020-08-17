@@ -244,6 +244,13 @@ public class LayoutServiceImpl implements LayoutService {
         if ("N".equals(enabled)) {
             HTMLCreationExecutor.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
         } else {
+            //启用布局的时候，需要手动将component的LinkEnabled属性设置为Y，因为此时还没有将layout的Enabled属性从N改为Y，为了避免
+            //子页面不生成的问题，需要手动设置
+            componentVOS.forEach((c) -> {
+                if (c.getLink() != null) {
+                    c.setLinkEnabled("Y");
+                }
+            });
             vo.setComponents(componentVOS);
             HTMLCreationExecutor.generatedHTMLFile(vo, layoutMapper);
         }
