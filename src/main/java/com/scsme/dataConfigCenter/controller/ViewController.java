@@ -221,8 +221,8 @@ public class ViewController extends BaseController {
      * @return
      */
     @ApiOperation(value = "executesql")
-    @GetMapping(value = "/executesql", consumes = MediaType.ALL_VALUE)
-    public ResponseEntity executeSql(@Valid @ModelAttribute ViewExecuteSql executeSql,
+    @PostMapping(value = "/executesql", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity executeSql(@Valid @RequestBody ViewExecuteSql executeSql,
                                      @ApiIgnore BindingResult bindingResult,
                                      @ApiIgnore @CurrentUser User user,
                                      HttpServletRequest request,

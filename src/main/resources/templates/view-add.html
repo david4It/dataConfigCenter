@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="css/admin.css" media="all">
 	<link rel="stylesheet" href="css/steps.min.css" media="all">
 	<link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/images/favicon.ico}">
+	<link rel="stylesheet" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" media="all" />
 	<style>
 		.left-part{position:absolute;left:0;top:0;width:40%;height:100%;z-index:1;}
 		.btn-wrap{background:#f3f3f3;text-align:right;position:relative;z-index:1;box-shadow:0 5px 10px #e8e3e3;}
@@ -29,6 +30,14 @@
 		}
 		.layui-layer-tips{
 			display: none
+		}
+		.varBox{
+			border-radius: 0.3rem 0.3rem 0.3rem 0;
+			border: 1px solid #6ceb38;
+			background-color: #b1ebb4;
+		}
+		.varBoxLi{
+			margin-top: 1rem;
 		}
 	</style>
 </head>
@@ -79,11 +88,22 @@
 		</div>
 		<div style="margin-left:2px; float:left;width: 1px;height: 100%; background: #eee;"></div>
 		<div  style="width: 82%;height:100%;float:left;">
-			<div style="width: 65%;height:30%;float:left;margin-left: 1rem;">
+			<div style="width: 75%;height:50%;float:left;margin-left: 1rem;">
 				<div class="layui-bg-gray" id="sqlArea"></div>
 			</div>
 
-			<div class="layui-bg-gray" style="width: 31%;height:30%;float:left;margin-left: 1rem;">variable area</div>
+			<div class="layui-bg-gray" style="width: 21%;height:50%;float:left;margin-left: 1rem;">
+				<div style="height: 20%;width: 100%">
+					<label class="layui-form-label layui-bg-gray">变量</label>
+					<button type="button"  style="float:right;margin-right: 2rem"  class=" layui-bg-gray layui-btn layui-btn-primary"
+							onclick="execute_open('添加变量', 'view-variable-add.html', '500', '600')"  >
+					<i class="layui-icon">+</i></button>
+				</div>
+				<div id="varArea" style="height: 80%;width: 100%;margin-left: 2rem;">
+
+				</div>
+
+			</div>
 
 			<hr class="layui-bg-gray" style="margin-top: 15rem">
 			<div  class="layui-card-body" style="width:100%;min-height: 2rem;float:left;margin-left: 1rem;">
@@ -130,6 +150,7 @@
 		</div>
 	</div>
 	<!-- end second step-->
+
 	</form>
 </body>
 </html>
@@ -146,24 +167,22 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/ace/1.4.12/snippets/mysql.js"></script>
 
 <script src="js/view-add.js"></script>
-<script type="text/html" id="selectVisual">
-	<select name='visualType' lay-filter='visualType' lay-search=''>
-		<option value=""></option>
-		<option value="数字">数字</option>
-		<option value="字符">字符</option>
-		<option value="日期">日期</option>
-		<option value="地理国家">地理国家</option>
-		<option value="地理省份">地理省份</option>
-		<option value="地理城市">地理城市</option>
-		<option value="地理区县">地理区县</option>
-		<option value="经度">经度</option>
-		<option value="维度">维度</option>
-	</select>
+<script type="text/javascript">
+	let variablesMap ={};
+	function addMap(data) {
+		console.log("data: " + data);
+		let defaultValues = [];
+		if(data.defaultValues === "") {
+			data.defaultValues = defaultValues;
+		}
+		else {
+			defaultValues[0] = data.defaultValues;
+			data.defaultValues = defaultValues;
+		}
+		variablesMap[data.name] = data;
+		$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
+
+		console.log(variablesMap);
+	}
 </script>
-<script type="text/html" id="selectModel">
-	<select name='modeType' lay-filter='modeType' lay-search=''>
-		<option value=""></option>
-		<option value="维度">维度</option>
-		<option value="指标">指标</option>
-	</select>
-</script>
+

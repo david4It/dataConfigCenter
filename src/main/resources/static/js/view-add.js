@@ -225,11 +225,23 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		let limit = 500;
 		let sourceId = 1;
 		let sql = editor.getValue();
-		console.log(sql);
+		//console.log(sql);
+		//add variables
+		let variables = [];
+		let k = 0;
+		for(let prop in variablesMap){
+			variables[k] = variablesMap[prop];
+			k++;
+		}
+		console.log(variables);
+		//end
 		table.render({
 			elem: '#sqlResult'  //绑定table id
 			,url:'/api/v3/views/executesql'  //数据请求路径
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql}
+			,method:"POST"
+			,dataType: "json"
+			,contentType: "application/json;charset=utf-8"
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},
@@ -280,10 +292,20 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		let sourceId = 1;
 		let sql = editor.getValue();
 		console.log(sql);
+		//add variables
+		let variables = [];
+		let k = 0;
+		for(let prop in variablesMap){
+			variables[k] = variablesMap[prop];
+			k++;
+		}
 		table.render({
 			elem: '#dataModel'  //绑定table id
 			,url:'/api/v3/views/executesql'  //数据请求路径
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql}
+			,method:"POST"
+			,dataType: "json"
+			,contentType: "application/json;charset=utf-8"
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},
@@ -568,10 +590,19 @@ function saveModel() {
 	let name = $("#name").val();
 	let description = $("#description").val();
 	let sql = editor.getValue();
+	//add variables
+	let variables = [];
+	let k = 0;
+	for(let prop in variablesMap){
+		console.log(prop, variablesMap[prop]);
+		variables[k] = variablesMap[prop];
+		k++;
+	}
+	//end
 	$.ajax({
 		url: "/api/v3/views",
 		type: "Post",
-		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description}),
+		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description,"variables":variables}),
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		xhrFields: {
