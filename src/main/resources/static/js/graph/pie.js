@@ -5,31 +5,34 @@
  * @param legendData
  * @param data
  */
-function renderPie(id,title,legendData,data) {
+function renderPie(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
     let option1 = {
         title: {
             text: title,
             left: 'center',
             top: 20,
+            textStyle: {
+                color: '#f2f2f2',
+            },
         },
-        tooltip : {
+        tooltip: {
             trigger: 'item',
-           // formatter: "{a} <br/>{b} : {d}%"
+            // formatter: "{a} <br/>{b} : {d}%"
         },
         legend: {
             //orient: 'vertical',
             //left: 'right',
             data: legendData,
-            top: "5%",
-            right:"2%",
-            width:"20%",
+            top: "10%",
+            right: "2%",
+            width: "20%",
             textStyle: {
                 color: '#f2f2f2',
                 fontSize: 12,
             },
         },
-        series : [{
+        series: [{
             data: data,
             type: 'pie',
             radius: '55%',
@@ -37,19 +40,35 @@ function renderPie(id,title,legendData,data) {
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(255,255,255,0.55)'
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(255,255,255,0.55)'
                 }
             },
-            textStyle:{
-                fontSize:12,
-                fontWeight:'bolder',
-                color:'#cccccc'
+            textStyle: {
+                fontSize: 12,
+                fontWeight: 'bolder',
+                color: '#cccccc'
             },
         }]
     };
     myCharts1.setOption(option1);
+    //点击事件
+    myCharts1.on('click', function (param) {
+        console.log(param);
+        //displayWidget_9
+        let domId = this.getDom().id;
+        let widgetId = domId.substring(domId.indexOf("_")+1);
+        if(isNumber(widgetId)) {
+            console.log("widgetId = " + widgetId);
+            let queryName = param.name;
+            let titleDom = this.getDom().previousSibling;
+            let title = titleDom.innerText;
+            //let widget = getWidgetByWidgetID(widgetId);
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+        }
+    });
 }
+
 /**
  * 渲染图片
  * @param id
@@ -57,7 +76,7 @@ function renderPie(id,title,legendData,data) {
  * @param legendData
  * @param data
  */
-function renderBar(id,title,legendData,data) {
+function renderBar(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
     let option1 = {
         title: {
@@ -65,9 +84,9 @@ function renderBar(id,title,legendData,data) {
             left: 'center',
             top: 20,
         },
-        tooltip : {
+        tooltip: {
             trigger: 'item',
-           // formatter: "{a} <br/>{b} : {d}%"
+            // formatter: "{a} <br/>{b} : {d}%"
         },
 
         xAxis: {
@@ -89,7 +108,7 @@ function renderBar(id,title,legendData,data) {
                 }
             },
         },
-        series : [{
+        series: [{
             data: data,
             type: 'bar',
             radius: '55%',
@@ -104,7 +123,24 @@ function renderBar(id,title,legendData,data) {
         }]
     };
     myCharts1.setOption(option1);
+
+    //点击事件
+    myCharts1.on('click', function (param) {
+        console.log(param);
+        //displayWidget_9
+        let domId = this.getDom().id;
+        let widgetId = domId.substring(domId.indexOf("_")+1);
+        if(isNumber(widgetId)) {
+            console.log("widgetId = " + widgetId);
+            let queryName = param.name;
+            let titleDom = this.getDom().previousSibling;
+            let title = titleDom.innerText;
+            //let widget = getWidgetByWidgetID(widgetId);
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+        }
+    });
 }
+
 /**
  * 渲染图片
  * @param id
@@ -112,7 +148,7 @@ function renderBar(id,title,legendData,data) {
  * @param legendData
  * @param data
  */
-function renderLine(id,title,legendData,data) {
+function renderLine(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
     let option1 = {
         title: {
@@ -145,7 +181,7 @@ function renderLine(id,title,legendData,data) {
                 }
             },
         },
-        series : [{
+        series: [{
             data: data,
             type: 'line',
             radius: '55%',
@@ -157,56 +193,74 @@ function renderLine(id,title,legendData,data) {
                     shadowColor: 'rgba(0, 0, 0, 0.5)'
                 }
             },
-            textStyle:{
-                fontSize:12,
-                fontWeight:'bolder',
-                color:'#cccccc'
+            textStyle: {
+                fontSize: 12,
+                fontWeight: 'bolder',
+                color: '#cccccc'
             },
         }]
     };
     myCharts1.setOption(option1);
+
+    //点击事件
+    myCharts1.on('click', function (param) {
+        console.log(param);
+        //displayWidget_9
+        let domId = this.getDom().id;
+        let widgetId = domId.substring(domId.indexOf("_")+1);
+        if(isNumber(widgetId)) {
+            console.log("widgetId = " + widgetId);
+            let queryName = param.name;
+            let titleDom = this.getDom().previousSibling;
+            let title = titleDom.innerText;
+            //let widget = getWidgetByWidgetID(widgetId);
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+        }
+    });
 }
+
 /**
  * build legendData & showed data.
  * @param data
  */
 function buildPieData(data) {
-    let legendData=[], showedData=[];
+    let legendData = [], showedData = [];
     let bizData = data.data.resultList;
     //取category columns
     let ret = getCategoriesAndValues();
     let categories = ret.groups;
     let values = ret.aggregators;
-    for(let i in bizData){
+    for (let i in bizData) {
         let mapData = {};
         //get legendData
         let key = "";
         let oneData = bizData[i];
-        for(let prop in categories){
-            console.log("categories[prop] --> " ,categories[prop]);
-            console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
-            key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+        for (let prop in categories) {
+            console.log("categories[prop] --> ", categories[prop]);
+            console.log("oneData[categories[prop]] --> ", oneData[categories[prop]]);
+            key += oneData[categories[prop]] == null ? "" : oneData[categories[prop]];
         }
-        legendData[i]= key;
+        legendData[i] = key;
         //build value key
-        for(let prop in values){
+        for (let prop in values) {
             let valueKey = "";
-            if(values[prop].func != null && values[prop].func.length > 0){
-                valueKey = values[prop].func  + "(" + values[prop].column + ")";
-            }else{
+            if (values[prop].func != null && values[prop].func.length > 0) {
+                valueKey = values[prop].func + "(" + values[prop].column + ")";
+            } else {
                 valueKey += values[prop].column;
             }
             //get biz data
-            mapData.name=key;
-            mapData.value=oneData[valueKey]==null?0:oneData[valueKey];
+            mapData.name = key;
+            mapData.value = oneData[valueKey] == null ? 0 : oneData[valueKey];
             showedData[i] = mapData;
         }
     }
-    let retData ={};
+    let retData = {};
     retData.legendData = legendData;
     retData.showedData = showedData;
     return retData;
 }
+
 /**
  * 渲染面积图
  * @param id
@@ -214,7 +268,7 @@ function buildPieData(data) {
  * @param legendData
  * @param data
  */
-function renderAreaLine(id,title,legendData,data) {
+function renderAreaLine(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
     let option1 = {
         title: {
@@ -248,7 +302,7 @@ function renderAreaLine(id,title,legendData,data) {
                 }
             },
         },
-        series : [{
+        series: [{
             data: data,
             type: 'line',
             radius: '55%',
@@ -264,4 +318,20 @@ function renderAreaLine(id,title,legendData,data) {
         }]
     };
     myCharts1.setOption(option1);
+
+    //点击事件
+    myCharts1.on('click', function (param) {
+        console.log(param);
+        //displayWidget_9
+        let domId = this.getDom().id;
+        let widgetId = domId.substring(domId.indexOf("_")+1);
+        if(isNumber(widgetId)) {
+            console.log("widgetId = " + widgetId);
+            let queryName = param.name;
+            let titleDom = this.getDom().previousSibling;
+            let title = titleDom.innerText;
+            //let widget = getWidgetByWidgetID(widgetId);
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+        }
+    });
 }

@@ -13,6 +13,7 @@ layui.define(function(exports) {
 });
 
 let colsData,dataList,globalTempView;
+let chartsMap = {};
 let model = {};
 let editor,viewId;
 let selectedWidget={};

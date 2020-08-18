@@ -18,6 +18,9 @@
     <script src="/js/pages/china.js"></script>
     <script src="js/jquery.cookie.min.js"></script>
     <script src="js/graph/pie.js"></script>
+    <script src="js/componentGraph.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/layui-openwin.js"></script>
     <style>
         .t_title{
             width: 100%;
@@ -268,85 +271,6 @@
         }
         ret.aggregators=aggregators;
         ret.groups = groups;
-        return ret;
-    }
-    /**
-     * build legendData & showed data.
-     * @param viewData
-     */
-    function buildGraphData(viewData,widget) {
-        let legendData=[], showedData=[];
-        let bizData = viewData.data.resultList;
-        //取category columns
-        let catsAndVals = getCategoriesAndValuesFromWidgetData(widget);
-        let categories = catsAndVals.groups;
-        let values = catsAndVals.aggregators;
-        for(let i in bizData){
-            let mapData = {};
-            //get legendData
-            let key = "";
-            let oneData = bizData[i];
-            for(let prop in categories){
-                // console.log("categories[prop] --> " ,categories[prop]);
-                //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
-                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
-            }
-            legendData[i]= key;
-            //build value key
-            for(let prop in values){
-                let valueKey = "";
-                if(values[prop].func != null && values[prop].func.length > 0){
-                    valueKey = values[prop].func  + "(" + values[prop].column + ")";
-                }else{
-                    valueKey += values[prop].column;
-                }
-                //get biz data
-                mapData.name=key;
-                mapData.value=oneData[valueKey]==null?0:oneData[valueKey];
-                showedData[i] = mapData;
-            }
-        }
-        let retData ={};
-        retData.legendData = legendData;
-        retData.showedData = showedData;
-        return retData;
-    }
-
-    /**
-     * get widget by widget id
-     * @param widgetId
-     * @returns {boolean}
-     */
-    function getWidgetByWidgetID(widgetId){
-        if(widgetId === "" || widgetId == null) return false;
-        let ret = null;
-        $.ajax({
-            url: "/api/v3/widgets/"+ widgetId,
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json;charset=utf-8",
-            xhrFields: {
-                withCredentials: true //允许跨域带Cookie
-            },
-            async: false,
-            headers: {
-                "Authorization":$.cookie("token")//此处放置请求到的用户token
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    //layer.msg("查询成功", {icon: 1, time: 1000});
-                    ret = data.data;
-                    $.cookie("token",data.token,{
-                        expires: 10
-                    });
-                } else {
-                    layer.msg("查询失败", {icon: 2, time: 1000});
-                }
-            },
-            fail: function (data) {
-                layer.msg("查询失败", {icon: 2, time: 1000});
-            }
-        });
         return ret;
     }
 

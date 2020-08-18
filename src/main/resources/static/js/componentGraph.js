@@ -6,36 +6,41 @@
 function generateWidgetHtmlID(widget){
     return 'component_' + widget.id;
 }
+
 /**
- * 制作大屏页面调用，用户勾选后保存。
- * @param obj
+ * 单独渲染widget图像
+ * @param widgetId
+ * @param title
+ * @param queryName: widget 查询参数，维度数据，多维参数要注意修改视图表达式。
+ * @param htmlTargetId
  */
-function generateWidgetGraph(widgetId) {
+function generateWidgetGraph(widgetId,title,queryName,htmlTargetId) {
     let widget = getWidgetByWidgetID(widgetId);
-    let grahpId = generateWidgetHtmlID(widget);
+    let grahpId = htmlTargetId;
     let config = JSON.parse(widget.config)
     let graphType=parseInt(config.selectedChart);
     //渲染图形
     switch (graphType) {
         case 1:
             //面积图
-            renderDispGraph(widget,"area",grahpId);
+            renderWidgetGraph(widget,"area",grahpId,title);
             break;
         case 2:
             //柱状图
-            renderDispGraph(widget,"bar",grahpId);
+            renderWidgetGraph(widget,"bar",grahpId,title);
             break;
         case 3:
             //折线图
-            renderDispGraph(widget,"line",grahpId);
+            renderWidgetGraph(widget,"line",grahpId,title);
             break;
         case 4:
             //饼图
-            renderDispGraph(widget,"pie",grahpId);
+            console.log("original title:" + title);
+            renderWidgetGraph(widget,"pie",grahpId,title);
             break;
         case 5:
             //地图
-            renderDispGraph(widget,"map",grahpId);
+            renderWidgetGraph(widget,"map",grahpId,title);
             break;
         case 6:
             break;
@@ -55,7 +60,7 @@ function renderDispGraph(widget,type,id){
         id="graphArea";
 
     let viewData = getViewDataByViewId(widget);
-    let graphData = buildGraphData(viewData);
+    let graphData = buildGraphData(viewData,widget);
     let bizData = graphData.showedData;
     let legendData = graphData.legendData;
 
@@ -74,6 +79,35 @@ function renderDispGraph(widget,type,id){
             break;
         case "map":
             renderPie(id,"",legendData,bizData);
+            break;
+        default:
+            break;
+    }
+}
+function renderWidgetGraph(widget,type,id,title){
+    if(id == null || id  === "")
+        id="graphArea";
+
+    let viewData = getViewDataByViewId(widget);
+    let graphData = buildGraphData(viewData,widget);
+    let bizData = graphData.showedData;
+    let legendData = graphData.legendData;
+
+    switch (type) {
+        case "area":
+            renderAreaLine(id,title,legendData,bizData);
+            break;
+        case "pie":
+            renderPie(id,title,legendData,bizData);
+            break;
+        case "line":
+            renderLine(id,title,legendData,bizData);
+            break;
+        case "bar":
+            renderBar(id,title,legendData,bizData);
+            break;
+        case "map":
+            renderPie(id,title,legendData,bizData);
             break;
         default:
             break;
@@ -171,17 +205,18 @@ function getCategoriesAndValuesFromWidgetData(widget){
     ret.groups = groups;
     return ret;
 }
+
 /**
  * build legendData & showed data.
  * @param viewData
  */
-function buildGraphData(viewData) {
+function buildGraphData(viewData,widget) {
     let legendData=[], showedData=[];
     let bizData = viewData.data.resultList;
     //取category columns
-    let ret = getCategoriesAndValuesFromWidgetData(viewData);
-    let categories = ret.groups;
-    let values = ret.aggregators;
+    let catsAndVals = getCategoriesAndValuesFromWidgetData(widget);
+    let categories = catsAndVals.groups;
+    let values = catsAndVals.aggregators;
     for(let i in bizData){
         let mapData = {};
         //get legendData

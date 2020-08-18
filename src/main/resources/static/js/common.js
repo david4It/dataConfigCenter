@@ -24,7 +24,7 @@ function close() {
 function getUrlParam(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
     var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    if (r != null) return unescape(r[2]); return null; //返回参数值
+    if (r != null) return decodeURI(r[2]); return null; //返回参数值
 }
 /**
  * 取消按钮
@@ -97,4 +97,18 @@ function getGraphName(graphType){
             break;
     }
     return type;
+}
+/**
+ * 校验只要是数字（包含正负整数，0以及正负浮点数）就返回true
+ **/
+
+function isNumber(val){
+
+    let regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    if(regPos.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+
 }
