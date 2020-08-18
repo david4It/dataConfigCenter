@@ -35,6 +35,8 @@ public class GraphicalFactory {
             case TABLE:
                 graphical = new Table(dataSource, component, valueMap);
                 break;
+            case MAP:
+                graphical = new com.scsme.dataConfigCenter.graphical.Map(dataSource, component, valueMap);
         }
         return graphical.getGraphicalData();
     }

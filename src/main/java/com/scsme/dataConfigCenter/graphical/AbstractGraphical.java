@@ -28,14 +28,14 @@ public abstract class AbstractGraphical {
     static final String MAX = "max";
     static final String RADAR_INDICATOR = "radarIndicator";
     static final String EXT_DATA = "extData";
-    private static final String CONFIG_JSON = "configJson";
+    static final String CONFIG_JSON = "configJson";
     static final String COLON_SEPARATOR = ":";
     static final String COMMA_SEPARATOR = ",";
     private static final String DIGITS_PATTERN = "^[\\d.,]+$";
 
-    private DataSource dataSource;
-    private Component component;
-    private Map<String, Object> valueMap;
+    protected DataSource dataSource;
+    protected Component component;
+    protected Map<String, Object> valueMap;
 
     AbstractGraphical(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         this.dataSource = dataSource;

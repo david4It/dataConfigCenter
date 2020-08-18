@@ -179,6 +179,8 @@ Vue.component('graph', {
                 <el-button @click="dialogVisible = false">取 消</el-button>
             </span>
     </el-dialog>
+    <map_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'map'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></map_style_form>      
     <radar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'radar'" 
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></radar_style_form>    
     <table_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'table'" 
