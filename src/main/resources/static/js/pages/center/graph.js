@@ -180,7 +180,9 @@ Vue.component('graph', {
             </span>
     </el-dialog>
     <radar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'radar'" 
-                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></radar_style_form>
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></radar_style_form>    
+    <table_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'table'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></table_style_form>
     <line_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'line'" 
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></line_style_form>
     <bar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'bar'" 
