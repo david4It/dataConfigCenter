@@ -27,9 +27,22 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	let title = getUrlParam("title")
 	let queryName = getUrlParam("queryName")
 	let widgetId = getUrlParam("widgetId")
-
 	console.log("encoded title:" + title);
-	generateWidgetGraph(widgetId,title,queryName,"graphId");
+	layer.open({
+		type: 1
+		,id: 'layerDemo' //防止重复弹出
+		,content: '<div style="padding: 20px 100px;">' +
+			'</div>'
+		,btn: '关闭全部'
+		,btnAlign: 'c' //按钮居中
+		,shade: 0 //不显示遮罩
+		,yes: function(){
+			layer.closeAll();
+			generateWidgetGraph(widgetId,title,queryName,"graphId");
+		}
+	});
+
+
 
 });
 

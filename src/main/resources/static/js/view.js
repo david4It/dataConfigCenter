@@ -40,14 +40,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			let uid=$.cookie("uid");
 			data.field.id=uid;
 			data.field.projectId=localStorage.getItem("projectId");
-			/*let config={};
-			config.username=data.field.username;
-			config.password = data.field.password;
-			config.url = data.field.url;
-			data.field.config= config;*/
+
             $.ajax({
                 url:'/api/v3/views',
-
                 type:'Post',
                 data:JSON.stringify(data.field),
                 dataType: "json",
@@ -120,49 +115,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		});
     });
 
-	/**
-	 * 操作管理--文件上传
-	 * @param upload_pictures 需要上传事件ID
-	 * @param place 文件存放位置
-	 * @param layui_progress 进度条事件
-	 * @param images_url 返回路径赋值图片ID
-	 * @return json code 0:操作成功；1:操作失败；route 返回的图片路径
-	 */
-    upload.render({
-        elem: '#upload_pictures',
-		url: '',
-		data:{
-			file_place: function (){
-				return $(this).data('place');
-			}
-        },
-		multiple: true,
-		progress: function(n){
-            var percent = n + '%';
-            element.progress('layui_progress', percent);
-        },
-		before: function(obj){
-            layer.load();
-        },
-		done: function (data) {
-            layer.closeAll('loading');
-            if (data.code == 0) {
-                layer.msg(data.msg, {icon: 1, time: 1000});
-                $('#images_url').attr('src', data.route);
-                var id_name = $(this)[0]['elem'][0]['attributes'][2]['value'];
-                $('#' + id_name).val(data.route);
-				return false;
-            } else {
-                layer.msg(data.msg, {icon: 2, time: 1000});
-                return false;
-            }
-        },
-		error: function(e){
-            layer.closeAll('loading');
-            layer.msg(e.responseText, {icon: 2, time: 1000});
-        }
-    });
-
 	table.render({
 		elem: '#orgList'  //绑定table id
 		,url:'/api/v3/views?projectId='+ localStorage.getItem("projectId")  //数据请求路径
@@ -178,7 +130,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			,{field:'name', width:280, title: '名称'}
 			,{field:'description', width:320, title: '描述', sort: true}
 			,{field:'sourceName', width:120, title: '数据源', sort: true}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
+			,{fixed: 'right',title: '操作', width:180, align:'center', templet: '#opTpl' }//一个工具栏  具体请查看layui官网
 		]]
 		,page: true   //开启分页
 		,response:{
@@ -193,19 +145,11 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		}
 
 	});
-	/*table.render({
-		elem: '#test'
-		,url:'/demo/table/user/'
-		,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-		,cols: [[
-			{field:'key', width:80, title: 'key', sort: true}
-			,{field:'value', width:80, title: 'value'}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
-		]]
-	});*/
+
 	//监听工具条
 	table.on('tool(demo)', function(obj){
-		var data = obj.data;
+		let data = obj.data;
+		console.log("data=",obj)
 		if(obj.event === 'detail'){
 			layer.msg('ID：'+ data.id + ' 的查看操作');
 		} else if(obj.event === 'del'){
@@ -213,6 +157,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			if(state) obj.del();
 		} else if(obj.event === 'edit'){
 			layer.alert('编辑行：<br>'+ JSON.stringify(data))
+			//window.location.href = "view-edit.html?viewId=" + data.id;
 		}
 	});
 
@@ -318,4 +263,16 @@ function testDbConnetion() {
 			return false;
 		}
 	});
+}
+function jump(op,id) {
+	console.log("data=",id)
+	if(op === 'detail'){
+		layer.msg('ID：'+ id + ' 的查看操作');
+	} else if(op === 'del'){
+		//let state = execute_del(obj,obj.id,"/api/v3/organizations/"+ id);
+		//if(state) obj.del();
+	} else if(op === 'edit'){
+		layer.alert('编辑行：<br>'+ id)
+		window.location.href = "view-edit.html?viewId=" + id;
+	}
 }

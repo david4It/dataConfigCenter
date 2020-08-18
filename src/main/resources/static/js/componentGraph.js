@@ -11,10 +11,10 @@ function generateWidgetHtmlID(widget){
  * 单独渲染widget图像
  * @param widgetId
  * @param title
- * @param queryName: widget 查询参数，维度数据，多维参数要注意修改视图表达式。
+ * @param queryVal: widget 查询参数，维度数据，多维参数要注意修改视图表达式。
  * @param htmlTargetId
  */
-function generateWidgetGraph(widgetId,title,queryName,htmlTargetId) {
+function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId) {
     let widget = getWidgetByWidgetID(widgetId);
     let grahpId = htmlTargetId;
     let config = JSON.parse(widget.config)
@@ -23,24 +23,24 @@ function generateWidgetGraph(widgetId,title,queryName,htmlTargetId) {
     switch (graphType) {
         case 1:
             //面积图
-            renderWidgetGraph(widget,"area",grahpId,title);
+            renderWidgetGraph(widget,"area",grahpId,title,queryVal);
             break;
         case 2:
             //柱状图
-            renderWidgetGraph(widget,"bar",grahpId,title);
+            renderWidgetGraph(widget,"bar",grahpId,title,queryVal);
             break;
         case 3:
             //折线图
-            renderWidgetGraph(widget,"line",grahpId,title);
+            renderWidgetGraph(widget,"line",grahpId,title,queryVal);
             break;
         case 4:
             //饼图
             console.log("original title:" + title);
-            renderWidgetGraph(widget,"pie",grahpId,title);
+            renderWidgetGraph(widget,"pie",grahpId,title,queryVal);
             break;
         case 5:
             //地图
-            renderWidgetGraph(widget,"map",grahpId,title);
+            renderWidgetGraph(widget,"map",grahpId,title,queryVal);
             break;
         case 6:
             break;
@@ -84,10 +84,11 @@ function renderDispGraph(widget,type,id){
             break;
     }
 }
-function renderWidgetGraph(widget,type,id,title){
+function renderWidgetGraph(widget,type,id,title,queryVal){
     if(id == null || id  === "")
         id="graphArea";
-
+    let config = JSON.parse(widget.config);
+    console.log("config:" , config)
     let viewData = getViewDataByViewId(widget);
     let graphData = buildGraphData(viewData,widget);
     let bizData = graphData.showedData;

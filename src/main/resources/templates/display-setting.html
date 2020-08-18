@@ -206,7 +206,7 @@
                 if(viewId != null && viewId !="") break;
             }
             //console.log("viewId = " + viewId);
-            getViewByViewID(viewId);
+            globalViewData = getViewByViewID(viewId);
             widgetId = widgetId.substring(widgetId.indexOf("_")+1);
             let query = globalTempView != null ? globalTempView.sql:"";
 /*            let component_type = checkGraphType(graphType);

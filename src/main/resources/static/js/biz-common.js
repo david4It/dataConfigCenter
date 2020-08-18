@@ -228,3 +228,44 @@ function createSlideByDisplayId( displayId ) {
     });
     return slide;
 }
+
+/**
+ * get view by view id
+ * @param viewId
+ * @returns {boolean}
+ */
+function getViewByViewID(viewId){
+    let ret = null;
+    if(viewId === "" || viewId == null) return false;
+    $.ajax({
+        url: "/api/v3/views/"+ viewId,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                ret = data.data;
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+                return false;
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+                return false;
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+            return false;
+        }
+    });
+    return ret;
+}
