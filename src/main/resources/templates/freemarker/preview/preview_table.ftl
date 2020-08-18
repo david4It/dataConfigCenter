@@ -27,3 +27,8 @@
             }
         });
     },
+    <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
+        rowClick(event) {
+            forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
+        },
+    </#if>
