@@ -179,7 +179,7 @@ public class LayoutServiceImpl implements LayoutService {
 
     @Override
     public void preview(LayoutVO layout) throws Exception {
-        recursionPreviewLayoutPage(layout.transLayout(), layout.getEnabled());
+        recursionPreviewLayoutPage(layout.transLayout());
     }
 
     @Override
@@ -244,8 +244,7 @@ public class LayoutServiceImpl implements LayoutService {
         if ("N".equals(enabled)) {
             HTMLCreationExecutor.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
         } else {
-            //启用布局的时候，需要手动将component的LinkEnabled属性设置为Y，因为此时还没有将layout的Enabled属性从N改为Y，为了避免
-            //子页面不生成的问题，需要手动设置
+            //启用布局的时候，需要手动将component的LinkEnabled属性设置为Y，因为此时还没有将layout的Enabled属性从N改为Y,避免子页面不生成的问题
             componentVOS.forEach((c) -> {
                 if (c.getLink() != null) {
                     c.setLinkEnabled("Y");
@@ -265,9 +264,15 @@ public class LayoutServiceImpl implements LayoutService {
         }
     }
 
-    private void recursionPreviewLayoutPage(Layout layout, String enabled) throws Exception {
+    private void recursionPreviewLayoutPage(Layout layout) throws Exception {
         LayoutVO vo = new LayoutVO().convert(layout);
         List<ComponentVO> componentVOS = componentService.componentList(layout.getId());
+        //preview模式下，当link不为空的时候，需要手动将component的LinkEnabled属性设置为Y，确保子页面的跳转正确生成
+        componentVOS.forEach((c) -> {
+            if (c.getLink() != null) {
+                c.setLinkEnabled("Y");
+            }
+        });
         vo.setComponents(componentVOS);
         HTMLCreationExecutor.generatedPreviewHTMLFile(vo);
         for (ComponentVO c : componentVOS) {
@@ -275,7 +280,7 @@ public class LayoutServiceImpl implements LayoutService {
             if (id != null) {
                 Layout subLayout = layoutMapper.selectById(id);
                 if (subLayout != null) {
-                    recursionPreviewLayoutPage(subLayout, enabled);
+                    recursionPreviewLayoutPage(subLayout);
                 }
             }
         }
