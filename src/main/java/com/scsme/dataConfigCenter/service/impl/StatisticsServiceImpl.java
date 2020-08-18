@@ -27,4 +27,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
         return null;
     }
+
+    @Override
+    public Map<String, Object> preview(Long componentId) throws Exception {
+        Component component = mapper.selectById(componentId);
+        if (component != null) {
+            return GraphicalFactory.getInstance().getPreviewGraphicalDataMap(component);
+        }
+        return null;
+    }
 }

@@ -1,8 +1,11 @@
 package com.scsme.dataConfigCenter.graphical;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Map;
 
 public class GraphicalFactory {
@@ -39,6 +42,15 @@ public class GraphicalFactory {
                 graphical = new com.scsme.dataConfigCenter.graphical.Map(dataSource, component, valueMap);
         }
         return graphical.getGraphicalData();
+    }
+
+    public Map<String, Object> getPreviewGraphicalDataMap(Component component) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        String configJson = component.getConfigJson();
+        if (StringUtils.hasText(configJson)) {
+            result.put(AbstractGraphical.CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
+        }
+        return result;
     }
 
     private enum GraphicalType {

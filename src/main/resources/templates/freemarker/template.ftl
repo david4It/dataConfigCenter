@@ -1,3 +1,5 @@
+<#--避免数字出现逗号分隔符，影响程序运行-->
+<#setting number_format="0">
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>

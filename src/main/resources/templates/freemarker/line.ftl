@@ -53,7 +53,7 @@
                         },
                     series:
                         {
-                            name: '金额',
+                            name: '',
                             type: 'line',
                             data: []
                         }

@@ -31,4 +31,18 @@ public class StatisticsController {
         }
         return result;
     }
+
+    @PostMapping("preview")
+    public Result<Map<String, Object>> preview(@RequestBody StatisticsVO vo) {
+        Result<Map<String, Object>> result = new Result<>();
+        try {
+            Map<String, Object> value = service.preview(vo.getComponentId());
+            result.setResult(value);
+            result.success("查询预览视图数据成功！");
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+            result.error500("查询预览视图数据失败！");
+        }
+        return result;
+    }
 }

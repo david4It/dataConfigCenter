@@ -26,7 +26,7 @@
         });
     },
     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
-    rowClick(event) {
-        forwardUrl(this.tableExtData[event.rowIndex], "${vo.getLinkUrl()}")
-    },
+<#--    rowClick(event) {-->
+<#--        forwardUrl(this.tableExtData[event.rowIndex], "${vo.getLinkUrl()}")-->
+<#--    },-->
     </#if>
