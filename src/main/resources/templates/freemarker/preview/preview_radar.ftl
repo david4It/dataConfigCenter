@@ -33,7 +33,7 @@
                             {name: '维度F', max: 25000}
                         ]
                     },
-                    series: [{
+                    series: {
                         name: '预览数据',
                         type: 'radar',
                         // areaStyle: {normal: {}},
@@ -47,7 +47,7 @@
                                 name: '预览数据B'
                             }
                         ]
-                    }]
+                    }
                 };
                 if (res.data.success) {
                     let result = res.data.result;
