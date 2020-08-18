@@ -163,8 +163,8 @@ new Vue({
             let me = this;
             me.dialogVisible = true;
             me.isUpdate = true;
-            //更新操作时，显示的对象要使用Object.assign复制一份，避免内存对象污染
-            me.layout = Object.assign({}, row);
+            //更新操作时，显示的对象要使用deepCopy复制一份，避免内存对象污染
+            me.layout = deepCopy(row);
             me.checkboxChanged(me.layout.templateName + ".png");
         },
         handleDelete(row) {
@@ -201,7 +201,7 @@ new Vue({
         },
         handleStatusChange(row, status) {
             let me = this;
-            let result = Object.assign({}, row);
+            let result = deepCopy(row);
             let msg = status === 'Y' ? '是否发布此布局页面？' : '是否禁用此布局页面？';
             this.$confirm(msg, '提示', {
                 confirmButtonText: '确定',
@@ -229,7 +229,7 @@ new Vue({
         },
         preview(row) {
             let me = this;
-            let result = Object.assign({}, row);
+            let result = deepCopy(row);
             service.post("/layout/preview", result).then(function(res){
                 if (!res.data.success) {
                     me.$message.error(res.data.message);

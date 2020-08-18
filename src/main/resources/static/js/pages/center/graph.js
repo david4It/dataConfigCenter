@@ -311,7 +311,7 @@ Vue.component('graph', {
                     item.w = item.width;
                     item.h = item.height;
                     item.configJson = JSON.parse(item.configJson);
-                    me.components.push(Object.assign({}, item));
+                    me.components.push(deepCopy(item));
                 });
             }).catch(err => {
                 me.$message.error("获取组件列表数据失败！");
@@ -333,20 +333,20 @@ Vue.component('graph', {
                 case 'bar':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     c.valueField = c.categoryValuePattern.split(":")[1];
-                    me.component = Object.assign({}, c);
+                    me.component = deepCopy(c);
                     break;
                 case 'radar':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     me.multiValueFields = c.categoryValuePattern.split(":")[1].split(",");
-                    me.component = Object.assign({}, c);
+                    me.component = deepCopy(c);
                     break;
                 case 'table':
                     me.multiValueFields = c.categoryValuePattern.split(",");
-                    me.component = Object.assign({}, c);
+                    me.component = deepCopy(c);
                     break;
                 case 'map':
                     c.area = c.query;
-                    me.component = Object.assign({}, c);
+                    me.component = deepCopy(c);
                     me.component.query = null;
                     break;
             }
@@ -543,9 +543,9 @@ Vue.component('graph', {
             let me = this;
             //组件按x,y排序
             let result = [];
-            //使用Object.assign方法复制component对象，避免直接修改component对象造成的显示问题
+            //使用deepCopy方法深拷贝component对象，避免直接修改component对象造成的显示问题
             me.components.forEach((ele) => {
-                result.push(Object.assign({}, ele));
+                result.push(deepCopy(ele));
             });
             result.sort((v1,v2) => {
                 return v1.x - v2.x;
@@ -571,7 +571,7 @@ Vue.component('graph', {
                 if (me.dialogVisible) {
                     me.dialogVisible = false;
                 }
-                me.loadComponents(me.layout_id);
+                // me.loadComponents(me.layout_id);
                 //因为可能存在新建子页面的情况，故需要刷新layout列表，确保展示的正确性
                 me.$emit('refresh_layout_list');
             }).catch(err => {
@@ -608,7 +608,7 @@ Vue.component('graph', {
                     if (!me.isUpdate) {
                         //新增组件位置默认在第一个位置
                         let baseInfo = {x: 0, y: 0, w: 25, h: 5, i: me.components.length};
-                        let component = Object.assign(baseInfo, me.component);
+                        let component = mergeRecursive(baseInfo, me.component);
                         me.components.push(component);
                         result = component;
                     } else {
