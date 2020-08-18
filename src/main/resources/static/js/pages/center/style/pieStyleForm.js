@@ -8,7 +8,7 @@ Vue.component('pie_style_form', {
             :close-on-click-modal="false"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
-            <el-form-item label="展示类型聚合">
+            <el-form-item label="类别展示">
                 <el-select v-model="style.legend.show" placeholder="请选择">
                     <el-option
                       key="true"

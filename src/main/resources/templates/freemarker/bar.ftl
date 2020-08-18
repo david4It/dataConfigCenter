@@ -53,7 +53,6 @@
                         },
                     series:
                         {
-                            name: '金额',
                             type: 'bar',
                             barWidth: '60%',
                             data: []
