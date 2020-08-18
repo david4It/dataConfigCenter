@@ -112,35 +112,13 @@ Vue.component('radar_style_form', {
         }
     },
     watch: {
-        config(val) {
+        visible(val) {
             if (val) {
-                //每次赋值的时候，重新进行assign操作，防止因为值为空，属性被剔除掉，而导致整个form显示错误
-                Object.assign(this.style, {
-                    legend: {
-                        show: true
-                    },
-                    radar: {
-                        splitArea : {
-                            show : false,
-                            areaStyle : {
-                                color: []  // 图表背景网格的颜色
-                            }
-                        },
-                        splitLine : {
-                            show : false,
-                            lineStyle : {
-                                width : 1,
-                                color : [] // 图表背景网格线的颜色
-                            }
-                        }
-                    }
-                });
-                if (val.series && val.series.areaStyle) {
-                    this.enabledAreaStyle = true;
-                }
-                mergeRecursive(this.style, val);
+                this.resetStyle();
+                this.enabledAreaStyle = !!(this.config.series && this.config.series.areaStyle);
+                mergeRecursive(this.style, this.config);
             }
-        },
+        }
     },
     methods: {
         areaStyleChanged(val) {
@@ -164,10 +142,35 @@ Vue.component('radar_style_form', {
             //值为空的配置项，则直接剔除
             clearDeep(me.style);
             me.$emit('save_component_style', me.style);
+            //clearDeep方法可能会清除部分属性，导致vue绑定值为undefined，需调用resetStyle方法重置对象
+            me.resetStyle();
         },
         cancel() {
             let me = this;
             me.$emit('cancel');
+        },
+        resetStyle() {
+            let me = this;
+            me.style = {
+                legend: {
+                    show: true
+                },
+                radar: {
+                    splitArea : {
+                        show : false,
+                        areaStyle : {
+                            color: []  // 图表背景网格的颜色
+                        }
+                    },
+                    splitLine : {
+                        show : false,
+                        lineStyle : {
+                            width : 1,
+                            color : [] // 图表背景网格线的颜色
+                        }
+                    }
+                }
+            };
         }
     }
 });

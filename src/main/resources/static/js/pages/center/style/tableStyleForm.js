@@ -105,23 +105,12 @@ Vue.component('table_style_form', {
         }
     },
     watch: {
-        config(val) {
+        visible(val) {
             if (val) {
-                //每次赋值的时候，重新进行assign操作，防止因为值为空，属性被剔除掉，而导致整个form显示错误
-                Object.assign(this.style, {
-                    rowNum: 5,
-                    headerBGC: '#00BAFF',
-                    oddRowBGC: '#003B51',
-                    evenRowBGC: '#0A2732',
-                    waitTime: 2000,
-                    headerHeight: 35,
-                    align: 'center',
-                    carousel: 'single',
-                    hoverPause: true
-                });
-                mergeRecursive(this.style, val);
+                this.resetStyle();
+                mergeRecursive(this.style, this.config);
             }
-        },
+        }
     },
     methods: {
         confirmStyle() {
@@ -131,6 +120,20 @@ Vue.component('table_style_form', {
         cancel() {
             let me = this;
             me.$emit('cancel');
+        },
+        resetStyle() {
+            let me = this;
+            me.style = {
+                rowNum: 5,
+                headerBGC: '#00BAFF',
+                oddRowBGC: '#003B51',
+                evenRowBGC: '#0A2732',
+                waitTime: 2000,
+                headerHeight: 35,
+                align: 'center',
+                carousel: 'single',
+                hoverPause: true
+            };
         }
     }
 });

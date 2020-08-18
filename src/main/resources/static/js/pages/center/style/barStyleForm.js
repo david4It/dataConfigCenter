@@ -47,12 +47,12 @@ Vue.component('bar_style_form', {
         return {
             style: {
                 //柱状颜色
-                color: [],
+                color: ['#3297db'],
                 xAxis: {
                     axisLine: {
                         //X轴文字颜色
                         lineStyle: {
-                            color: null
+                            color: '#ffffff'
                         }
                     }
                 },
@@ -60,7 +60,7 @@ Vue.component('bar_style_form', {
                     //y轴文字颜色
                     axisLine: {
                         lineStyle: {
-                            color: null
+                            color: '#ffffff'
                         }
                     },
                     name: null
@@ -86,40 +86,12 @@ Vue.component('bar_style_form', {
         }
     },
     watch: {
-        config(val) {
+        visible(val) {
             if (val) {
-                //每次赋值的时候，重新进行assign操作，防止因为值为空，属性被剔除掉，而导致整个form显示错误
-                Object.assign(this.style, {
-                    //柱状颜色
-                    color: [],
-                    xAxis: {
-                        axisLine: {
-                            //X轴文字颜色
-                            lineStyle: {
-                                color: null
-                            }
-                        }
-                    },
-                    yAxis: {
-                        //y轴文字颜色
-                        axisLine: {
-                            lineStyle: {
-                                color: null
-                            }
-                        },
-                        name: null
-                    },
-                    // series: {
-                    //     //柱状背景色
-                    //     showBackground: false,
-                    //     backgroundStyle: {
-                    //         color: null,
-                    //     }
-                    // }
-                });
-                mergeRecursive(this.style, val);
+                this.resetStyle();
+                mergeRecursive(this.style, this.config);
             }
-        },
+        }
     },
     methods: {
         confirmStyle() {
@@ -127,10 +99,43 @@ Vue.component('bar_style_form', {
             //值为空的配置项，则直接剔除
             clearDeep(me.style);
             me.$emit('save_component_style', me.style);
+            //clearDeep方法可能会清除部分属性，导致vue绑定值为undefined，需调用resetStyle方法重置对象
+            me.resetStyle();
         },
         cancel() {
             let me = this;
             me.$emit('cancel');
+        },
+        resetStyle() {
+            let me = this;
+            me.style = {
+                //柱状颜色
+                color: ['#3297db'],
+                xAxis: {
+                    axisLine: {
+                        //X轴文字颜色
+                        lineStyle: {
+                            color: '#ffffff'
+                        }
+                    }
+                },
+                yAxis: {
+                    //y轴文字颜色
+                    axisLine: {
+                        lineStyle: {
+                            color: '#ffffff'
+                        }
+                    },
+                    name: null
+                },
+                // series: {
+                //     //柱状背景色
+                //     showBackground: false,
+                //     backgroundStyle: {
+                //         color: null,
+                //     }
+                // }
+            };
         }
     }
 });

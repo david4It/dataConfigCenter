@@ -82,9 +82,9 @@ Vue.component('map_style_form', {
                             borderColor: '#fff',
                             areaColor: '#FF8C00',
                             label: {
-                                show: false,
+                                show: true,
                                 textStyle: {
-                                    color: '#fff'
+                                    color: '#2c2c2c'
                                 }
                             }
                         }
@@ -104,38 +104,12 @@ Vue.component('map_style_form', {
         }
     },
     watch: {
-        config(val) {
+        visible(val) {
             if (val) {
-                //每次赋值的时候，重新进行assign操作，防止因为值为空，属性被剔除掉，而导致整个form显示错误
-                Object.assign(this.style, {
-                    series: {
-                        itemStyle: {
-                            normal: { //未选中状态
-                                borderColor: '#2c2c2c',
-                                areaColor: '#fff',//背景颜色
-                                label: {
-                                    show: true,//显示名称
-                                    textStyle: {
-                                        color: '#2c2c2c'
-                                    }
-                                }
-                            },
-                            emphasis: {// 也是选中样式
-                                borderColor: '#fff',
-                                areaColor: '#FF8C00',
-                                label: {
-                                    show: true,
-                                    textStyle: {
-                                        color: '#fff'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-                mergeRecursive(this.style, val);
+                this.resetStyle();
+                mergeRecursive(this.style, this.config);
             }
-        },
+        }
     },
     methods: {
         confirmStyle() {
@@ -143,10 +117,41 @@ Vue.component('map_style_form', {
             //值为空的配置项，则直接剔除
             clearDeep(me.style);
             me.$emit('save_component_style', me.style);
+            //clearDeep方法可能会清除部分属性，导致vue绑定值为undefined，需调用resetStyle方法重置对象
+            me.resetStyle();
         },
         cancel() {
             let me = this;
             me.$emit('cancel');
+        },
+        resetStyle() {
+            let me = this;
+            me.style = {
+                series: {
+                    itemStyle: {
+                        normal: { //未选中状态
+                            borderColor: '#2c2c2c',
+                            areaColor: '#fff',//背景颜色
+                            label: {
+                                show: true,//显示名称
+                                textStyle: {
+                                    color: '#2c2c2c'
+                                }
+                            }
+                        },
+                        emphasis: {// 也是选中样式
+                            borderColor: '#fff',
+                            areaColor: '#FF8C00',
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    }
+                }
+            };
         }
     }
 });
