@@ -27,6 +27,7 @@ let myData=new Array();
 let colsData,originalModel;
 let model = {};
 let editor;
+let variables = [];
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -174,8 +175,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		let sql = editor.getValue();
 		//console.log(sql);
 		//add variables
-		let variables = [];
-		let k = 0;
+		let k = variables.length;
 		for(let prop in variablesMap){
 			variables[k] = variablesMap[prop];
 			k++;
@@ -240,8 +240,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		let sql = editor.getValue();
 		console.log(sql);
 		//add variables
-		let variables = [];
-		let k = 0;
+		let k = variables.length;
 		for(let prop in variablesMap){
 			variables[k] = variablesMap[prop];
 			k++;
@@ -357,7 +356,27 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 	//initial view by id
 	let viewModel = getViewByViewID(viewId);
 	console.log(viewModel)
+	$("#name").val(viewModel.name);
+	$("#description").val(viewModel.description);
 	editor.setValue(viewModel.sql,1);
+	//generate source select data;
+	let sources = getSourceByProjectID(localStorage.getItem("projectId"));
+	//console.log(sources)
+	$.each(sources,function(index,item){
+		//option 第一个参数是页面显示的值，第二个参数是传递到后台的值
+		$('#source').append(new Option(item.name,item.id));
+		//console.log(item.name,item.id)
+	})
+	//form.render(); //更新全部表单内容
+	form.render('select'); //刷新表单select选择框渲染
+	// attach variables
+	variables = JSON.parse(viewModel.variable);
+	$.each(variables,function (index,item) {
+		//console.log(index,item);
+		$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + item.name + '</span></li>');
+	})
+
+	//
 	originalModel=JSON.parse(viewModel.model);
 
 	//end
@@ -485,8 +504,7 @@ function saveModel() {
 	let description = $("#description").val();
 	let sql = editor.getValue();
 	//add variables
-	let variables = [];
-	let k = 0;
+	let k = variables.length;
 	for(let prop in variablesMap){
 		console.log(prop, variablesMap[prop]);
 		variables[k] = variablesMap[prop];
@@ -497,7 +515,7 @@ function saveModel() {
 	$.ajax({
 		url: "/api/v3/views/"+ viewId,
 		type: "PUT",
-		data: JSON.stringify({"id":viewId,"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description,"variables":variables}),
+		data: JSON.stringify({"id":viewId,"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description,"variable":JSON.stringify(variables)}),
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		xhrFields: {

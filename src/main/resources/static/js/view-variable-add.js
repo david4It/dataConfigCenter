@@ -29,6 +29,8 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 		console.log(data.field);
 		let variable = data.field;
 		let name = data.field.name;
+		if(data.field.defaultValues.length > 0)
+			data.field.defaultValues = "'" + data.field.defaultValues + "'";
 		window.parent.addMap(data.field);
 		console.log(window.parent.variablesMap);
     });

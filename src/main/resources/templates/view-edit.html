@@ -78,8 +78,6 @@
 				<div class="layui-inline">
 					<div class="layui-input-inline  layer-inputs">
 						<select name="source" id="source" lay-verify="required" lay-search="">
-							<option value="">请选择</option>
-							<option value="1">EPS</option>
 						</select>
 					</div>
 				</div>
@@ -178,7 +176,7 @@
 			data.defaultValues = defaultValues;
 		}
 		else {
-			defaultValues[0] = data.defaultValues;
+			defaultValues[0] = data.defaultValues ;
 			data.defaultValues = defaultValues;
 		}
 		variablesMap[data.name] = data;
@@ -191,7 +189,7 @@
 	<select name='visualType' lay-filter='visualType' lay-search=''>
 		<option value=""></option>
 		<option value="数字">数字</option>
-		<option value="字符">字符</option>
+		<option value="字符" selected="selected">字符</option>
 		<option value="日期">日期</option>
 		<option value="地理国家">地理国家</option>
 		<option value="地理省份">地理省份</option>
@@ -204,7 +202,7 @@
 <script type="text/html" id="selectModel">
 	<select name='modeType' lay-filter='modeType' lay-search=''>
 		<option value=""></option>
-		<option value="维度">维度</option>
+		<option value="维度" selected="selected">维度</option>
 		<option value="指标">指标</option>
 	</select>
 </script>

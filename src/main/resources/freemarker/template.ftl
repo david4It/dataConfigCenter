@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/pages/base.css">
     <link rel="stylesheet" href="/css/pages/index.css">
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="lib/layui/layui.js"></script>
     <script type="text/javascript" src="/js/framework/vue.js"></script>
     <script src="/js/framework/datav.min.vue.js"></script>
     <script src="/js/framework/bootstrap.min.js"></script>
