@@ -37,7 +37,7 @@ Vue.component('graph', {
             </div>
         </grid-item>
         <div v-show="layout_id" style="z-index: 1; position:fixed; right: 40px; top: 60%;" title="新增">
-           <el-button type="primary" icon="el-icon-plus" circle @click="dialogVisible = true"></el-button>
+           <el-button type="primary" icon="el-icon-plus" circle @click="addComponent"></el-button>
         </div>        
         <div v-show="layout_id && components.length > 0" style="z-index: 1; position:fixed; right: 40px; top: 66%;" title="保存">
            <el-button type="success" icon="el-icon-check" circle @click="saveComponents"></el-button>
@@ -744,6 +744,11 @@ Vue.component('graph', {
             me.component.configJson = style;
             me.styleDialogVisible = false;
             me.saveComponents();
+        },
+        addComponent() {
+          let me = this;
+          me.component = {};
+          me.dialogVisible = true;
         },
         successMsg(msg) {
             this.$message({

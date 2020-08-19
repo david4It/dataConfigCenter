@@ -133,7 +133,7 @@ Vue.component('map_style_form', {
                             borderColor: '#2c2c2c',
                             areaColor: '#fff',//背景颜色
                             label: {
-                                show: true,//显示名称
+                                show: false,//显示名称
                                 textStyle: {
                                     color: '#2c2c2c'
                                 }
@@ -145,7 +145,7 @@ Vue.component('map_style_form', {
                             label: {
                                 show: true,
                                 textStyle: {
-                                    color: '#fff'
+                                    color: '#2c2c2c'
                                 }
                             }
                         }
