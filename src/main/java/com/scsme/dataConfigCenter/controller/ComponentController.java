@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/component")
@@ -59,6 +60,20 @@ public class ComponentController {
         } catch (Exception e) {
             log.error(e.getLocalizedMessage());
             result.error500("删除组件失败！");
+        }
+        return result;
+    }
+
+    @GetMapping("/validatePageSql")
+    public Result<Set<String>> validateSubPageSql(@RequestParam("layoutId") Long layoutId) {
+        Result<Set<String>> result = new Result<>();
+        try {
+            Set<String> names = componentService.validatePageSql(layoutId);
+            result.setResult(names);
+            result.success("校验页面SQL成功！");
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+            result.error500("校验页面SQL失败！");
         }
         return result;
     }

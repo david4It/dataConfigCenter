@@ -9,15 +9,20 @@ import com.scsme.dataConfigCenter.pojo.Layout;
 import com.scsme.dataConfigCenter.service.ComponentService;
 import com.scsme.dataConfigCenter.service.LayoutService;
 import com.scsme.dataConfigCenter.util.HTMLTemplateUtil;
+import com.scsme.dataConfigCenter.util.SQLParserUtil;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
 import com.scsme.dataConfigCenter.vo.LayoutVO;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -62,6 +67,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
                 convert.setLinkUrl(resultMap.get("url"));
                 convert.setLinkTitle(resultMap.get("title"));
             }
+            validatePageSql(convert);
             vos.add(convert);
         });
         return vos;
@@ -86,7 +92,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
     @Override
     public void deleteComponent(Long componentId) throws Exception {
         //组件删除，需要更新layout.enabled=N，同时删除已经存在的页面
-        Layout layout = layoutMapper.selectLayoutId(componentId);
+        Layout layout = layoutMapper.selectLayout(componentId);
         if (layout != null) {
             HTMLTemplateUtil.deleteHTMLFile(layout.getId(), layout.getUrl(), layoutMapper);
             layout.setEnabled("N");
@@ -101,6 +107,81 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
             }
         } else {
             throw new RuntimeException("组件对应的布局数据未找到！");
+        }
+    }
+
+    @Override
+    public Set<String> validatePageSql(Long layoutId) {
+        //递归校验页面的SQL是否正确，包含父子页面传参的情况；
+        //为了避免父页面传参发生变化后，导致子页面引用了错误的参数。
+        Set<String> names = new HashSet<>();
+        recursionValidatePageSql(layoutId, names);
+        return names;
+    }
+
+    private void validatePageSql(ComponentVO vo) {
+        //不包含子页面的组件，若能找到父组件，则结合父组件相关信息，进行SQL校验
+        String params = "";
+        Component parent = componentMapper.selectParentComponent(vo.getLayoutId());
+        if (parent != null) {
+            params = parent.getParams() != null ? parent.getParams() : "";
+        }
+        try {
+            validateSQL(vo.getQuery(), params, vo.getType());
+            vo.setSqlValid(true);
+        } catch (JSQLParserException e) {
+            vo.setSqlValid(false);
+            e.printStackTrace();
+        }
+    }
+
+    private void recursionValidatePageSql(Long layoutId, Set<String> names) {
+        List<ComponentVO> list = this.componentList(layoutId);
+        if (list != null && list.size() > 0) {
+            list.forEach((c) -> {
+                if (c.getLink() != null) {
+                    //包含子页面的组件，则进行递归调用，进行SQL校验
+                    String params = c.getParams() != null ? c.getParams() : "";
+                    Long subLayoutId = c.getLink();
+                    Layout subLayout = layoutMapper.selectById(subLayoutId);
+                    if (subLayout != null) {
+                        List<ComponentVO> subPageComponents = this.componentList(subLayoutId);
+                        subPageComponents.forEach((sub) -> {
+                            if (sub.getLink() != null) {
+                                recursionValidatePageSql(sub.getLink(), names);
+                            } else {
+                                try {
+                                    validateSQL(sub.getQuery(), params, sub.getType());
+                                } catch (JSQLParserException e) {
+                                    names.add(subLayout.getTitle());
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    //不包含子页面的组件，若能找到父组件，则结合父组件相关信息，进行SQL校验
+                    String params = "";
+                    Component parent = componentMapper.selectParentComponent(layoutId);
+                    if (parent != null) {
+                        params = parent.getParams() != null ? parent.getParams() : "";
+                    }
+                    Layout layout = layoutMapper.selectById(layoutId);
+                    try {
+                        validateSQL(c.getQuery(), params, c.getType());
+                    } catch (JSQLParserException e) {
+                        names.add(layout.getTitle());
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    private void validateSQL(String query, String params, String type) throws JSQLParserException {
+        //map类型不参与SQL校验
+        if (!"map".equals(type)) {
+            CCJSqlParserUtil.parseStatements(SQLParserUtil.parseSqlWithParams(query, params.split(",")));
         }
     }
 }

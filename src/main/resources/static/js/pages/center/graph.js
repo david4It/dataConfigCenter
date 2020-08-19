@@ -9,7 +9,7 @@ Vue.component('graph', {
             :vertical-compact="true"
             :margin="[10, 10]"
             :use-css-transforms="true"
-    ><grid-item style="background-color: #778899" v-for="item in components"
+    ><grid-item :style="'background-color: #778899;' + (!item.sqlValid ? 'border: solid 4px red;' : '')" v-for="item in components"
                    :minW="25"
                    :minH="5"
                    :x="item.x"
@@ -40,7 +40,7 @@ Vue.component('graph', {
            <el-button type="primary" icon="el-icon-plus" circle @click="addComponent"></el-button>
         </div>        
         <div v-show="layout_id && components.length > 0" style="z-index: 1; position:fixed; right: 40px; top: 66%;" title="保存">
-           <el-button type="success" icon="el-icon-check" circle @click="saveComponents"></el-button>
+           <el-button type="success" icon="el-icon-check" circle @click="checkAndSaveComponents"></el-button>
         </div>
         
         <el-dialog 
@@ -265,6 +265,12 @@ Vue.component('graph', {
                 }, 500);
             } else {
                 //编辑操作，若sql存在，需要获取到selections相关数据
+                if (!this.component.sqlValid) {
+                    this.$nextTick(() => {
+                        this.$refs["dataForm"].validate((valid) => {});
+                    });
+                    return;
+                }
                 if (this.component.query) {
                     service.post('/sql/selections', {
                         sql: this.component.query,
@@ -275,6 +281,8 @@ Vue.component('graph', {
                                 type: 'danger',
                                 message: res.data.message
                             });
+                            //将SQL对应的input设置为invalid
+
                         } else {
                             res.data.result.forEach(f => {
                                 this.selections.push({label: f, value: f});
@@ -313,8 +321,35 @@ Vue.component('graph', {
                     item.configJson = JSON.parse(item.configJson);
                     me.components.push(deepCopy(item));
                 });
+                me.validatePageSql(id);
             }).catch(err => {
                 me.$message.error("获取组件列表数据失败！");
+            })
+        },
+        validatePageSql(id) {
+            let me = this;
+            service.get('/component/validatePageSql', {
+                params: {
+                    layoutId: id
+                }
+            }).then(res => {
+                if (!res.data.success) {
+                    me.$message.error(res.data.message);
+                    return;
+                }
+                if (res.data.result.length > 0) {
+                    let msg = "检测到页面SQL存在问题，请进行修正：<br>";
+                    res.data.result.forEach((name) => {
+                       msg = msg + "<strong><span style='color: red'>" + name + "</span></strong><br>";
+                    });
+                    me.$notify({
+                        dangerouslyUseHTMLString: true,
+                        title: '提示',
+                        message: msg
+                    });
+                }
+            }).catch(err => {
+                me.$message.error("校验页面SQL失败！");
             })
         },
         editComponent(c) {
@@ -368,8 +403,8 @@ Vue.component('graph', {
                 me.selections = [];
                 callback(new Error("SQL不能为空！"));
             } else {
-                //sql语句发生变化时，才重新获取相关的select字段信息
-                if (me.currentSql !== me.component.query) {
+                //sql语句发生变化或者sqlValid为false的时候，才重新获取相关的select字段信息
+                if (me.currentSql !== me.component.query || !me.component.sqlValid) {
                     service.post('/sql/selections', {
                         sql: value,
                         params: me.sql_params
@@ -539,6 +574,16 @@ Vue.component('graph', {
                 });
             });
         },
+        checkAndSaveComponents() {
+            let me = this;
+            for (let i = 0; i < me.components.length; i++) {
+                if (!me.components[i].sqlValid) {
+                    me.$message.error("检测到页面SQL存在问题，请修改后再保存！");
+                    return;
+                }
+            }
+            me.saveComponents();
+        },
         saveComponents() {
             let me = this;
             //组件按x,y排序
@@ -583,6 +628,7 @@ Vue.component('graph', {
             me.$refs["dataForm"].validate((valid) => {
                 if (valid) {
                     let result = null;
+                    me.component.sqlValid = true;
                     if (me.component.type !== 'map') {
                         //当component.type!='map'并且component.link!=null的情况下，需要手动将params的值封装到component.params中
                         //当component.type='map'并且component.link!=null的情况下，component.params的值已经存在了，无需赋值

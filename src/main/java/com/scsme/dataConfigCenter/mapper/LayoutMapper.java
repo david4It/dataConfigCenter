@@ -15,5 +15,5 @@ public interface LayoutMapper extends BaseMapper<Layout> {
     @Update("UPDATE layout SET file = NULL WHERE id = #{id}")
     int removeLayoutFile(Long id);
     @Select("SELECT l.* FROM layout l LEFT JOIN component c ON l.id = c.layout_id WHERE c.id = #{componentId}")
-    Layout selectLayoutId(Long componentId);
+    Layout selectLayout(Long componentId);
 }

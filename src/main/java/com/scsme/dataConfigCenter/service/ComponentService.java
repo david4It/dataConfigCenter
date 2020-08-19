@@ -5,6 +5,7 @@ import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.vo.ComponentVO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ComponentService extends IService<Component> {
     void saveComponents(List<ComponentVO> components) throws Exception;
@@ -12,4 +13,5 @@ public interface ComponentService extends IService<Component> {
     void updateComponent(Long componentId, Long childLayoutId);
     void deleteComponents(Long layoutId);
     void deleteComponent(Long componentId) throws Exception;
+    Set<String> validatePageSql(Long layoutId);
 }
