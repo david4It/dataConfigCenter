@@ -21,6 +21,7 @@
     <script src="js/graph/pie.js"></script>
     <script src="js/componentGraph.js"></script>
     <script src="/js/common.js"></script>
+    <script src="/js/biz-common.js"></script>
     <script src="/js/layui-openwin.js"></script>
     <style>
         .t_title{

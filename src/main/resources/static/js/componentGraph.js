@@ -267,7 +267,7 @@ function buildGraphData(viewData,widget) {
 }
 
 /**
- * 一致widgets,绘制widget图像 。
+ * 已知widgets,绘制widget图像 。
  * @param obj
  */
 function drawDispWidget(selectedWidgets) {
@@ -310,4 +310,28 @@ function drawDispWidget(selectedWidgets) {
                 break;
         }
     }
+}
+
+/**
+ *
+ * @param displayWidgetId
+ */
+function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
+    grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle), {minWidth: 5, minHeight: 5});
+
+}
+
+/**
+ *
+ * @param displayWidgetId
+ * @returns {string}
+ */
+function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
+    return '<div>' +
+        '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
+        '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
+        '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 90%;">内容</div>' +
+        '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
+        '</div>' +
+        '</div>';
 }
