@@ -13,8 +13,9 @@ function generateWidgetHtmlID(widget){
  * @param title
  * @param queryVal: widget 查询参数，维度数据，多维参数要注意修改视图表达式。
  * @param htmlTargetId
+ * @param param
  */
-function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId) {
+function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId,param) {
     let widget = getWidgetByWidgetID(widgetId);
     let grahpId = htmlTargetId;
     let config = JSON.parse(widget.config)
@@ -23,24 +24,24 @@ function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId) {
     switch (graphType) {
         case 1:
             //面积图
-            renderWidgetGraph(widget,"area",grahpId,title,queryVal);
+            renderWidgetGraph(widget,"area",grahpId,title,queryVal,param);
             break;
         case 2:
             //柱状图
-            renderWidgetGraph(widget,"bar",grahpId,title,queryVal);
+            renderWidgetGraph(widget,"bar",grahpId,title,queryVal,param);
             break;
         case 3:
             //折线图
-            renderWidgetGraph(widget,"line",grahpId,title,queryVal);
+            renderWidgetGraph(widget,"line",grahpId,title,queryVal,param);
             break;
         case 4:
             //饼图
             console.log("original title:" + title);
-            renderWidgetGraph(widget,"pie",grahpId,title,queryVal);
+            renderWidgetGraph(widget,"pie",grahpId,title,queryVal,param);
             break;
         case 5:
             //地图
-            renderWidgetGraph(widget,"map",grahpId,title,queryVal);
+            renderWidgetGraph(widget,"map",grahpId,title,queryVal,param);
             break;
         case 6:
             break;
@@ -84,13 +85,14 @@ function renderDispGraph(widget,type,id){
             break;
     }
 }
-function renderWidgetGraph(widget,type,id,title,queryVal){
+function renderWidgetGraph(widget,type,id,title,queryVal,param){
     if(id == null || id  === "")
         id="graphArea";
     let config = JSON.parse(widget.config);
     console.log("config:" , config)
-    let viewData = getViewDataByViewId(widget);
+    let viewData = getViewDataByViewId(widget,param,queryVal);
     let graphData = buildGraphData(viewData,widget);
+    if(graphData == null) return;
     let bizData = graphData.showedData;
     let legendData = graphData.legendData;
 
@@ -114,11 +116,16 @@ function renderWidgetGraph(widget,type,id,title,queryVal){
             break;
     }
 }
+
 /**
- * get view data by view id
+ *  * get view data by view id
  * /1/getdata
+ * @param widget
+ * @param param
+ * @param paramVal
+ * @returns {*}
  */
-function getViewDataByViewId(widget) {
+function getViewDataByViewId(widget,param,paramVal) {
     // 构造request data
     let aggregators = [],
         groups=[],
@@ -135,9 +142,18 @@ function getViewDataByViewId(widget) {
     let catsAndVal = getCategoriesAndValuesFromWidgetData(widget);
     aggregators = catsAndVal.aggregators;
     groups = catsAndVal.groups;
+    //build params
+    let params =[];
+    if(param !== null){
+        let paramOne = {};
+        paramOne.name= param;
+        paramOne.value="'" + paramVal + "'";
+        params[0]=paramOne;
+    }
     //取 Filters columns //TODO:
     let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
-        flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
+        flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0,params:params});
+
     $.ajax({
         url: "/api/v3/views/"+ widget.viewId + "/getdata",
         type: "POST",
@@ -212,6 +228,7 @@ function getCategoriesAndValuesFromWidgetData(widget){
  * @param viewData
  */
 function buildGraphData(viewData,widget) {
+    if(viewData == null ) return ;
     let legendData=[], showedData=[];
     let bizData = viewData.data.resultList;
     //取category columns

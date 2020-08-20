@@ -262,8 +262,27 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			,cols: [[
 				{field:'name',  title: '字段名称', sort: true}
 				,{field:'type',title: '字段类型', sort: true}
-				,{field:'',  title: '模型数据类型', templet: '#selectModel' }
-				,{ field: '', title: '可视化类型', templet: '#selectVisual'}
+				,{field:'',  title: '模型数据类型', templet: function (d) {
+						return '<select id="mode_'+ d.name + '" class="layui-table-cell layui-form-select" value="" name="modeType" lay-filter="modeType" '   + ' " data-value="' + d.name + '" >' +
+							'        <option class="layui-table-cell" value="">请选择</option>' +
+							'        <option class="layui-table-cell" value="维度">维度</option>' +
+							'        <option class="layui-table-cell" value="指标">指标</option>' +
+							'      </select>';
+					}}
+				,{ field: '', title: '可视化类型', templet: function (d) {
+						return '<select id="vis_'+ d.name + '" class="layui-table-cell layui-form-select" value=""  name="visualType" lay-filter="visualType" '  + ' " data-value="' + d.name + '" >' +
+							'        <option class="layui-table-cell" value="">请选择</option>' +
+							'        <option class="layui-table-cell" value="数字">数字</option>' +
+							'        <option class="layui-table-cell" value="字符">字符</option>' +
+							'        <option class="layui-table-cell" value="日期">日期</option>' +
+							'        <option class="layui-table-cell" value="地理国家">地理国家</option>' +
+							'        <option class="layui-table-cell" value="地理省份">地理省份</option>' +
+							'        <option class="layui-table-cell" value="地理城市">地理城市</option>' +
+							'        <option class="layui-table-cell" value="地理区县">地理区县</option>' +
+							'        <option class="layui-table-cell" value="经度">经度</option>' +
+							'        <option class="layui-table-cell" value="纬度">纬度</option>' +
+							'      </select>';
+					}}
 			]]
 			,limit:50
 			//,page: true   //开启分页
@@ -283,6 +302,23 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 					data: res.data.columns
 				}
 			}
+			,done: function (res) {
+				//form.render('select','dataModel'); //刷新表单select选择框渲染
+				originalModel=JSON.parse(viewModel.model);
+				//console.log("originalModel",originalModel);
+				$.each(originalModel,function (index,item) {
+					let sibling = $('#mode_'+ index ).siblings("div.layui-form-select");
+					let select = 'dd[lay-value=\'' + (item.modelType==="category"?"维度":"指标") + '\']';
+					sibling.find('dl').find(select).click();
+
+					let sibling2 = $('#vis_'+ index ).siblings("div.layui-form-select");
+					let select2 = 'dd[lay-value=' + convertCategory2Hanzi(item.visualType) + ']';
+					console.log("select2: " , sibling2)
+					sibling2.find('dl').find(select2).click();
+
+				})
+
+			}
 
 		});
 
@@ -293,40 +329,11 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		// data.elem.value可以得到下拉框选择的文本
 		let id = data.elem.dataset.value; //当前数据的id
 		let selectVal = data.elem.value; //当前字段变化的值
+		console.log(id, selectVal)
 
 		for(let i in colsData){
 			if(colsData[i].name === id){
-				switch(selectVal) {
-					case "数字":
-						colsData[i].visualType = "number";
-						break;
-					case "字符":
-						colsData[i].visualType = "string";
-						break;
-					case "日期":
-						colsData[i].visualType = "date";
-						break;
-					case "地理国家":
-						colsData[i].visualType = "geoCountry";
-						break;
-					case "地理省份":
-						colsData[i].visualType = "geoProvince";
-						break;
-					case "地理城市":
-						colsData[i].visualType = "geoCity";
-						break;
-					case "地理区县":
-						colsData[i].visualType = "geoArea";
-						break;
-					case "经度":
-						colsData[i].visualType = "longitude";
-						break;
-					case "纬度":
-						colsData[i].visualType = "dimension";
-						break;
-					default:
-						colsData[i].visualType = "string";
-				}
+				colsData[i].visualType = convertCategory(selectVal) ;
 			}
 		}
 
@@ -336,18 +343,10 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		// data.elem.value可以得到下拉框选择的文本
 		let id = data.elem.dataset.value; //当前数据的id
 		let selectVal = data.elem.value; //当前字段变化的值
+		console.log(id, selectVal)
 		for(let i in colsData){
 			if(colsData[i].name === id){
-				switch(selectVal) {
-					case "维度":
-						colsData[i].modelType = "category";
-						break;
-					case "指标":
-						colsData[i].modelType = "value";
-						break;
-					default:
-						colsData[i].modelType = "category";
-				}
+				colsData[i].modelType = (selectVal==="维度"?"category":"value")
 			}
 		}
 
@@ -377,7 +376,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 	})
 
 	//
-	originalModel=JSON.parse(viewModel.model);
 
 	//end
 });

@@ -112,3 +112,83 @@ function isNumber(val){
     }
 
 }
+
+/**
+ *
+ * @param selectVal
+ */
+function convertCategory( selectVal) {
+    let visualType = "string";
+    switch(selectVal) {
+        case "数字":
+            visualType = "number";
+            break;
+        case "字符":
+            visualType = "string";
+            break;
+        case "日期":
+            visualType = "date";
+            break;
+        case "地理国家":
+           visualType = "geoCountry";
+            break;
+        case "地理省份":
+            visualType = "geoProvince";
+            break;
+        case "地理城市":
+           visualType = "geoCity";
+            break;
+        case "地理区县":
+            visualType = "geoArea";
+            break;
+        case "经度":
+            visualType = "longitude";
+            break;
+        case "纬度":
+           visualType = "dimension";
+            break;
+        default:
+            visualType = "string";
+    }
+    return visualType;
+}
+
+/**
+ *
+ * @param selectVal
+ */
+function convertCategory2Hanzi( selectVal) {
+    let visualType = "string";
+    switch(selectVal) {
+        case "number":
+            visualType = "数字";
+            break;
+        case "string":
+            visualType = "字符";
+            break;
+        case "date":
+            visualType = "日期";
+            break;
+        case "geoCountry":
+            visualType = "地理国家";
+            break;
+        case "geoProvince":
+            visualType = "地理省份";
+            break;
+        case "geoCity":
+            visualType = "地理城市";
+            break;
+        case "geoArea":
+            visualType = "地理区县";
+            break;
+        case "longitude":
+            visualType = "经度";
+            break;
+        case "dimension":
+            visualType = "纬度";
+            break;
+        default:
+            visualType = "字符";
+    }
+    return visualType;
+}

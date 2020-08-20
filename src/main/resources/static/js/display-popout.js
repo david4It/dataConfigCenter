@@ -24,22 +24,28 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	});
 	//let token = $.cookie("token");
 	//console.log("cookie: " , token);
-	let title = getUrlParam("title")
-	let queryName = getUrlParam("queryName")
-	let widgetId = getUrlParam("widgetId")
-	console.log("encoded title:" + title);
-	layer.open({
-		type: 1
-		,id: 'layerDemo' //防止重复弹出
-		,content: '<div style="padding: 20px 100px;">' +
-			'</div>'
-		,btn: '关闭全部'
-		,btnAlign: 'c' //按钮居中
-		,shade: 0 //不显示遮罩
-		,yes: function(){
-			layer.closeAll();
-			generateWidgetGraph(widgetId,title,queryName,"graphId");
-		}
+	let title = getUrlParam("title");
+	let queryName = getUrlParam("queryName");
+	let widgetId = getUrlParam("widgetId");
+	let widget = getWidgetByWidgetID(widgetId);
+	let viewObj = getViewByViewID(widget.viewId);
+	let variableAry = JSON.parse(viewObj.variable);
+	console.log("view",variableAry)
+	let firstParam = null;
+	let queryStr = "";
+	if(variableAry.length > 0){
+		$.each(variableAry,function (index , item) {
+			$('#selectVariable').append('<option value="'+ item.name +'">' + item.name + '</option>');
+			if(firstParam == null) firstParam = item.name;
+		})
+		if(variableAry.length > 1)
+			$("#varDiv").show();
+	}
+	generateWidgetGraph(widgetId, title, queryName, "graphId",firstParam);
+
+	//trigger select
+	$('#selectVariable').change(() => {
+		generateWidgetGraph(widgetId,title,queryName,"graphId",$("#selectVariable").val());
 	});
 
 

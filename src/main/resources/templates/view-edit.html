@@ -143,7 +143,7 @@
 				<li class="layui-this">数据模型</li>
 				<li>模型授权</li>
 			</ul>
-			<div  class="layui-table layui-form dataModel "  id="dataModel"></div>
+			<div  class="layui-table layui-form dataModel "  id="dataModel" lay-filter="dataModel"></div>
 			<div id="roleModel"></div>
 		</div>
 	</div>
@@ -186,7 +186,7 @@
 	}
 </script>
 <script type="text/html" id="selectVisual">
-	<select name='visualType' lay-filter='visualType' lay-search=''>
+	<select id="vis_{{d.name}}" name='visualType' lay-filter='visualType' lay-search=''>
 		<option value=""></option>
 		<option value="数字">数字</option>
 		<option value="字符" selected="selected">字符</option>
@@ -196,11 +196,11 @@
 		<option value="地理城市">地理城市</option>
 		<option value="地理区县">地理区县</option>
 		<option value="经度">经度</option>
-		<option value="维度">维度</option>
+		<option value="纬度">纬度</option>
 	</select>
 </script>
 <script type="text/html" id="selectModel">
-	<select name='modeType' lay-filter='modeType' lay-search=''>
+	<select id="mode_{{d.name}}" name='modeType' lay-filter='modeType' lay-search=''>
 		<option value=""></option>
 		<option value="维度" selected="selected">维度</option>
 		<option value="指标">指标</option>

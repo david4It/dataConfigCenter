@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.APOSTROPHE;
-import static org.elasticsearch.geometry.utils.WellKnownText.EMPTY;
+import static com.scsme.dataConfigCenter.davinci.core.consts.Consts.*;
 
 public enum SqlVariableValueTypeEnum {
     STRING("string"),

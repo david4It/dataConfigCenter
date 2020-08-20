@@ -13,13 +13,31 @@
 				background-color: #0C0C0C;
 				width: 100%;
 				position: absolute;
-				top: 2px;
+				top: 2.5rem;
 				bottom: 0px;
 				left: 0px;
+			}
+			.varBox{
+				border-radius: 0.3rem 0.3rem 0.3rem 0;
+				border: 1px solid #6ceb38;
+				background-color: #b1ebb4;
+			}
+			.varBoxLi{
+				margin-top: 1rem;
+			}
+			#varDiv{
+				margin-top: 0.5rem;
+				padding-left: 3rem;
+				font-size: 1rem;
+
 			}
 		</style>
 	</head>
 	<body>
+
+		<div  id="varDiv">
+			维度选择：<select id="selectVariable" name="paramId"  lay-filter="paramId"></select>
+		</div>
 
 		<div  id="graphId" class="chart content"></div>
 
