@@ -326,7 +326,7 @@ Vue.component('graph', {
                 me.$message.error("获取组件列表数据失败！");
             })
         },
-        validatePageSql(id) {
+        validatePageSql(id, callback = null) {
             let me = this;
             service.get('/component/validatePageSql', {
                 params: {
@@ -344,10 +344,12 @@ Vue.component('graph', {
                     });
                     me.$notify({
                         dangerouslyUseHTMLString: true,
-                        title: '提示',
+                        title: '警告',
                         message: msg
                     });
+                    return;
                 }
+                if (callback) callback();
             }).catch(err => {
                 me.$message.error("校验页面SQL失败！");
             })
@@ -359,7 +361,7 @@ Vue.component('graph', {
                 //展示已配置的子页面信息
                 me.subLayout.url = c.linkUrl;
                 me.subLayout.title = c.linkTitle;
-                me.params = c.params.split(",");
+                me.params = c.params ? c.params.split(",") : [];
             }
             //根据不同图表类型，对数据进行预处理
             switch (c.type) {
@@ -617,8 +619,10 @@ Vue.component('graph', {
                     me.dialogVisible = false;
                 }
                 // me.loadComponents(me.layout_id);
+                // me.loadComponents(me.layout_id);
                 //因为可能存在新建子页面的情况，故需要刷新layout列表，确保展示的正确性
                 me.$emit('refresh_layout_list');
+                me.validatePageSql(me.layout_id);
             }).catch(err => {
                 console.log(err);
             })

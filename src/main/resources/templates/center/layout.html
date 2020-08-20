@@ -124,7 +124,7 @@
             <div style="color: #adc1da; font-size: 18px; font-weight: bold; text-align: center">{{ graphLayoutTitle }}</div>
         </div>
         <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
-            <graph @refresh_layout_list="getLayoutList" @load_sub_layout="loadSubLayout" :layout_id="graphLayoutId" :sql_params="sqlParams"></graph>
+            <graph ref="graph" @refresh_layout_list="getLayoutList" @load_sub_layout="loadSubLayout" :layout_id="graphLayoutId" :sql_params="sqlParams"></graph>
         </div>
     </div>
 

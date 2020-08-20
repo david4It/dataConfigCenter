@@ -50,17 +50,16 @@ public class Radar extends AbstractGraphical {
                 if (paramsSet.contains(columnName)) {
                     //封装用于传参的字段以及其对应的值
                     valueData.put(columnName, valueStr);
-                } else {
-                    if (arr[0].equals(columnName)) {
-                        radarSeriesMap.put(NAME, valueStr);
-                        radarLegendData.add(valueStr);
-                    } else if (dimensionSet.contains(columnName)) {
-                        BigDecimal decimalValue = getDecimalValue(valueStr);
-                        vList.add(decimalValue);
-                        //保存维度的最大值
-                        if (indicatorMaxMap.get(columnName) == null || indicatorMaxMap.get(columnName).compareTo(decimalValue) < 0) {
-                            indicatorMaxMap.put(columnName, decimalValue);
-                        }
+                }
+                if (arr[0].equals(columnName)) {
+                    radarSeriesMap.put(NAME, valueStr);
+                    radarLegendData.add(valueStr);
+                } else if (dimensionSet.contains(columnName)) {
+                    BigDecimal decimalValue = getDecimalValue(valueStr);
+                    vList.add(decimalValue);
+                    //保存维度的最大值
+                    if (indicatorMaxMap.get(columnName) == null || indicatorMaxMap.get(columnName).compareTo(decimalValue) < 0) {
+                        indicatorMaxMap.put(columnName, decimalValue);
                     }
                 }
             }

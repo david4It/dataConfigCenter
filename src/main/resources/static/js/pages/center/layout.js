@@ -155,7 +155,7 @@ new Vue({
                         me.$message.error("更新布局失败！");
                     })
                 } else {
-                    this.$message.error('请完善表单后再次提交！');
+                    me.$message.error('请完善表单后再次提交！');
                 }
             });
         },
@@ -193,7 +193,7 @@ new Vue({
                     me.$message.error("删除布局数据失败！");
                 });
             }).catch(() => {
-                this.$message({
+                me.$message({
                     type: 'info',
                     message: '已取消操作'
                 });
@@ -209,17 +209,15 @@ new Vue({
                 type: 'warning'
             }).then(() => {
                 result.enabled = status;
-                service.post("/layout/enabled", result).then(function(res){
-                    if (!res.data.success) {
-                        me.$message.error(res.data.message);
-                        return;
-                    }
-                    me.dialogVisible = false;
-                    me.successMsg(res.data.message);
-                    me.getLayoutList();
-                }).catch(err => {
-                    me.$message.error("更新布局状态失败！");
-                });
+                debugger
+                //启用页面必须调用子页面的SQL校验方法，校验通过之后，才能执行更新操作，避免页面数据无法加载
+                if (status === 'Y') {
+                    me.$refs["graph"].validatePageSql(row.id, () => {
+                        me.updateLayoutStatus(result);
+                    });
+                } else {
+                    me.updateLayoutStatus(result);
+                }
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -227,22 +225,33 @@ new Vue({
                 });
             });
         },
-        preview(row) {
+        updateLayoutStatus(result) {
             let me = this;
-            let result = deepCopy(row);
-            service.post("/layout/preview", result).then(function(res){
+            service.post("/layout/enabled", result).then(function(res){
                 if (!res.data.success) {
                     me.$message.error(res.data.message);
                     return;
                 }
-                me.$confirm('预览页面已经生成，点击确定按钮进行查看', '提示', {
-                    confirmButtonText: '确定',
-                    type: 'success'
-                }).then(()=> {
-                    window.open(window.location.origin + "/preview/" + row.url,"_blank");
-                })
+                me.dialogVisible = false;
+                me.successMsg(res.data.message);
+                me.getLayoutList();
             }).catch(err => {
-                me.$message.error("生成预览页面失败！");
+                me.$message.error("更新布局状态失败！");
+            });
+        },
+        preview(row) {
+            let me = this;
+            let result = deepCopy(row);
+            me.$refs["graph"].validatePageSql(row.id, () => {
+                service.post("/layout/preview", result).then(function(res){
+                    if (!res.data.success) {
+                        me.$message.error(res.data.message);
+                        return;
+                    }
+                    window.open(window.location.origin + "/preview/" + row.url,"_blank");
+                }).catch(err => {
+                    me.$message.error("生成预览页面失败！");
+                });
             });
         },
         handleClose() {

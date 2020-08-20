@@ -109,14 +109,13 @@ public abstract class AbstractGraphical {
                         extDataMap.put(columnName, valueStr);
                         valueData.put(EXT_DATA, extDataMap);
                     }
-                } else {
-                    //封装用于展示的数据
-                    if (columnName.equals(arr[0])) {
-                        strList.add(valueStr);
-                        valueData.put(NAME, valueStr);
-                    } else if (columnName.equals(arr[1])) {
-                        valueData.put(VALUE, getDecimalValue(valueStr));
-                    }
+                }
+                //封装用于展示的数据
+                if (columnName.equals(arr[0])) {
+                    strList.add(valueStr);
+                    valueData.put(NAME, valueStr);
+                } else if (columnName.equals(arr[1])) {
+                    valueData.put(VALUE, getDecimalValue(valueStr));
                 }
             }
             mapList.add(valueData);

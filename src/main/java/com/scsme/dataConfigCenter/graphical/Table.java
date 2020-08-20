@@ -44,7 +44,8 @@ public class Table extends AbstractGraphical {
                 if (headerSet.contains(columnName)) {
                     tableLegendData.add(columnName);
                     seriesData.add(valueStr);
-                } else if (paramsSet.contains(columnName)) {
+                }
+                if (paramsSet.contains(columnName)) {
                     //封装用于传参的字段以及其对应的值
                     extDataMap.put(columnName, valueStr);
                 }
