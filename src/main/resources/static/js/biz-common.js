@@ -146,7 +146,7 @@ function getProjects(htmlElementId){
 }
 
 /**
- * get widgets
+ * get display datas include slideMemWidget,view,widgets
  * @param htmlElementId
  * @returns {*}
  */
@@ -227,6 +227,46 @@ function createSlideByDisplayId( displayId ) {
         }
     });
     return slide;
+}
+
+/**
+ * get slides by display id
+ * @param displayId
+ * @returns {boolean|number}
+ */
+function querySlidesByDisplayId(displayId){
+    // 通过data.elem.dataset可以得到保存的对象id
+    // data.elem.value可以得到下拉框选择的文本
+    let slides = null;
+    if(displayId === "") return false;
+    $.ajax({
+        url: "/api/v3/displays/"+ displayId +"/slides",
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                slides = data.data.slides;
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+        }
+    });
+    return slides;
 }
 
 /**
@@ -405,3 +445,47 @@ function getWidgetByWidgetID(widgetId){
     });
     return ret;
 }
+
+/**
+ * delete slide mem widgets
+ * @param displayId
+ * @param slideId
+ * @param memWidgetId
+ * @returns {boolean}
+ */
+function deleteSlideMemWidgit(displayId,slideId,memWidgetId){
+    if(memWidgetId === "" || memWidgetId == null) return false;
+    let ids=[];
+    ids[0]=memWidgetId;
+    //console.log("ids:", ids)
+    $.ajax({
+        url: "/api/v3/displays/"+displayId+"/slides/"+slideId+"/widgets",
+        type: "DELETE",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        data:JSON.stringify(ids),
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                //ret = data.data;
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+        }
+    });
+   // return ret;
+}
+

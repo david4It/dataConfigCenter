@@ -1,3 +1,5 @@
+let echartMap={}
+
 /**
  * 渲染图片
  * @param id
@@ -7,7 +9,9 @@
  */
 function renderPie(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
+    echartMap[id]=myCharts1;
     let option1 = {
+
         title: {
             text: title,
             left: 'center',
@@ -77,7 +81,8 @@ function renderPie(id, title, legendData, data) {
  * @param data
  */
 function renderBar(id, title, legendData, data) {
-    let myCharts1 = echarts.init(document.getElementById(id));
+    let myCharts2 = echarts.init(document.getElementById(id));
+    echartMap[id]=myCharts2;
     let option1 = {
         title: {
             text: title,
@@ -122,10 +127,10 @@ function renderBar(id, title, legendData, data) {
             }
         }]
     };
-    myCharts1.setOption(option1);
+    myCharts2.setOption(option1);
 
     //点击事件
-    myCharts1.on('click', function (param) {
+    myCharts2.on('click', function (param) {
         console.log(param);
         //displayWidget_9
         let domId = this.getDom().id;
@@ -149,7 +154,8 @@ function renderBar(id, title, legendData, data) {
  * @param data
  */
 function renderLine(id, title, legendData, data) {
-    let myCharts1 = echarts.init(document.getElementById(id));
+    let myCharts3 = echarts.init(document.getElementById(id));
+    echartMap[id]=myCharts3;
     let option1 = {
         title: {
             text: title,
@@ -200,10 +206,10 @@ function renderLine(id, title, legendData, data) {
             },
         }]
     };
-    myCharts1.setOption(option1);
+    myCharts3.setOption(option1);
 
     //点击事件
-    myCharts1.on('click', function (param) {
+    myCharts3.on('click', function (param) {
         console.log(param);
         //displayWidget_9
         let domId = this.getDom().id;
@@ -269,7 +275,8 @@ function buildPieData(data) {
  * @param data
  */
 function renderAreaLine(id, title, legendData, data) {
-    let myCharts1 = echarts.init(document.getElementById(id));
+    let myCharts4 = echarts.init(document.getElementById(id));
+    echartMap[id]=myCharts1;
     let option1 = {
         title: {
             text: title,
@@ -317,10 +324,10 @@ function renderAreaLine(id, title, legendData, data) {
             }
         }]
     };
-    myCharts1.setOption(option1);
+    myCharts4.setOption(option1);
 
     //点击事件
-    myCharts1.on('click', function (param) {
+    myCharts4.on('click', function (param) {
         console.log(param);
         //displayWidget_9
         let domId = this.getDom().id;
@@ -335,3 +342,10 @@ function renderAreaLine(id, title, legendData, data) {
         }
     });
 }
+window.addEventListener("resize", () => {
+    $.each(echartMap,function (index,item) {
+       // console.log(item)
+        item.resize();
+    })
+
+});

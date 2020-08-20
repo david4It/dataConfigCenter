@@ -17,6 +17,7 @@ let chartsMap = {};
 let model = {};
 let editor,viewId;
 let selectedWidget={};
+let slideMemWidgetMap = {};
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -33,11 +34,19 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 	$(".layui-table-view").css('overflow','visible');
 	//共享displayID
 	//console.log("displayId=" + getUrlParam("displayId"));
-	if(getUrlParam("displayId") != null ) {
-		localStorage.setItem('displayId', getUrlParam("displayId"))
+	let displayId = getUrlParam("displayId");
+	if(displayId != null ) {
+		localStorage.setItem('displayId',displayId )
+		//set first slide
+		let slides = querySlidesByDisplayId(displayId);
+		console.log("slides",slides);
+		if(slides.length > 0){
+			localStorage.setItem("slideId",slides[0].id);
+		}
 	}
 	let token = $.cookie("token");
 	let projectId = localStorage.getItem("projectId");
+	querySlides();
 	//console.log("projectId=" + projectId);
 	var screenWith = document.body.clientWidth;
 	var w0 = (screenWith-44) / 5;
@@ -72,7 +81,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 				expires: 10
 			});
 		}
-
 	});
 	//监听复选框
 	table.on('checkbox(demo)', function(obj){
@@ -99,10 +107,8 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 			{
 				if($(item).find(".layui-form-checked").length>0){
 					//该行是选中状态，根据索引i到tableData数组中找相应行的数据
-					//console.log("line ： ",i,':', dataList[i-1].name);
 					selectedWidget[dataList[i-1].id] = dataList[i-1];
 				}
-
 			});
 		}else{
 			//TODO:
@@ -183,11 +189,16 @@ function drawPage() {
 
 	let displayId = localStorage.getItem("displayId");
 	//获取slide
-	let firstSlideId = querySlides();
+	let firstSlideId = localStorage.getItem("slideId");
 	console.log(displayId,firstSlideId);
 	//获取memslidewidgets,views,widgets
 	let slidePageData = getWidgets(displayId,firstSlideId);
 	//
+	let slideMemWidgets = slidePageData.items;
+	$.each(slideMemWidgets,function (index, item) {
+		slideMemWidgetMap[item.widgetId]=item.id;
+	})
 	console.log("pageData: ", slidePageData);
-	drawDispWidget(slidePageData.widgets);
+	if(slidePageData.widgets.length > 0)
+		drawDispWidget(slidePageData.widgets);
 }

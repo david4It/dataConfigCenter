@@ -107,7 +107,7 @@
     <logger name="BUSINESS_SCHEDULE" additivity="false" level="INFO">
         <appender-ref ref="BUSINESS_SCHEDULE_LOG_APPENDER"/>
     </logger>
-
+    <logger name="com.scsme.dataConfigCenter.davinci.biz.dao" level="DEBUG" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
