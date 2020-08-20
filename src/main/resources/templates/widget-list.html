@@ -64,8 +64,9 @@
 <script src="js/jquery.cookie.min.js"></script>
 <script src="js/widget.js"></script>
 
-<script type="text/html" id="toolBar">
-	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-	<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-	<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+<script type="text/html" id="opTpl">
+	<a class="layui-btn layui-btn-primary layui-btn-xs" onclick='jump("detail","{{d.id}}")'>查看</a>
+	<a class="layui-btn layui-btn-xs"  onclick='jump("edit","{{d.id}}")'>编辑</a>
+	<a class="layui-btn layui-btn-danger layui-btn-xs" onclick='jump("del","{{d.id}}")'>删除</a>
 </script>

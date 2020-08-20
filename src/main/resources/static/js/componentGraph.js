@@ -36,7 +36,7 @@ function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId,param) {
             break;
         case 4:
             //饼图
-            console.log("original title:" + title);
+            //console.log("original title:" + title);
             renderWidgetGraph(widget,"pie",grahpId,title,queryVal,param);
             break;
         case 5:
@@ -89,7 +89,7 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
     if(id == null || id  === "")
         id="graphArea";
     let config = JSON.parse(widget.config);
-    console.log("config:" , config)
+    //console.log("config:" , config)
     let viewData = getViewDataByViewId(widget,param,queryVal);
     let graphData = buildGraphData(viewData,widget);
     if(graphData == null) return;
@@ -266,43 +266,6 @@ function buildGraphData(viewData,widget) {
     return retData;
 }
 
-/**
- * get widget by widget id
- * @param widgetId
- * @returns {boolean}
- */
-function getWidgetByWidgetID(widgetId){
-    if(widgetId === "" || widgetId == null) return false;
-    let ret = null;
-    $.ajax({
-        url: "/api/v3/widgets/"+ widgetId,
-        type: "GET",
-        dataType: "json",
-        contentType: "application/json;charset=utf-8",
-        xhrFields: {
-            withCredentials: true //允许跨域带Cookie
-        },
-        async: false,
-        headers: {
-            "Authorization":$.cookie("token")//此处放置请求到的用户token
-        },
-        success: function (data) {
-            if (data.code == 0) {
-                //layer.msg("查询成功", {icon: 1, time: 1000});
-                ret = data.data;
-                $.cookie("token",data.token,{
-                    expires: 10
-                });
-            } else {
-                layer.msg("查询失败", {icon: 2, time: 1000});
-            }
-        },
-        fail: function (data) {
-            layer.msg("查询失败", {icon: 2, time: 1000});
-        }
-    });
-    return ret;
-}
 /**
  * 一致widgets,绘制widget图像 。
  * @param obj

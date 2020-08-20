@@ -214,7 +214,7 @@ function createSlideByDisplayId( displayId ) {
             if (data.code == 0) {
                 layer.msg("数据保存成功", {icon: 1, time: 1000});
                 slide = data.data;
-                console.log(slide);
+                //console.log(slide);
                 $.cookie("token",data.token,{
                     expires: 10
                 });
@@ -306,6 +306,101 @@ function getSourceByProjectID(projectId){
         fail: function (data) {
             layer.msg("查询失败", {icon: 2, time: 1000});
             return false;
+        }
+    });
+    return ret;
+}
+/**
+ * get view data by view id
+ * /1/getdata
+ */
+function getViewResultByViewId() {
+    let globalWidgetData = null;
+    // 构造request data
+    let aggregators = [],
+        groups=[],
+        cache=false,
+        expired=0,
+        filters= [],
+        flush= false,
+        nativeQuery=false,
+        orders= [],
+        pageNo=0,
+        pageSize= 0;
+
+    //取category columns
+    let ret = getCategoriesAndValues();
+    aggregators = ret.aggregators;
+    groups = ret.groups;
+    //取 Filters columns //TODO:
+    let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
+        flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
+    $.ajax({
+        url: "/api/v3/views/"+viewId + "/getdata",
+        type: "POST",
+        dataType: "json",
+        data: data,
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                //console.log(data);
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+                globalWidgetData = data;
+            } else {
+                //layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            //layer.msg("查询失败", {icon: 2, time: 1000});
+
+        }
+    });
+    return globalWidgetData;
+}
+
+/**
+ * get widget by widget id
+ * @param widgetId
+ * @returns {boolean}
+ */
+function getWidgetByWidgetID(widgetId){
+    if(widgetId === "" || widgetId == null) return false;
+    let ret = null;
+    $.ajax({
+        url: "/api/v3/widgets/"+ widgetId,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                ret = data.data;
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
         }
     });
     return ret;

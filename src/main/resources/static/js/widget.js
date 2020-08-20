@@ -36,7 +36,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
     form.on('submit(execute)', function(data) {
         layer.confirm('确认要保存吗？',function(index) {
 			layer.load();
-			console.log(data.field);
+			//console.log(data.field);
 			let uid=$.cookie("uid");
 			data.field.id=uid;
 			data.field.projectId=localStorage.getItem("projectId");
@@ -122,7 +122,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 
 	var screenWith = document.body.clientWidth;
 	var w0 = (screenWith-44) / 5;
-	console.log(screenWith,w0);
+	//console.log(screenWith,w0);
 	table.render({
 		elem: '#orgList'  //绑定table id
 		,url:'/api/v3/widgets?projectId=' + localStorage.getItem("projectId")  //数据请求路径
@@ -138,7 +138,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			,{field:'name', width:0.5*w0, title: '名称'}
 			,{field:'description', width:1*w0, title: '描述', sort: true}
 			,{field:'config', width:3*w0, title: '数据描述', sort: true}
-			,{fixed: 'right',title: '操作', width:1*w0, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
+			,{fixed: 'right',title: '操作', width:180, align:'center', templet: '#opTpl' }//一个工具栏  具体请查看layui官网
 		]]
 		,page: true   //开启分页
 		,response:{
@@ -146,7 +146,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			statusCode:0 //规定成功的状态码味200
 		}
 		, done: function (res, curr, count) {
-			console.log(res);
+			//console.log(res);
 			$.cookie("token",res.token,{
 				expires: 10
 			});
@@ -269,4 +269,16 @@ function testDbConnetion() {
 			return false;
 		}
 	});
+}
+function jump(op,id) {
+	//console.log("data=",id)
+	if(op === 'detail'){
+		layer.msg('ID：'+ id + ' 的查看操作');
+	} else if(op === 'del'){
+		//let state = execute_del(obj,obj.id,"/api/v3/organizations/"+ id);
+		//if(state) obj.del();
+	} else if(op === 'edit'){
+		layer.alert('编辑行：<br>'+ id)
+		window.location.href = "widget-edit.html?widgetId=" + id;
+	}
 }
