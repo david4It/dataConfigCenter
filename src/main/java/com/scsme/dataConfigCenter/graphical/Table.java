@@ -38,9 +38,11 @@ public class Table extends AbstractGraphical {
             List<Object> seriesData = new ArrayList<>();
             Map<String, String> extDataMap = new HashMap<>();
             int count = metaData.getColumnCount();
+            //resultSet.getObject返回的是数据库字段类型映射到java的类型，详情参考：https://www.cnblogs.com/hwaggLee/p/5111019.html
+            //若数据需要特殊展示，例如日期需要特定格式化，请直接在SQL语句中进行格式化！
             for (int i = 1; i <= count; i++) {
                 String columnName = metaData.getColumnName(i);
-                String valueStr = resultSet.getString(i);
+                String valueStr = resultSet.getObject(i).toString();
                 if (headerSet.contains(columnName)) {
                     tableLegendData.add(columnName);
                     seriesData.add(valueStr);

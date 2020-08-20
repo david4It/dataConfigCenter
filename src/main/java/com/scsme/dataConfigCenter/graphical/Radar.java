@@ -44,9 +44,11 @@ public class Radar extends AbstractGraphical {
             List<BigDecimal> vList = new ArrayList<>();
             Map<String, Object> radarSeriesMap = new LinkedHashMap<>();
             Map<String, Object> valueData = new HashMap<>();
+            //resultSet.getObject返回的是数据库字段类型映射到java的类型，详情参考：https://www.cnblogs.com/hwaggLee/p/5111019.html
+            //若数据需要特殊展示，例如日期需要特定格式化，请直接在SQL语句中进行格式化！
             for (int i = 1; i <= count; i++) {
                 String columnName = metaData.getColumnName(i);
-                String valueStr = resultSet.getString(i);
+                String valueStr = resultSet.getObject(i).toString();
                 if (paramsSet.contains(columnName)) {
                     //封装用于传参的字段以及其对应的值
                     valueData.put(columnName, valueStr);
@@ -55,7 +57,7 @@ public class Radar extends AbstractGraphical {
                     radarSeriesMap.put(NAME, valueStr);
                     radarLegendData.add(valueStr);
                 } else if (dimensionSet.contains(columnName)) {
-                    BigDecimal decimalValue = getDecimalValue(valueStr);
+                    BigDecimal decimalValue = (BigDecimal) resultSet.getObject(i);
                     vList.add(decimalValue);
                     //保存维度的最大值
                     if (indicatorMaxMap.get(columnName) == null || indicatorMaxMap.get(columnName).compareTo(decimalValue) < 0) {
