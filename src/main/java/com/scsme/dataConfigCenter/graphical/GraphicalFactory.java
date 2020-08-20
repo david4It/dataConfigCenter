@@ -38,6 +38,9 @@ public class GraphicalFactory {
             case TABLE:
                 graphical = new Table(dataSource, component, valueMap);
                 break;
+            case GAUGE:
+                graphical = new Gauge(dataSource, component, valueMap);
+                break;
             case MAP:
                 graphical = new com.scsme.dataConfigCenter.graphical.Map(dataSource, component, valueMap);
         }
@@ -54,7 +57,8 @@ public class GraphicalFactory {
     }
 
     private enum GraphicalType {
-        BAR("bar"), PIE("pie"), LINE("line"), TABLE("table"), RADAR("radar"), MAP("map");
+        BAR("bar"), PIE("pie"), LINE("line"), TABLE("table"), RADAR("radar"),
+        GAUGE("gauge"), MAP("map");
 
         GraphicalType(String value) {
             this.value = value;

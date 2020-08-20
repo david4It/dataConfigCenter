@@ -209,6 +209,7 @@ Vue.component('graph', {
                 {label: '柱状图', value: 'bar'},
                 {label: '表格图', value: 'table'},
                 {label: '雷达图', value: 'radar'},
+                {label: '仪表盘', value: 'gauge'},
                 {label: '地图', value: 'map'}
             ],
             tips: '页面参数可以直接在SQL中进行使用，使用方式为${}，如${param}',
@@ -265,7 +266,7 @@ Vue.component('graph', {
                 }, 500);
             } else {
                 //编辑操作，若sql存在，需要获取到selections相关数据
-                if (!this.component.sqlValid) {
+                if (this.isUpdate && !this.component.sqlValid) {
                     this.$nextTick(() => {
                         this.$refs["dataForm"].validate((valid) => {});
                     });
@@ -368,6 +369,7 @@ Vue.component('graph', {
                 case 'line':
                 case 'pie':
                 case 'bar':
+                case 'gauge':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     c.valueField = c.categoryValuePattern.split(":")[1];
                     me.component = deepCopy(c);
@@ -412,9 +414,11 @@ Vue.component('graph', {
                         params: me.sql_params
                     }).then(res => {
                         if (!res.data.success) {
+                            me.component.sqlValid = false;
                             callback(new Error(res.data.message));
                         } else {
                             if (res.data.result.length === 0) {
+                                me.component.sqlValid = false;
                                 callback(new Error("请明确SQL中查询字段，不要使用SELECT * 语句！"));
                             } else {
                                 //SQL变化导致下拉选项发生变化，需清空数据重新选择
@@ -422,6 +426,7 @@ Vue.component('graph', {
                                 me.multiValueFields = [];
                                 me.selections = [];
                                 me.currentSql = value;
+                                me.component.sqlValid = true;
                                 if (me.component.desField) {
                                     me.component.desField = null;
                                 }
@@ -514,12 +519,12 @@ Vue.component('graph', {
             let me = this;
             return me.selections.length > 0 && (me.component.type === 'line'
                 || me.component.type === 'bar' || me.component.type === 'pie'
-                || me.component.type === 'radar');
+                || me.component.type === 'radar' || me.component.type === 'gauge');
         },
         displaySingleValueField() {
             let me = this;
             return me.selections.length > 0 && (me.component.type === 'line'
-                || me.component.type === 'bar' || me.component.type === 'pie');
+                || me.component.type === 'bar' || me.component.type === 'pie'|| me.component.type === 'gauge');
         },
         displayMultiValueField() {
             let me = this;
@@ -642,6 +647,7 @@ Vue.component('graph', {
                         case 'line':
                         case 'pie':
                         case 'bar':
+                        case 'gauge':
                             me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField;
                             break;
                         case 'radar':

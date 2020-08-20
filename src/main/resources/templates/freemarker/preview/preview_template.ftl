@@ -97,6 +97,7 @@
                     <#case "radar"><#include "preview_radar.ftl"><#break>
                     <#case "table"><#include "preview_table.ftl"><#break>
                     <#case "map"><#include "preview_map.ftl"><#break>
+                    <#case "gauge"><#include "preview_gauge.ftl"><#break>
                 </#switch>
             </#list>
         }

@@ -64,7 +64,7 @@ public abstract class AbstractGraphical {
     //LINE,BAR,PIE三种数据封装的方法
     void arrangement(Component component, ResultSet resultSet, List<Map<String, Object>> mapList, List<String> strList) throws Exception {
         Set<String> paramsSet = new HashSet<>();
-        //component.categoryValuePattern针对LINE,BAR,PIE三种数据风格，均采用key:value形式，key为分类的字段名，value为值的字段名
+        //component.categoryValuePattern针对LINE,BAR,PIE,GAUGE数据风格，均采用key:value形式，key为分类的字段名，value为值的字段名
         String[] arr = component.getCategoryValuePattern().split(COLON_SEPARATOR);
         if (StringUtils.hasText(component.getParams())) {
             //component.params用于子页面传参，形式为field1,field2,field3...

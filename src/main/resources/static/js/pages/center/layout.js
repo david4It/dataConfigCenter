@@ -209,7 +209,6 @@ new Vue({
                 type: 'warning'
             }).then(() => {
                 result.enabled = status;
-                debugger
                 //启用页面必须调用子页面的SQL校验方法，校验通过之后，才能执行更新操作，避免页面数据无法加载
                 if (status === 'Y') {
                     me.$refs["graph"].validatePageSql(row.id, () => {
