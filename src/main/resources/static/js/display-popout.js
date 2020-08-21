@@ -44,9 +44,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	generateWidgetGraph(widgetId, title, queryName, "graphId",firstParam);
 
 	//trigger select
-	$('#selectVariable').change(() => {
+/*	$('#selectVariable').change(() => {
 		generateWidgetGraph(widgetId,title,queryName,"graphId",$("#selectVariable").val());
-	});
+	});*/
 
 
 

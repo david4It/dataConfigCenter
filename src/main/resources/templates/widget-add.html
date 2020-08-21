@@ -130,24 +130,53 @@
 					<li>样式</li>
 					<li>配置</li>
 				</ul>
-				<div  class="layui-tab-content"  id="dataArea">
-					<fieldset class="layui-elem-field layui-field-title">
-						<legend style="font-size: 0.8rem">维度</legend>
-					</fieldset>
-					<div id="dragedDimesion" class="editArea">
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show" id="dataArea">
+						<fieldset class="layui-elem-field layui-field-title">
+							<legend style="font-size: 0.8rem">维度</legend>
+						</fieldset>
+						<div id="dragedDimesion" class="editArea">
 
+						</div>
+						<fieldset class="layui-elem-field layui-field-title">
+							<legend style="font-size: 0.8rem">指标</legend>
+						</fieldset>
+						<div id="dragedValue" class="editArea">  </div>
+						<fieldset class="layui-elem-field layui-field-title">
+							<legend style="font-size: 0.8rem">过滤</legend>
+						</fieldset>
+						<div id="dragedFilter" class="editArea">  </div>
 					</div>
-					<fieldset class="layui-elem-field layui-field-title">
-						<legend style="font-size: 0.8rem">指标</legend>
-					</fieldset>
-					<div id="dragedValue" class="editArea">  </div>
-					<fieldset class="layui-elem-field layui-field-title">
-						<legend style="font-size: 0.8rem">过滤</legend>
-					</fieldset>
-					<div id="dragedFilter" class="editArea">  </div>
+					<div class="layui-tab-item">
+						<div  class="layui-tab-item" id="sympolArea" ></div>
+					</div>
+					<div class="layui-tab-item">
+						<fieldset class="layui-elem-field layui-field-title">
+							<legend style="font-size: 0.8rem">Widget下钻设置</legend>
+						</fieldset>
+						<div class="layui-form-item">
+							<label class="layui-form-label">Widget选择</label>
+							<div class="layui-input-inline layer-inputs">
+								<select id="widgetSelect" name="widgetSelect"  lay-filter="widgetSelect"></select>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">Level选择</label>
+								<div class="layui-input-inline  layer-inputs" >
+									<select id="widgetLevel" name="widgetLevel"  lay-filter="widgetLevel">
+										<option value="2">2级</option>
+										<option value="3">3级</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div  class="layui-tab-item" id="setArea">
+
+						</div>
+					</div>
+
 				</div>
-				<div  class="layui-tab-item" id="sympolArea" ></div>
-				<div  class="layui-tab-item" id="setArea"></div>
 			</div>
 		</div>
 		<div id="graphArea" class=" pad-top" style="width: 60%;height:100%;float:left;margin-left: 1rem;">

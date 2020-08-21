@@ -188,7 +188,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			,method:"POST"
 			,dataType: "json"
 			,contentType: "application/json;charset=utf-8"
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variable":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},
@@ -252,7 +252,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			,method:"POST"
 			,dataType: "json"
 			,contentType: "application/json;charset=utf-8"
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variable":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},

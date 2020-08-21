@@ -27,6 +27,7 @@ let myData=new Array();
 let colsData;
 let model = {};
 let editor;
+let variablesMap ={};
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -241,7 +242,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			,method:"POST"
 			,dataType: "json"
 			,contentType: "application/json;charset=utf-8"
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variable":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},
@@ -305,7 +306,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			,method:"POST"
 			,dataType: "json"
 			,contentType: "application/json;charset=utf-8"
-			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variables":variables}
+			,where: {"limit":limit,"sourceId":sourceId,"uid":$.cookie("uid"),"sql":sql,"variable":variables}
 			,xhrFields: {
 				withCredentials: true //允许跨域带Cookie
 			},
@@ -602,7 +603,7 @@ function saveModel() {
 	$.ajax({
 		url: "/api/v3/views",
 		type: "Post",
-		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description,"variables":variables}),
+		data: JSON.stringify({"projectId":projectId,"sourceId":sourceId,"name":name,"uid":$.cookie("uid"),"sql":sql,"model":JSON.stringify(model),"source":JSON.stringify(source),"description":description,"variable":JSON.stringify(variables)}),
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		xhrFields: {
@@ -631,4 +632,18 @@ function saveModel() {
 		}
 	});
 }
+function addMap(data) {
+	console.log("data: " + data);
+	let defaultValues = [];
+	if(data.defaultValues === "") {
+		data.defaultValues = defaultValues;
+	}
+	else {
+		defaultValues[0] = data.defaultValues;
+		data.defaultValues = defaultValues;
+	}
+	variablesMap[data.name] = data;
+	$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
 
+	console.log(variablesMap);
+}

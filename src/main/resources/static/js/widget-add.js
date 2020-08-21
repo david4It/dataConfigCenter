@@ -123,7 +123,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 			success: function (data) {
 				if (data.code == 0) {
 					//layer.msg("查询成功", {icon: 1, time: 1000});
-					//console.log(data.data.model);
 					model = data.data.model;
 					$('#valueType').empty();
 					$('#categoryType').empty();
@@ -238,7 +237,21 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		//end monitor
 	}
 	//end h5 拖拽
+	//initial widget download list
+	getWidgetsByProjectId(layer,form);
+	/**
+	 * 监听view下拉列表
+	 */
+	form.on('select(widgetSelect)',function(data){
+		// 通过data.elem.dataset可以得到保存的对象id
+		// data.elem.value可以得到下拉框选择的文本
+		//console.log("view data: ",data);
+		if(data.value === "") return false;
+		viewId = data.value;
+		console.log($("#widgetSelect").val(),$("#widgetLevel").val());
 
+	});
+	//end
 });
 
 function queryData(){
@@ -272,7 +285,8 @@ function saveWidget() {
 	config.cols = buildCols(groups);
 	config.metrics = buildMetrics(aggregators);
 	config.filters = buildFilters();
-	config.control = buildControl();
+	config.controls = buildControl();
+	config.dataDrill = buildDataDrilling();
 	$.ajax({
 		url: "/api/v3/widgets",
 		type: "Post",
@@ -590,6 +604,7 @@ function buildCols(groups){
 			oneCol.config = true;
 			oneCol.field={alias: "",desc:"",useExpression:false}
 			cols[i] = oneCol;
+			i++;
 		}
 	}
 	return cols;
@@ -610,6 +625,7 @@ function  buildMetrics(aggregators){
 			oneCol.config = true;
 			oneCol.field={alias: "",desc:"",useExpression:false}
 			cols[i] = oneCol;
+			i++;
 		}
 	}
 	return cols;
@@ -618,7 +634,102 @@ function  buildFilters(){
 	let filters = [];
 	return filters;
 }
+
+/**
+ *
+ * @returns {Array}
+ */
 function  buildControl(){
 	let control = [];
+	let jsonModel = JSON.parse(model);
+	let k = 0;
+	for(let prop in jsonModel){
+		//console.log(prop);
+		let oneCtl = {};
+		oneCtl["cache"]=false;
+		oneCtl["operator"]="in";
+		oneCtl["expired"]=300;
+		oneCtl["width"]=0;
+		oneCtl["name"]="ctr-"+prop;
+		oneCtl["interactionType"]="variable";
+		oneCtl["multiple"]=true;
+
+		let fields = {};
+		fields["name"]=prop;
+		fields["type"]=jsonModel[prop].visualType;
+		fields["optionsFromColumn"]=true;
+		fields["column"]=prop;
+
+		oneCtl["fields"]=fields;
+		oneCtl["type"]="select";
+		oneCtl["key"]="4F1954D9";
+		control[k]=oneCtl;
+		k++;
+	}
+
 	return control;
+}
+
+/**
+ * 下钻widgets设置
+ * @returns {Array}
+ */
+function buildDataDrilling() {
+	let dataDrill=[];
+	let oneDataDrill = {};
+	let widgetId = $("#widgetSelect").val();
+	if(widgetId) {
+		let widgetLevel = $("#widgetLevel").val();
+		oneDataDrill.widgetId = widgetId;
+		oneDataDrill.level = widgetLevel;
+		dataDrill[0] = oneDataDrill;
+	}
+	return dataDrill;
+}
+/**
+ * get widgets by project id
+ */
+function getWidgetsByProjectId(layer,form) {
+	let projectId = localStorage.getItem("projectId");
+	$.ajax({
+		url: '/api/v3/widgets?projectId=' + projectId,
+		type: "GET",
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		xhrFields: {
+			withCredentials: true //允许跨域带Cookie
+		},
+		async: false,
+		headers: {
+			"Authorization":$.cookie("token")//此处放置请求到的用户token
+		},
+		success: function (data) {
+			if (data.code == 0) {
+				//layer.msg("查询成功", {icon: 1, time: 1000});
+				//console.log(data.data);
+				$('#widgetSelect').append(new Option("",""));
+				$.each(data.data,function(index,item){
+					//console.log(item);
+					//option 第一个参数是页面显示的值，第二个参数是传递到后台的值
+					$('#widgetSelect').append(new Option(item.name,item.id));//往下拉菜单里添加元素
+					//设置value（这个值就可以是在更新的时候后台传递到前台的值）为2的值为默认选中
+					//$('#viewId').val(1);
+				})
+
+				//form.render(); //更新全部表单内容
+				form.render('select'); //刷新表单select选择框渲染
+				$.cookie("token",data.token,{
+					expires: 10
+				});
+				return false;
+			} else {
+				layer.msg("查询失败", {icon: 2, time: 1000});
+				return false;
+			}
+		},
+		fail: function (data) {
+			layer.msg("查询失败", {icon: 2, time: 1000});
+			return false;
+		}
+	});
 }

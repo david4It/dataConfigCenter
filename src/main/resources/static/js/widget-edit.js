@@ -26,6 +26,7 @@ layui.define(function(exports) {
 let model = {};
 let editor,viewId,selectedChartIndex;
 let globalWidgetData;
+let secondWidget = {};
 layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.min'], function(){
     var form = layui.form,
         layer = layui.layer,
@@ -45,65 +46,68 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 
 	let token = $.cookie("token");
 	getViewsByProjectId(layer,form);
+	//initial widget download list
+	getWidgetsByProjectId(layer,form);
+	form.render('select'); //刷新表单select选择框渲染
 
 	//console.log("cookie: " , token);
 	let widgetId = getUrlParam("widgetId")
 	localStorage.setItem("widgetId",widgetId);
 	//console.log("widgetId = " + widgetId)
-	/**
-	 * 操作管理--数据操作
-	 * @param String url 请求路径
-	 * @param json data.field 提交的json数据
-	 * @return json code 0:操作成功；1:value 返回操作后的状态
-	 */
-    form.on('submit(execute)', function(data) {
-        layer.confirm('确认要保存吗？',function(index) {
-			layer.load();
-			//console.log(data.field);
-			let uid=$.cookie("uid");
-			data.field.id=uid;
-			data.field.projectId=localStorage.getItem("projectId");
-			/*let config={};
-			config.username=data.field.username;
-			config.password = data.field.password;
-			config.url = data.field.url;
-			data.field.config= config;*/
-            $.ajax({
-                url:'/api/v3/views',
 
-                type:'Post',
-                data:JSON.stringify(data.field),
-                dataType: "json",
-				contentType: "application/json;charset=utf-8",
-				xhrFields: {
-					withCredentials: true //允许跨域带Cookie
-				},
-				headers: {
-					"Authorization":$.cookie("token")//此处放置请求到的用户token
-				},
-                success: function (data) {
-					layer.closeAll('loading');
-                    if (data.code == 0) {
-                        layer.msg(data.msg, {icon: 1, time: 1000});
-                        setTimeout(function () {
-                            window.parent.location.reload();
-                            var index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                        }, 1000);
-                    } else {
-                        layer.msg(data.msg, {icon: 2, time: 1000});
-                        return false;
-                    }
-                },
-				error : function(e){
-					layer.closeAll('loading');
-					layer.msg(e.responseText, {icon: 2, time: 1000});
-				}
-            });
-            return false;
-        });
-        return false;
-    });
+	//initialize widget
+	let widget = getWidgetByWidgetID(widgetId);
+	console.log("widget:",widget);
+	$("#name").val(widget.name);
+	$("#description").val(widget.description);
+	//view
+	localStorage.setItem("viewId",widget.viewId);
+	let view_select = 'dd[lay-value=\'' + widget.viewId + '\']';
+	$('#viewId').siblings("div.layui-form-select").find('dl').find(view_select).click();
+	//select columns
+	let config = JSON.parse(widget.config);
+	let cols = config.cols;
+	$.each(cols,function (index,item) {
+		initialSelectedDragValue(item.name,document.getElementById("dragedDimesion"),"category");
+	})
+	let metrics = config.metrics;
+	$.each(metrics,function (index,item) {
+		initialSelectedDragValue(item.name,document.getElementById("dragedValue"),"value");
+	})
+
+	//set datadrilling
+	let dataDrills = config.dataDrill;
+	$.each(dataDrills,function (index,item) {
+		console.log(index,item);
+		let select = 'dd[lay-value=\'' + item.widgetId + '\']';
+		$('#widgetSelect').siblings("div.layui-form-select").find('dl').find(select).click();
+		//add div attributes
+		$("#graphArea").attr("second-widget-id",item.widgetId);
+	})
+	/**
+	 * 监听view下拉列表
+	 */
+	form.on('select(widgetSelect)',function(data){
+		// 通过data.elem.dataset可以得到保存的对象id
+		// data.elem.value可以得到下拉框选择的文本
+		//console.log("view data: ",data);
+		if(data.value === "") return false;
+		//viewId = data.value;
+		console.log($("#widgetSelect").val(),$("#widgetLevel").val());
+
+	});
+	//end
+	//render graph
+	let selectedChart = config.selectedChart;
+	//monitor charts change
+	viewId = widget.viewId;
+	console.log("viewId",viewId);
+	if(viewId != null)
+		$("#graph_"+selectedChart).click();
+	//moniteChartsChange();
+
+	//end initial
+
 	/**
 	 * 监听view下拉列表
 	 */
@@ -161,31 +165,6 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		});
 	});
 	//end form select
-	//initialize widget
-	let widget = getWidgetByWidgetID(widgetId);
-	console.log("widget:",widget);
-	$("#name").val(widget.name);
-	$("#description").val(widget.description);
-	//view
-	let select = 'dd[lay-value=\'' + widget.viewId + '\']';
-	$('#viewId').siblings("div.layui-form-select").find('dl').find(select).click();
-	//select columns
-	let config = JSON.parse(widget.config);
-	let cols = config.cols;
-	$.each(cols,function (index,item) {
-		initialSelectedDragValue(item.name,document.getElementById("dragedDimesion"),"category");
-	})
-	let metrics = config.metrics;
-	$.each(metrics,function (index,item) {
-		initialSelectedDragValue(item.name,document.getElementById("dragedValue"),"value");
-	})
-	//render graph
-	let selectedChart = config.selectedChart;
-	//monitor charts change
-	$("#graph_"+selectedChart).click();
-	//moniteChartsChange();
-
-	//end initial
 	/**
 	 * h5 拖拽
 	 */
@@ -227,6 +206,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		//end monitor
 	}
 	//end h5 拖拽
+
 
 });
 
@@ -349,6 +329,7 @@ function saveWidget() {
 
 	let config={};
 	config.mode="chart";
+	model = getViewByViewID(viewId).model;
 	config.model = model;
 	config.cache = false;
 	config.expired = 300;
@@ -357,7 +338,8 @@ function saveWidget() {
 	config.cols = buildCols(groups);
 	config.metrics = buildMetrics(aggregators);
 	config.filters = buildFilters();
-	config.control = buildControl();
+	config.controls = buildControl();
+	config.dataDrill = buildDataDrilling();
 	let id=localStorage.getItem("widgetId");
 	$.ajax({
 		url: "/api/v3/widgets/"+id,
@@ -397,6 +379,7 @@ function saveWidget() {
  */
 function getViewsByProjectId(layer,form) {
 	let projectId = localStorage.getItem("projectId");
+	console.log("projectId",projectId)
 	$.ajax({
 		url: "/api/v3/views",
 		type: "GET",
@@ -423,8 +406,6 @@ function getViewsByProjectId(layer,form) {
 					//$('#viewId').val(1);
 				})
 
-				//form.render(); //更新全部表单内容
-				form.render('select'); //刷新表单select选择框渲染
 				$.cookie("token",data.token,{
 					expires: 10
 				});
@@ -605,6 +586,7 @@ function getCategoriesAndValues(){
 function buildCols(groups){
 	let cols = [];
 	let i = 0;
+
 	let jsonModel = JSON.parse(model);
 	for( let prop in jsonModel){
 		for(let j in groups){
@@ -618,6 +600,7 @@ function buildCols(groups){
 			oneCol.config = true;
 			oneCol.field={alias: "",desc:"",useExpression:false}
 			cols[i] = oneCol;
+			i++;
 		}
 	}
 	return cols;
@@ -638,6 +621,7 @@ function  buildMetrics(aggregators){
 			oneCol.config = true;
 			oneCol.field={alias: "",desc:"",useExpression:false}
 			cols[i] = oneCol;
+			i++;
 		}
 	}
 	return cols;
@@ -648,5 +632,93 @@ function  buildFilters(){
 }
 function  buildControl(){
 	let control = [];
+	console.log("model",model);
+	let jsonModel = JSON.parse(model);
+	let k = 0;
+	for(let prop in jsonModel){
+		//console.log(prop);
+		let oneCtl = {};
+		oneCtl["cache"]=false;
+		oneCtl["operator"]="in";
+		oneCtl["expired"]=300;
+		oneCtl["width"]=0;
+		oneCtl["name"]="ctr-"+prop;
+		oneCtl["interactionType"]="variable";
+		oneCtl["multiple"]=true;
+
+		let fields = {};
+		fields["name"]=prop;
+		fields["type"]=jsonModel[prop].visualType;
+		fields["optionsFromColumn"]=true;
+		fields["column"]=prop;
+
+		oneCtl["fields"]=fields;
+		oneCtl["type"]="select";
+		oneCtl["key"]="4F1954D9";
+		control[k]=oneCtl;
+		k++;
+	}
+
 	return control;
+}
+
+/**
+ * 下钻widgets设置
+ * @returns {Array}
+ */
+function buildDataDrilling() {
+	let dataDrill=[];
+	let oneDataDrill = {};
+	let widgetId = $("#widgetSelect").val();
+	let widgetLevel = $("#widgetLevel").val();
+	oneDataDrill.widgetId=widgetId;
+	oneDataDrill.level=widgetLevel;
+	dataDrill[0]=oneDataDrill;
+	return dataDrill;
+}
+/**
+ * get widgets by project id
+ */
+function getWidgetsByProjectId(layer,form) {
+	let projectId = localStorage.getItem("projectId");
+	$.ajax({
+		url: '/api/v3/widgets?projectId=' + projectId,
+		type: "GET",
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		xhrFields: {
+			withCredentials: true //允许跨域带Cookie
+		},
+		async: false,
+		headers: {
+			"Authorization":$.cookie("token")//此处放置请求到的用户token
+		},
+		success: function (data) {
+			if (data.code == 0) {
+				//layer.msg("查询成功", {icon: 1, time: 1000});
+				//console.log(data.data);
+				$('#widgetSelect').append(new Option("",""));
+				$.each(data.data,function(index,item){
+					//console.log(item);
+					//option 第一个参数是页面显示的值，第二个参数是传递到后台的值
+					$('#widgetSelect').append(new Option(item.name,item.id));//往下拉菜单里添加元素
+					//设置value（这个值就可以是在更新的时候后台传递到前台的值）为2的值为默认选中
+					//$('#viewId').val(1);
+				})
+
+				form.render('select'); //刷新表单select选择框渲染
+				$.cookie("token",data.token,{
+					expires: 10
+				});
+				return false;
+			} else {
+				layer.msg("查询失败", {icon: 2, time: 1000});
+				return false;
+			}
+		},
+		fail: function (data) {
+			layer.msg("查询失败", {icon: 2, time: 1000});
+			return false;
+		}
+	});
 }

@@ -59,16 +59,20 @@ function renderPie(id, title, legendData, data) {
     //点击事件
     myCharts1.on('click', function (param) {
         console.log(param);
+        let queryName = param.name;
+        let titleDom = this.getDom().previousSibling;
+        let title = titleDom.innerText;
         //displayWidget_9
         let domId = this.getDom().id;
-        let widgetId = domId.substring(domId.indexOf("_")+1);
-        if(isNumber(widgetId)) {
-            console.log("widgetId = " + widgetId);
-            let queryName = param.name;
-            let titleDom = this.getDom().previousSibling;
-            let title = titleDom.innerText;
-            //let widget = getWidgetByWidgetID(widgetId);
-            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+        if(domId.indexOf("_")>0) {
+            let widgetId = domId.substring(domId.indexOf("_") + 1);
+            if (isNumber(widgetId)) {
+                execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
+            }
+        }else{
+            let currentWidgetId = this.getDom().getAttribute("second-widget-id");
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + currentWidgetId, '1000', '750');
+
         }
     });
 }
@@ -136,7 +140,7 @@ function renderBar(id, title, legendData, data) {
         let domId = this.getDom().id;
         let widgetId = domId.substring(domId.indexOf("_")+1);
         if(isNumber(widgetId)) {
-            console.log("widgetId = " + widgetId);
+            //console.log("widgetId = " + widgetId);
             let queryName = param.name;
             let titleDom = this.getDom().previousSibling;
             let title = titleDom.innerText;
@@ -210,12 +214,12 @@ function renderLine(id, title, legendData, data) {
 
     //点击事件
     myCharts3.on('click', function (param) {
-        console.log(param);
+        //console.log(param);
         //displayWidget_9
         let domId = this.getDom().id;
         let widgetId = domId.substring(domId.indexOf("_")+1);
         if(isNumber(widgetId)) {
-            console.log("widgetId = " + widgetId);
+           // console.log("widgetId = " + widgetId);
             let queryName = param.name;
             let titleDom = this.getDom().previousSibling;
             let title = titleDom.innerText;
@@ -236,17 +240,25 @@ function buildPieData(data) {
     let ret = getCategoriesAndValues();
     let categories = ret.groups;
     let values = ret.aggregators;
+    let catI = 0;
     for (let i in bizData) {
         let mapData = {};
         //get legendData
         let key = "";
         let oneData = bizData[i];
         for (let prop in categories) {
-            console.log("categories[prop] --> ", categories[prop]);
-            console.log("oneData[categories[prop]] --> ", oneData[categories[prop]]);
-            key += oneData[categories[prop]] == null ? "" : oneData[categories[prop]];
+            if(prop === "0"){
+                key = oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            }else{
+                if(oneData[categories[prop]]==null || oneData[categories[prop]]==="") continue;
+                key += "-";
+                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            }
+            catI++;
         }
+        //  console.log("key = " + key);
         legendData[i] = key;
+
         //build value key
         for (let prop in values) {
             let valueKey = "";
@@ -264,6 +276,7 @@ function buildPieData(data) {
     let retData = {};
     retData.legendData = legendData;
     retData.showedData = showedData;
+    console.log("retData",retData);
     return retData;
 }
 
@@ -328,12 +341,12 @@ function renderAreaLine(id, title, legendData, data) {
 
     //点击事件
     myCharts4.on('click', function (param) {
-        console.log(param);
+        //console.log(param);
         //displayWidget_9
         let domId = this.getDom().id;
         let widgetId = domId.substring(domId.indexOf("_")+1);
         if(isNumber(widgetId)) {
-            console.log("widgetId = " + widgetId);
+            //console.log("widgetId = " + widgetId);
             let queryName = param.name;
             let titleDom = this.getDom().previousSibling;
             let title = titleDom.innerText;

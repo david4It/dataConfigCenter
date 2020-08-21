@@ -144,15 +144,21 @@ function getViewDataByViewId(widget,param,paramVal) {
     groups = catsAndVal.groups;
     //build params
     let params =[];
-    if(param !== null){
+    let values = paramVal.split("-");
+    console.log("values",values);
+    let widgetView = getViewByViewID(widget.viewId);
+    console.log("view: ",widgetView);
+    let variables =widgetView.variables;
+    for(let prop in variables){
+        if(values[prop] ==null) break;
         let paramOne = {};
-        paramOne.name= param;
-        paramOne.value="'" + paramVal + "'";
-        params[0]=paramOne;
+        paramOne.name= variables[prop].name;
+        paramOne.value="'" + values[prop] + "'";
+        params[prop]=paramOne;
     }
     //取 Filters columns //TODO:
-    let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
-        flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0,params:params});
+    let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: cache,expired: expired,filters: filters,
+        flush: flush,nativeQuery: nativeQuery,orders: orders,pageNo:pageNo,pageSize: pageSize,params:params});
 
     $.ajax({
         url: "/api/v3/views/"+ widget.viewId + "/getdata",
@@ -234,6 +240,8 @@ function buildGraphData(viewData,widget) {
     //取category columns
     let catsAndVals = getCategoriesAndValuesFromWidgetData(widget);
     let categories = catsAndVals.groups;
+    let catLength = categories.length;
+    let catI = 0;
     let values = catsAndVals.aggregators;
     for(let i in bizData){
         let mapData = {};
@@ -243,7 +251,17 @@ function buildGraphData(viewData,widget) {
         for(let prop in categories){
             // console.log("categories[prop] --> " ,categories[prop]);
             //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
-            key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            if(catLength === 1){
+                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                break;
+            }
+            if(catLength > 1 && catI === 0){
+                key = oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            }else{
+                key += "-";
+                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+            }
+            catI++;
         }
         legendData[i]= key;
         //build value key

@@ -125,6 +125,7 @@ public class SqlUtils {
 
 	public void execute(String sql) throws ServerException {
 		sql = filterAnnotate(sql);
+		System.out.println("#######sql:" + sql);
 		checkSensitiveSql(sql);
 		if (isQueryLogEnable) {
 			String md5 = MD5Util.getMD5(sql, true, 16);
@@ -237,6 +238,7 @@ public class SqlUtils {
 
     private void getResultForPaginate(String sql, PaginateWithQueryColumns paginateWithQueryColumns, JdbcTemplate jdbcTemplate, Set<String> excludeColumns, int startRow) {
 		Set<String> queryFromsAndJoins = getQueryFromsAndJoins(sql);
+		System.out.println("#######sql:" + sql);
 		jdbcTemplate.query(sql, rs -> {
 			if (null == rs) {
 				return paginateWithQueryColumns;

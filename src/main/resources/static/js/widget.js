@@ -135,9 +135,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		,cellMinWidth: 80
 		,cols: [[
 			{field:'id', width:0.2*w0, title: 'ID', sort: true}
-			,{field:'name', width:0.5*w0, title: '名称'}
+			,{field:'name', width:0.8*w0, title: '名称'}
 			,{field:'description', width:1*w0, title: '描述', sort: true}
-			,{field:'config', width:3*w0, title: '数据描述', sort: true}
+			,{field:'config', width:2*w0, title: '数据描述', sort: true}
 			,{fixed: 'right',title: '操作', width:180, align:'center', templet: '#opTpl' }//一个工具栏  具体请查看layui官网
 		]]
 		,page: true   //开启分页

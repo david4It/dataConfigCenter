@@ -514,6 +514,8 @@
        // let ret = getCategoriesAndValuesFromWidgetData(data);
         let categories = catsAndVal.groups;
         let values = catsAndVal.aggregators;
+        let catLength = categories.length;
+        let catI = 0;
         for(let i in bizData){
             let mapData = {};
             //get legendData
@@ -522,9 +524,22 @@
             for(let prop in categories){
                // console.log("categories[prop] --> " ,categories[prop]);
                 //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
-                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                // console.log("categories[prop] --> " ,categories[prop]);
+                //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
+                if(catLength === 1){
+                    key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                    break;
+                }
+                if(catLength > 1 && catI === 0){
+                    key = oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                }else{
+                    if(key.length > 0)
+                        key += "-";
+                    key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                }
+                catI++;
             }
-            legendData[i]= key;
+            legendData[i]= key.substr(1);
             //build value key
             for(let prop in values){
                 let valueKey = "";

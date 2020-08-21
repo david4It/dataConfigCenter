@@ -168,21 +168,6 @@
 
 <script src="js/view-add.js"></script>
 <script type="text/javascript">
-	let variablesMap ={};
-	function addMap(data) {
-		console.log("data: " + data);
-		let defaultValues = [];
-		if(data.defaultValues === "") {
-			data.defaultValues = defaultValues;
-		}
-		else {
-			defaultValues[0] = data.defaultValues;
-			data.defaultValues = defaultValues;
-		}
-		variablesMap[data.name] = data;
-		$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
 
-		console.log(variablesMap);
-	}
 </script>
 
