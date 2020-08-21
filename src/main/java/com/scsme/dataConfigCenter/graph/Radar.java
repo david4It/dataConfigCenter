@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.scsme.dataConfigCenter.pojo.Component;
 import org.springframework.util.StringUtils;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Radar extends AbstractGraphical {
+public class Radar extends AbstractGraph {
 
     public Radar(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         super(dataSource, component, valueMap);

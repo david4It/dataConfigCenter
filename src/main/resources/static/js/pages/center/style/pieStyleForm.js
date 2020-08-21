@@ -46,6 +46,23 @@ Vue.component('pie_style_form', {
                     </el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="动画效果">
+                <el-select v-model="style.cusAnimation.enable" placeholder="请选择">
+                    <el-option
+                      key="Y"
+                      label="开启"
+                      value="Y">
+                    </el-option>
+                    <el-option
+                      key="N"
+                      label="关闭"
+                      value="N">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="style.cusAnimation.enable === 'Y'" label="间隔时长（秒）">
+                <el-input v-model="style.cusAnimation.duration" onkeyup="value=value.replace(/[^\\d]/g,'')"></el-input>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="confirmStyle">确 定</el-button>
@@ -60,6 +77,10 @@ Vue.component('pie_style_form', {
                 },
                 tooltip: {
                     position: 'right',
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             }
         }
@@ -86,6 +107,14 @@ Vue.component('pie_style_form', {
         confirmStyle() {
             let me = this;
             //值为空的配置项，则直接剔除
+            if (me.style.cusAnimation.enable === 'Y') {
+                if (!me.style.cusAnimation.duration) {
+                    //启用默认值
+                    me.style.cusAnimation.duration = 5;
+                }
+            } else {
+                me.style.cusAnimation.duration = null;
+            }
             clearDeep(me.style);
             me.$emit('save_component_style', me.style);
             //clearDeep方法可能会清除部分属性，导致vue绑定值为undefined，需调用resetStyle方法重置对象
@@ -103,6 +132,10 @@ Vue.component('pie_style_form', {
                 },
                 tooltip: {
                     position: 'right',
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             };
         }

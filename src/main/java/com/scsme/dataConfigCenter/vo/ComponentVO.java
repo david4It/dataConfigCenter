@@ -1,9 +1,13 @@
 package com.scsme.dataConfigCenter.vo;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.scsme.dataConfigCenter.pojo.Component;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 public class ComponentVO extends Component {
@@ -11,6 +15,7 @@ public class ComponentVO extends Component {
     private String linkTitle;
     private String linkEnabled;
     private Boolean sqlValid;
+    private Boolean animationEnabled = false;
     public Component trans(){
         Component component = new Component();
         component.setLayoutId(this.getLayoutId());
@@ -52,6 +57,12 @@ public class ComponentVO extends Component {
         this.setHeight(component.getHeight());
         this.setConfigJson(component.getConfigJson());
         this.setCreateTime(component.getCreateTime());
+        if (StringUtils.hasText(component.getConfigJson())) {
+            JSONObject jsonObject = JSONObject.parseObject(component.getConfigJson());
+            if (jsonObject.containsKey("cusAnimation") && "Y".equals(jsonObject.getJSONObject("cusAnimation").getString("enable"))) {
+                this.setAnimationEnabled(true);
+            }
+        }
         return this;
     }
 }

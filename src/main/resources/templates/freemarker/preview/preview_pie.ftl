@@ -26,8 +26,7 @@
                                         },
                                         data: ['预览数据A', '预览数据B', '预览数据C', '预览数据D', '预览数据E']
                                 },
-                                series: [
-                                        {
+                                series:{
                                                 name: '访问来源',
                                                 type: 'pie',
                                                 radius: '55%',
@@ -47,7 +46,6 @@
                                                         }
                                                 }
                                         }
-                                ]
                         };
                         if (res.data.success) {
                                 let result = res.data.result;
@@ -63,6 +61,45 @@
                                         console.log(param);
                                         forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
                                 });
+                                </#if>
+                                <#if vo.getAnimationEnabled()>
+                                myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
+                                myChart.animationMaxIndex = option.series.data.length - 1;
+                                myChart.animationIndex = 0;
+                                myChart.animationStart = false;
+                                let animationFun = () => {
+                                        if (myChart.animationStart) {
+                                                //重置上一次动画效果
+                                                for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                                                        myChart.dispatchAction({
+                                                                type: 'pieUnSelect',
+                                                                dataIndex: i
+                                                        });
+                                                        myChart.dispatchAction({
+                                                                type: 'hideTip',
+                                                                seriesIndex: 0,
+                                                                dataIndex: i
+                                                        });
+                                                }
+                                        }
+                                        myChart.animationStart = true;
+                                        let nextAnimationIndex = myChart.animationIndex++;
+                                        setTimeout(() => {
+                                                myChart.dispatchAction({
+                                                        type: 'pieSelect',
+                                                        dataIndex: nextAnimationIndex
+                                                });
+                                                myChart.dispatchAction({
+                                                        type: 'showTip',
+                                                        seriesIndex: 0,
+                                                        dataIndex: nextAnimationIndex
+                                                });
+                                        }, myChart.animationDuration / 2);
+                                        if (myChart.animationIndex > myChart.animationMaxIndex) {
+                                                myChart.animationIndex = 0;
+                                        }
+                                };
+                                myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
                                 </#if>
                                 window.addEventListener("resize", function () {
                                         myChart.resize();

@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.scsme.dataConfigCenter.pojo.Component;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Bar extends AbstractGraphical {
+public class Bar extends AbstractGraph {
 
     public Bar(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         super(dataSource, component, valueMap);

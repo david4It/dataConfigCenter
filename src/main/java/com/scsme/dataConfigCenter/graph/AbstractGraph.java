@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractGraphical {
+public abstract class AbstractGraph {
     static final String LEGEND_DATA = "legendData";
     static final String SERIES_DATA = "seriesData";
     static final String X_AXIS_DATA = "xAxisData";
@@ -34,7 +34,7 @@ public abstract class AbstractGraphical {
     protected Component component;
     protected Map<String, Object> valueMap;
 
-    AbstractGraphical(DataSource dataSource, Component component, Map<String, Object> valueMap) {
+    AbstractGraph(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         this.dataSource = dataSource;
         this.component = component;
         this.valueMap = valueMap;

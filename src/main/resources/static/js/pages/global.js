@@ -1,3 +1,4 @@
+let graphAnimationMap = new Map();
 function dateFormat(fmt, date) {
     let o = {
         "M+" : date.getMonth()+1,     //月份
@@ -104,7 +105,7 @@ function deepCopy(obj) {
 }
 
 
-    function forwardUrl(data, url) {
+function forwardUrl(data, url) {
     let params = "";
     for (let key in data) {
         if (data[key]) {

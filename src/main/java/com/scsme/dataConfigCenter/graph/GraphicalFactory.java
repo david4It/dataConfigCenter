@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
@@ -21,7 +21,7 @@ public class GraphicalFactory {
 
     public Map<String, Object> getGraphicalDataMap(DataSource dataSource, Component component, Map<String, Object> valueMap) throws Exception {
         GraphicalType graphicalType = GraphicalType.valueOf(component.getType().toUpperCase());
-        AbstractGraphical graphical = null;
+        AbstractGraph graphical = null;
         switch (graphicalType) {
             case LINE:
                 graphical = new Line(dataSource, component, valueMap);
@@ -42,7 +42,7 @@ public class GraphicalFactory {
                 graphical = new Gauge(dataSource, component, valueMap);
                 break;
             case MAP:
-                graphical = new com.scsme.dataConfigCenter.graphical.Map(dataSource, component, valueMap);
+                graphical = new com.scsme.dataConfigCenter.graph.Map(dataSource, component, valueMap);
         }
         return graphical.getGraphicalData();
     }
@@ -51,7 +51,7 @@ public class GraphicalFactory {
         Map<String, Object> result = new HashMap<>();
         String configJson = component.getConfigJson();
         if (StringUtils.hasText(configJson)) {
-            result.put(AbstractGraphical.CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
+            result.put(AbstractGraph.CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
         }
         return result;
     }

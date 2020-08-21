@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.scsme.dataConfigCenter.pojo.Component;
 import javax.sql.DataSource;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Line extends AbstractGraphical {
+public class Line extends AbstractGraph {
     public Line(DataSource dataSource, Component component, Map<String, Object> valueMap) {
         super(dataSource, component, valueMap);
     }

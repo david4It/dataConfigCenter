@@ -1,6 +1,6 @@
 package com.scsme.dataConfigCenter.service.impl;
 
-import com.scsme.dataConfigCenter.graphical.GraphicalFactory;
+import com.scsme.dataConfigCenter.graph.GraphicalFactory;
 import com.scsme.dataConfigCenter.mapper.ComponentMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
 import com.scsme.dataConfigCenter.service.StatisticsService;

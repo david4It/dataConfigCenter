@@ -1,4 +1,4 @@
-package com.scsme.dataConfigCenter.graphical;
+package com.scsme.dataConfigCenter.graph;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scsme.dataConfigCenter.pojo.Component;
@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
-public class Map extends AbstractGraphical {
+public class Map extends AbstractGraph {
     Map(DataSource dataSource, Component component, java.util.Map<String, Object> valueMap) {
         super(dataSource, component, valueMap);
     }
