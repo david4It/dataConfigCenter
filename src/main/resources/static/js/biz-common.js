@@ -168,6 +168,7 @@ function getWidgets(displayId, displaySlideId){
             if (data.code == 0) {
                 //layer.msg("查询成功", {icon: 1, time: 1000});
                 ret = data.data;
+                console.log("#### ret = : ",ret)
                 //end
                 $.cookie("token",data.token,{
                     expires: 10

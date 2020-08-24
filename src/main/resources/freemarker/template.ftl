@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>政府采购大数据平台</title>
+    <link rel="shortcut icon" href="../resources/images/favicon.ico" th:href="@{/images/favicon.ico}">
     <link href="/css/framework/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/pages/base.css">
     <link rel="stylesheet" href="/css/pages/index.css">
@@ -87,7 +88,7 @@
                 <#if vo.getWidgetId()??>
              showGraph(${ vo.getWidgetId()});
                 <#else>
-            showGraph("1");
+            showGraph(${ vo.getWidgetId()});
                  </#if>
             </#list>
         },
@@ -111,7 +112,7 @@
         return 'component_' + widget.id;
     }
     /**
-     * 制作大屏页面调用，用户勾选后保存。
+     * 制作大屏页面。
      * @param obj
      */
     function generateWidgetGraph(widgetId) {

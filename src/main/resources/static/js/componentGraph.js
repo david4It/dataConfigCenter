@@ -144,17 +144,19 @@ function getViewDataByViewId(widget,param,paramVal) {
     groups = catsAndVal.groups;
     //build params
     let params =[];
-    let values = paramVal.split("-");
-    console.log("values",values);
-    let widgetView = getViewByViewID(widget.viewId);
-    console.log("view: ",widgetView);
-    let variables =widgetView.variables;
-    for(let prop in variables){
-        if(values[prop] ==null) break;
-        let paramOne = {};
-        paramOne.name= variables[prop].name;
-        paramOne.value="'" + values[prop] + "'";
-        params[prop]=paramOne;
+    if(paramVal != null) {
+        let values = paramVal.split("-");
+        console.log("values", values);
+        let widgetView = getViewByViewID(widget.viewId);
+        console.log("view: ", widgetView);
+        let variables = widgetView.variables;
+        for (let prop in variables) {
+            if (values[prop] == null) break;
+            let paramOne = {};
+            paramOne.name = variables[prop].name;
+            paramOne.value = "'" + values[prop] + "'";
+            params[prop] = paramOne;
+        }
     }
     //取 Filters columns //TODO:
     let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: cache,expired: expired,filters: filters,
@@ -258,7 +260,8 @@ function buildGraphData(viewData,widget) {
             if(catLength > 1 && catI === 0){
                 key = oneData[categories[prop]]==null?"":oneData[categories[prop]];
             }else{
-                key += "-";
+                if(key !== "" && key != null )
+                    key += "-";
                 key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
             }
             catI++;

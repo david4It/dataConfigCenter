@@ -32,15 +32,16 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	let variableAry = JSON.parse(viewObj.variable);
 	console.log("view",variableAry)
 	let firstParam = null;
-	let queryStr = "";
+	console.log("title",title)
 	if(variableAry.length > 0){
 		$.each(variableAry,function (index , item) {
-			$('#selectVariable').append('<option value="'+ item.name +'">' + item.name + '</option>');
-			if(firstParam == null) firstParam = item.name;
+			//$('#varDiv').append('<label><select id="sel_'+item.name+'" name="paramId"  lay-filter="paramId"></select>');
+			//if(firstParam == null) firstParam = item.name;
 		})
-		if(variableAry.length > 1)
-			$("#varDiv").show();
+		/*if(variableAry.length > 1)
+			$("#varDiv").show();*/
 	}
+	//console
 	generateWidgetGraph(widgetId, title, queryName, "graphId",firstParam);
 
 	//trigger select

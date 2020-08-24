@@ -199,6 +199,6 @@ function drawPage() {
 		slideMemWidgetMap[item.widgetId]=item.id;
 	})
 	console.log("pageData: ", slidePageData);
-	if(slidePageData.widgets.length > 0)
+	if( slidePageData.widgets !== null && slidePageData.widgets.length > 0)
 		drawDispWidget(slidePageData.widgets);
 }

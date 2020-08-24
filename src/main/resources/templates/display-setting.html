@@ -85,12 +85,7 @@
 </head>
 <body class="layui-layout-body">
 <div class="layui-col-md12" style="margin-bottom: 0.5rem;">
-    <div class="layui-navs">
-						<span class="layui-breadcrumb" lay-separator="—">
-							<a href="javascript:;">基础管理</a>
-							<a href="javascript:;">Widget管理</a>
-							<a><cite>Widget视图</cite></a>
-						</span>
+    <div class="layui-navs" style="margin-top:0.5rem;">
 
         <a class="layui-btn layui-btn-small" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:saveLayout();" title="保存">
             <i class="layui-icon layui-icon-ok" style="line-height:2.3rem;font-size: 1rem;">生成模板大屏</i>
@@ -110,6 +105,8 @@
         <a class="layui-btn layui-btn-primary" style="line-height:1.6em;float:right;height: 2.3rem;margin-right: 1rem;" href="javascript:addWidget();" title="新增Widget">
             <i class="layui-icon layui-icon-set" style="line-height:2.3rem;font-size: 1rem;">新增Slide</i>
         </a>
+        <input type="text" name="title" style="height: 2.3rem;width:300px;border:0px;margin-left:1rem;" id="title" value="" placeholder="请输入大屏名称" >
+
     </div>
 </div>
 <fieldset class="layui-elem-field layui-field-title" style="padding-top: 3rem;">
@@ -206,7 +203,8 @@
             '</div>';
     }
     function saveLayout() {
-        let layout = {title: '测试', url: '/display'+ localStorage.getItem("displayId") , components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
+        let title =  $("#title").val();
+        let layout = {title: title===""?"大屏标题":title, url: '/display'+ localStorage.getItem("displayId") , components: [], createTime: dateFormat("yyyy-MM-dd hh:mm:ss", new Date()), enabled: 'Y'};
         $(grid.engine.nodes).each((index, ele) => {
             let childs =  $( "div[data-gs-x="+ele.x+"][data-gs-y="+ele.y+"]" ).children();
             let viewId,graphType,widgetId;
@@ -317,9 +315,17 @@
             let grahpId = "displayWidget_" + selectedWidgets[prop].id;
             let widgetViewId = selectedWidgets[prop].viewId;
             let config = JSON.parse(selectedWidgets[prop].config)
+            let secondWidgetAry = config.dataDrill;
             let graphType=config.selectedChart;
             let widgetTitle = selectedWidgets[prop].name;
-            addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
+            let secondWidgetId = "";
+            $.each(secondWidgetAry,function(index,item){
+                if(item.level === "2") {
+                    secondWidgetId = item.widgetId;
+                    return false;
+                }
+            });
+            addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId);
             //渲染图形
             switch (graphType) {
                 case 1:
@@ -354,8 +360,8 @@
      *
      * @param displayWidgetId
      */
-    function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
-        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle), {minWidth: 5, minHeight: 5});
+    function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId) {
+        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId), {minWidth: 3, minHeight: 4});
 
     }
 
@@ -364,11 +370,11 @@
      * @param displayWidgetId
      * @returns {string}
      */
-    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
+    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId) {
         return '<div>' +
-            '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
+            '<div class="grid-stack-item-content" second-widget-id="'+secondWidgetId +'" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
             '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
-            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 90%;">内容</div>' +
+            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 50%;">内容</div>' +
             '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
             '</div>' +
             '</div>';

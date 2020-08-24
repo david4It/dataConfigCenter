@@ -58,22 +58,7 @@ function renderPie(id, title, legendData, data) {
     myCharts1.setOption(option1);
     //点击事件
     myCharts1.on('click', function (param) {
-        console.log(param);
-        let queryName = param.name;
-        let titleDom = this.getDom().previousSibling;
-        let title = titleDom.innerText;
-        //displayWidget_9
-        let domId = this.getDom().id;
-        if(domId.indexOf("_")>0) {
-            let widgetId = domId.substring(domId.indexOf("_") + 1);
-            if (isNumber(widgetId)) {
-                execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
-            }
-        }else{
-            let currentWidgetId = this.getDom().getAttribute("second-widget-id");
-            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + currentWidgetId, '1000', '750');
-
-        }
+        dataDrill(this.getDom(),param);
     });
 }
 
@@ -135,18 +120,7 @@ function renderBar(id, title, legendData, data) {
 
     //点击事件
     myCharts2.on('click', function (param) {
-        console.log(param);
-        //displayWidget_9
-        let domId = this.getDom().id;
-        let widgetId = domId.substring(domId.indexOf("_")+1);
-        if(isNumber(widgetId)) {
-            //console.log("widgetId = " + widgetId);
-            let queryName = param.name;
-            let titleDom = this.getDom().previousSibling;
-            let title = titleDom.innerText;
-            //let widget = getWidgetByWidgetID(widgetId);
-            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
-        }
+        dataDrill(this.getDom(),param);
     });
 }
 
@@ -200,7 +174,7 @@ function renderLine(id, title, legendData, data) {
                 itemStyle: {
                     shadowBlur: 10,
                     shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    shadowColor: 'rgb(52,55,216)'
                 }
             },
             textStyle: {
@@ -214,18 +188,7 @@ function renderLine(id, title, legendData, data) {
 
     //点击事件
     myCharts3.on('click', function (param) {
-        //console.log(param);
-        //displayWidget_9
-        let domId = this.getDom().id;
-        let widgetId = domId.substring(domId.indexOf("_")+1);
-        if(isNumber(widgetId)) {
-           // console.log("widgetId = " + widgetId);
-            let queryName = param.name;
-            let titleDom = this.getDom().previousSibling;
-            let title = titleDom.innerText;
-            //let widget = getWidgetByWidgetID(widgetId);
-            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
-        }
+        dataDrill(this.getDom(),param);
     });
 }
 
@@ -289,7 +252,7 @@ function buildPieData(data) {
  */
 function renderAreaLine(id, title, legendData, data) {
     let myCharts4 = echarts.init(document.getElementById(id));
-    echartMap[id]=myCharts1;
+    echartMap[id]=myCharts4;
     let option1 = {
         title: {
             text: title,
@@ -341,18 +304,7 @@ function renderAreaLine(id, title, legendData, data) {
 
     //点击事件
     myCharts4.on('click', function (param) {
-        //console.log(param);
-        //displayWidget_9
-        let domId = this.getDom().id;
-        let widgetId = domId.substring(domId.indexOf("_")+1);
-        if(isNumber(widgetId)) {
-            //console.log("widgetId = " + widgetId);
-            let queryName = param.name;
-            let titleDom = this.getDom().previousSibling;
-            let title = titleDom.innerText;
-            //let widget = getWidgetByWidgetID(widgetId);
-            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + widgetId, '1000', '750');
-        }
+        dataDrill(this.getDom(),param);
     });
 }
 window.addEventListener("resize", () => {
@@ -362,3 +314,40 @@ window.addEventListener("resize", () => {
     })
 
 });
+
+/**
+ * data drill to open window
+ * @param param
+ */
+function dataDrill(dom,param) {
+    console.log(param);
+    let queryName = param.name;
+    let titleDom = dom.previousElementSibling;
+    console.log("this dom: " ,dom);
+    console.log("title" ,titleDom);
+    let title = titleDom.innerText;
+    //displayWidget_9
+    let domId = dom.id;
+    console.log("##domId = ",domId);
+    let secondWidgetId = null;
+    if(domId.indexOf("_")>0) {//模板大屏
+        let widgetId = domId.substring(domId.indexOf("_") + 1);
+        let widget = getWidgetByWidgetID(widgetId);
+        let config = JSON.parse(widget.config);
+        let secondWidgetAry = config.dataDrill;
+        $.each(secondWidgetAry,function(index,item){
+            if(item.level === "2") {
+                secondWidgetId = item.widgetId;
+                return false;
+            }
+        });
+        console.log("##"+secondWidgetId);
+
+    }else{//widget
+        secondWidgetId = dom.parentElement.getAttribute("second-widget-id");
+        console.log("secondWidgetId="+ secondWidgetId);
+    }
+    if (secondWidgetId !== null && secondWidgetId !== "") {
+        execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
+    }
+}
