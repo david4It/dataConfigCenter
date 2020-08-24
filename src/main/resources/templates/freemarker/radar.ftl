@@ -51,6 +51,42 @@
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
                     myChart.resize();
                     myChart.setOption(option);
+                    <#if vo.getAnimationEnabled()>
+                    myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
+                    myChart.animationMaxIndex = option.series.data.length - 1;
+                    myChart.animationIndex = 0;
+                    let animationFun = () => {
+                        let nextAnimationIndex = myChart.animationIndex++;
+                        //重置上一次动画效果
+                        for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                            myChart.dispatchAction({
+                                type: 'downplay',
+                                seriesIndex: 0,
+                                dataIndex: i
+                            });
+                            myChart.dispatchAction({
+                                type: 'hideTip',
+                                seriesIndex: 0,
+                                dataIndex: i
+                            });
+                        }
+                        setTimeout(() => {
+                            myChart.dispatchAction({
+                                type: 'highlight',
+                                dataIndex: nextAnimationIndex
+                            });
+                            myChart.dispatchAction({
+                                type: 'showTip',
+                                seriesIndex: 0,
+                                dataIndex: nextAnimationIndex
+                            });
+                        }, myChart.animationDuration / 2);
+                        if (myChart.animationIndex > myChart.animationMaxIndex) {
+                            myChart.animationIndex = 0;
+                        }
+                    };
+                    myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                    </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
                         console.log(param);

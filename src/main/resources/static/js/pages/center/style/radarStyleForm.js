@@ -70,6 +70,23 @@ Vue.component('radar_style_form', {
             <el-form-item v-if="style.radar.splitLine.show"  label="网格线颜色">
                 <el-color-picker v-model="style.radar.splitLine.lineStyle.color[0]"></el-color-picker>
             </el-form-item>
+            <el-form-item label="动画效果">
+                <el-select v-model="style.cusAnimation.enable" placeholder="请选择">
+                    <el-option
+                      key="Y"
+                      label="开启"
+                      value="Y">
+                    </el-option>
+                    <el-option
+                      key="N"
+                      label="关闭"
+                      value="N">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="style.cusAnimation.enable === 'Y'" label="间隔时长（秒）">
+                <el-input v-model="style.cusAnimation.duration" onkeyup="value=value.replace(/[^\\d]/g,'')"></el-input>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="confirmStyle">确 定</el-button>
@@ -97,6 +114,10 @@ Vue.component('radar_style_form', {
                             color : [] // 图表背景网格线的颜色
                         }
                     }
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             }
         }
@@ -169,6 +190,10 @@ Vue.component('radar_style_form', {
                             color : [] // 图表背景网格线的颜色
                         }
                     }
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             };
         }

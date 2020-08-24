@@ -73,6 +73,19 @@
                     myChart.animationIndex = 0;
                     let animationFun = () => {
                         let nextAnimationIndex = myChart.animationIndex++;
+                        //重置上一次动画效果
+                        for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                            myChart.dispatchAction({
+                                type: 'downplay',
+                                seriesIndex: 0,
+                                dataIndex: i
+                            });
+                            myChart.dispatchAction({
+                                type: 'hideTip',
+                                seriesIndex: 0,
+                                dataIndex: i
+                            });
+                        }
                         setTimeout(() => {
                             myChart.dispatchAction({
                                 type: 'highlight',

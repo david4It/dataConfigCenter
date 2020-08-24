@@ -66,23 +66,19 @@
                     myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
                     myChart.animationMaxIndex = option.series.data.length - 1;
                     myChart.animationIndex = 0;
-                    myChart.animationStart = false;
                     let animationFun = () => {
-                        if (myChart.animationStart) {
-                            //重置上一次动画效果
-                            for (let i = 0; i <= myChart.animationMaxIndex; i++) {
-                                myChart.dispatchAction({
-                                    type: 'pieUnSelect',
-                                    dataIndex: i
-                                });
-                                myChart.dispatchAction({
-                                    type: 'hideTip',
-                                    seriesIndex: 0,
-                                    dataIndex: i
-                                });
-                            }
+                        //重置上一次动画效果
+                        for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                            myChart.dispatchAction({
+                                type: 'pieUnSelect',
+                                dataIndex: i
+                            });
+                            myChart.dispatchAction({
+                                type: 'hideTip',
+                                seriesIndex: 0,
+                                dataIndex: i
+                            });
                         }
-                        myChart.animationStart = true;
                         let nextAnimationIndex = myChart.animationIndex++;
                         setTimeout(() => {
                             myChart.dispatchAction({
