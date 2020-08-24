@@ -37,6 +37,23 @@ Vue.component('line_style_form', {
             <el-form-item label="折线区域填充">
                 <el-color-picker v-model="style.series.areaStyle.color"></el-color-picker>
             </el-form-item>
+            <el-form-item label="动画效果">
+                <el-select v-model="style.cusAnimation.enable" placeholder="请选择">
+                    <el-option
+                      key="Y"
+                      label="开启"
+                      value="Y">
+                    </el-option>
+                    <el-option
+                      key="N"
+                      label="关闭"
+                      value="N">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="style.cusAnimation.enable === 'Y'" label="间隔时长（秒）">
+                <el-input v-model="style.cusAnimation.duration" onkeyup="value=value.replace(/[^\\d]/g,'')"></el-input>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="confirmStyle">确 定</el-button>
@@ -72,6 +89,10 @@ Vue.component('line_style_form', {
                     areaStyle: {
                         color: null
                     }
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             }
         }
@@ -136,6 +157,10 @@ Vue.component('line_style_form', {
                     areaStyle: {
                         color: null
                     }
+                },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
                 }
             };
         }

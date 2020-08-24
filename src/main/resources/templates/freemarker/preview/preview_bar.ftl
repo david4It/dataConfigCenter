@@ -50,14 +50,13 @@
                             }
                         }
                     ],
-                    series: [
+                    series:
                         {
                             name: '访问量',
                             type: 'bar',
                             barWidth: '60%',
                             data: [10, 52, 200, 334, 390]
                         }
-                    ]
                 };
                 if (res.data.success) {
                     let result = res.data.result;
@@ -68,6 +67,29 @@
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
                     myChart.resize();
                     myChart.setOption(option);
+                    <#if vo.getAnimationEnabled()>
+                    myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
+                    myChart.animationMaxIndex = option.series.data.length - 1;
+                    myChart.animationIndex = 0;
+                    let animationFun = () => {
+                        let nextAnimationIndex = myChart.animationIndex++;
+                        setTimeout(() => {
+                            myChart.dispatchAction({
+                                type: 'highlight',
+                                dataIndex: nextAnimationIndex
+                            });
+                            myChart.dispatchAction({
+                                type: 'showTip',
+                                seriesIndex: 0,
+                                dataIndex: nextAnimationIndex
+                            });
+                        }, myChart.animationDuration / 2);
+                        if (myChart.animationIndex > myChart.animationMaxIndex) {
+                            myChart.animationIndex = 0;
+                        }
+                    };
+                    myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                    </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
                         console.log(param);

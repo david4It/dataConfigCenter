@@ -20,6 +20,23 @@ Vue.component('bar_style_form', {
             <el-form-item label="Y轴描述名称">
                 <el-input v-model="style.yAxis.name"></el-input>
             </el-form-item>
+            <el-form-item label="动画效果">
+                <el-select v-model="style.cusAnimation.enable" placeholder="请选择">
+                    <el-option
+                      key="Y"
+                      label="开启"
+                      value="Y">
+                    </el-option>
+                    <el-option
+                      key="N"
+                      label="关闭"
+                      value="N">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item v-if="style.cusAnimation.enable === 'Y'" label="间隔时长（秒）">
+                <el-input v-model="style.cusAnimation.duration" onkeyup="value=value.replace(/[^\\d]/g,'')"></el-input>
+            </el-form-item>
 <!--            <el-form-item label="显示柱状背景色">-->
 <!--                <el-select v-model="style.series.showBackground" placeholder="请选择">-->
 <!--                    <el-option-->
@@ -65,6 +82,10 @@ Vue.component('bar_style_form', {
                     },
                     name: null
                 },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
+                }
                 // series: {
                 //     //柱状背景色
                 //     showBackground: false,
@@ -128,6 +149,10 @@ Vue.component('bar_style_form', {
                     },
                     name: null
                 },
+                cusAnimation: {
+                    enable: 'N',
+                    duration: 5
+                }
                 // series: {
                 //     //柱状背景色
                 //     showBackground: false,
