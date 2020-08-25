@@ -88,7 +88,7 @@
                 <#if vo.getWidgetId()??>
              showGraph(${ vo.getWidgetId()});
                 <#else>
-            showGraph(${ vo.getWidgetId()});
+            showGraph(1);
                  </#if>
             </#list>
         },
@@ -147,134 +147,6 @@
             default:
                 break;
         }
-    }
-
-    /**
-     * render graphics
-     * @param widget
-     * @param type
-     * @param id
-     */
-    function renderDispGraph(widget,type,id){
-        if(id == null || id  === "")
-            id="graphArea";
-
-        let viewData = getViewDataByViewId(widget);
-        let graphData = buildGraphData(viewData,widget);
-        let bizData = graphData.showedData;
-        let legendData = graphData.legendData;
-
-        switch (type) {
-            case "area":
-                renderAreaLine(id,"",legendData,bizData);
-                break;
-            case "pie":
-                renderPie(id,"",legendData,bizData);
-                break;
-            case "line":
-                renderLine(id,"",legendData,bizData);
-                break;
-            case "bar":
-                renderBar(id,"",legendData,bizData);
-                break;
-            case "map":
-                renderPie(id,"",legendData,bizData);
-                break;
-            default:
-                break;
-        }
-    }
-    /**
-     * get view data by view id
-     * /1/getdata
-     */
-    function getViewDataByViewId(widget) {
-        // 构造request data
-        let aggregators = [],
-            groups=[],
-            cache=false,
-            expired=0,
-            filters= [],
-            flush= false,
-            nativeQuery=false,
-            orders= [],
-            pageNo=0,
-            pageSize= 0;
-        let ret = null;
-        //取category columns
-        let catsAndVals = getCategoriesAndValuesFromWidgetData(widget);
-        aggregators = catsAndVals.aggregators;
-        groups = catsAndVals.groups;
-        //取 Filters columns //TODO:
-        let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
-            flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
-        $.ajax({
-            url: "/api/v3/views/"+ widget.viewId + "/getdata",
-            type: "POST",
-            dataType: "json",
-            data: data,
-            contentType: "application/json;charset=utf-8",
-            xhrFields: {
-                withCredentials: true //允许跨域带Cookie
-            },
-            async: false,
-            headers: {
-                "Authorization":$.cookie("token")//此处放置请求到的用户token
-            },
-            success: function (data) {
-                if (data.code == 0) {
-                    $.cookie("token",data.token,{
-                        expires: 10
-                    });
-                    ret = data;
-                } else {
-                    layer.msg("查询失败", {icon: 2, time: 1000});
-                }
-            },
-            fail: function (data) {
-                layer.msg("查询失败", {icon: 2, time: 1000});
-            }
-        });
-        return ret;
-    }
-
-    /**
-     * 获取要展示的维度和指标
-     */
-    function getCategoriesAndValuesFromWidgetData(widget){
-        let aggregators = [],
-            groups=[];
-        let ret={};
-        //console.log("#### widgetData.config : ",widgetData.config)
-        let config = JSON.parse(widget.config)
-        //取category columns
-        let cateoryNodes = config.cols;
-        let j = 0;
-        for(let i=0;i<cateoryNodes.length;i++){
-            let oneCategory = cateoryNodes[i];
-            let dataValue = oneCategory.name;
-            if(dataValue != null){
-                groups[j] = dataValue;
-                j++;
-            }
-        }
-        //取 value columns
-        let valueNodes = config.metrics;
-        let k = 0;
-        for(let i=0;i<valueNodes.length;i++){
-            let oneMetrics = valueNodes[i];
-            let dataValue = oneMetrics.name;
-            if(dataValue != null){
-                let temp = {};
-                temp.column = dataValue;
-                temp.func = "sum";
-                aggregators[k] = temp;
-                k++;
-            }
-        }
-        ret.aggregators=aggregators;
-        ret.groups = groups;
-        return ret;
     }
 
 </script>

@@ -387,13 +387,18 @@
     function renderDispGraph(obj,type,id){
         if(id == null || id  === "")
             id="graphArea";
-        //console.log("type = "  + type);
+        let bizData , legendData;
         //改变颜色  mouseclick-icon
-        catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
-        getDataByViewId(obj);
-        let graphData = buildGraphData(globalViewData);
-        let bizData = graphData.showedData;
-        let legendData = graphData.legendData;
+        if(type === 'map'){
+
+        }else {
+            catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
+            getDataByViewId(obj);
+            getDataByViewId(layer, null);
+            let graphData = buildGraphData(globalViewData);
+            bizData = graphData.showedData;
+            legendData = graphData.legendData;
+        }
 
         switch (type) {
             case "area":
@@ -409,7 +414,7 @@
                 renderBar(id,"",legendData,bizData);
                 break;
             case "map":
-                renderPie(id,"",legendData,bizData);
+                renderMap(id,"",legendData,bizData);
                 break;
             default:
                 break;
@@ -530,10 +535,6 @@
             let key = "";
             let oneData = bizData[i];
             for(let prop in categories){
-               // console.log("categories[prop] --> " ,categories[prop]);
-                //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
-                // console.log("categories[prop] --> " ,categories[prop]);
-                //console.log("oneData[categories[prop]] --> " ,oneData[categories[prop]]);
                 if(catLength === 1){
                     key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
                     break;

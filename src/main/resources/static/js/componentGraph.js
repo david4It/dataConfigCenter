@@ -1,13 +1,4 @@
 /**
- * generate id
- * @param widget
- * @returns {string}
- */
-function generateWidgetHtmlID(widget){
-    return 'component_' + widget.id;
-}
-
-/**
  * 单独渲染widget图像
  * @param widgetId
  * @param title
@@ -79,7 +70,14 @@ function renderDispGraph(widget,type,id){
             renderBar(id,"",legendData,bizData);
             break;
         case "map":
-            renderPie(id,"",legendData,bizData);
+            let config = widget.config;
+            if(config.map == null) {
+                let map = {};
+                map['mapName']='cdArea';
+                map['areaName']='chengdu';
+                config.map = map;
+            }
+            renderMap(id,"",legendData,bizData,config);
             break;
         default:
             break;
@@ -95,7 +93,6 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
     if(graphData == null) return;
     let bizData = graphData.showedData;
     let legendData = graphData.legendData;
-
     switch (type) {
         case "area":
             renderAreaLine(id,title,legendData,bizData);
@@ -110,7 +107,13 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
             renderBar(id,title,legendData,bizData);
             break;
         case "map":
-            renderPie(id,title,legendData,bizData);
+            if(config.map == null) {
+                let map = {};
+                map['mapName']='cdArea';
+                map['areaName']='chengdu';
+                config.map = map;
+            }
+            renderMap(id,title,legendData,bizData,config);
             break;
         default:
             break;

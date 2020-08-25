@@ -460,6 +460,7 @@ function moniteChartsChange(){
 					$(".fa-bar-chart").addClass("display-icon");
 					$(".fa-line-chart").addClass("display-icon");
 					$(".fa-pie-chart").addClass("display-icon");
+					$(".fa-globe").addClass("display-icon");
 					break;
 				case 2:
 					break;
@@ -472,10 +473,12 @@ function moniteChartsChange(){
 			switch (values) {
 				case 0:
 					//饼图, 地图，表格
+					$(".fa-globe").addClass("display-icon");
 					break;
 				case 1:
 					//饼图, 地图，表格
 					$(".fa-pie-chart").addClass("display-icon");
+					$(".fa-globe").addClass("display-icon");
 					break;
 				case 2:
 					break;
@@ -492,6 +495,7 @@ function moniteChartsChange(){
 				case 1:
 					//饼图, 地图，表格
 					$(".fa-pie-chart").addClass("display-icon");
+					$(".fa-globe").addClass("display-icon");
 					break;
 				case 2:
 					break;
@@ -509,12 +513,16 @@ function moniteChartsChange(){
  */
 function renderGraph(obj,type,id){
 	if(id == null || id  === "") id="graphArea";
-	//console.log("type = "  + type);
-	//改变颜色  mouseclick-icon
-	globalWidgetData = getViewResultByViewId();
-	let retData = buildPieData(globalWidgetData);
-	let bizData = retData.showedData;
-	let legendData = retData.legendData;
+	console.log("type = "  + type);
+	let bizData , legendData;
+	if(type === 'map'){
+
+	}else {
+		getDataByViewId(layer, null);
+		let retData = buildPieData(globalWidgetData);
+		bizData = retData.showedData;
+		legendData = retData.legendData;
+	}
 	switch (type) {
 		case "area":
 			selectedChartIndex = 1;
@@ -534,7 +542,7 @@ function renderGraph(obj,type,id){
 			break;
 		case "map":
 			selectedChartIndex = 5;
-			renderPie(id,"",legendData,bizData);
+			renderMap(id,"",legendData,bizData);
 			break;
 		default:
 			break;

@@ -314,8 +314,53 @@ window.addEventListener("resize", () => {
     })
 
 });
-function renderMap() {
+function renderMap(id, title, legendData, jsonMap) {
+    let mapCharts = echarts.init(document.getElementById(id));
+    echartMap[id]=mapCharts;
+    if(jsonMap == null){
+        jsonMap = {};
+        let map = {};
+        map['mapName']='cdArea';
+        map['areaName']='chengdu';
+        jsonMap.map = map;
+    }
+    let data = getMapDataByMapName(jsonMap['map'].mapName);
+    echarts.registerMap(jsonMap['map'].areaName,data);
+    let option = {
+        series: {
+            type: 'map',
+            mapType: jsonMap['map'].areaName,
+            data: data,
+            itemStyle: {
+                normal: { //未选中状态
+                    borderColor:'#2c2c2c',
+                    areaColor: '#fff',//背景颜色
+                    label: {
+                        show: false,//显示名称
+                        textStyle: {
+                            color: '#2c2c2c'
+                        }
+                    }
+                },
+                emphasis: {// 也是选中样式
+                    borderColor:'#fff',
+                    areaColor: '#FF8C00',
+                    label: {
+                        show: true,
+                        textStyle: {
+                            color: '#2c2c2c'
+                        }
+                    }
+                }
+            }
+        }
+    };
+    mapCharts.setOption(option);
 
+    //点击事件
+    mapCharts.on('click', function (param) {
+        dataDrill(this.getDom(),param);
+    });
 }
 /**
  * data drill to open window

@@ -490,3 +490,131 @@ function deleteSlideMemWidgit(displayId,slideId,memWidgetId){
    // return ret;
 }
 
+/**
+ * get map data by map name, default is chengdu
+ * @param mapName
+ * @returns {boolean}
+ */
+function getMapDataByMapName(mapName){
+    if(mapName === "" || mapName == null) mapName = 'cdArea';
+    let ret = null;
+    $.ajax({
+        url: "/json/"+ mapName + '.json',
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        success: function (data) {
+            if (data != null ) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                console.log(data);
+                ret = data;
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+        }
+    });
+    return ret;
+}
+/**
+ * get view data by view id
+ * /1/getdata
+ */
+function getDataByViewId(layer,form) {
+    // 构造request data
+    let aggregators = [],
+        groups=[],
+        cache=false,
+        expired=0,
+        filters= [],
+        flush= false,
+        nativeQuery=false,
+        orders= [],
+        pageNo=0,
+        pageSize= 0;
+
+    //取category columns
+    let ret = getCategoriesAndValues();
+    aggregators = ret.aggregators;
+    groups = ret.groups;
+    //取 Filters columns //TODO:
+    let data = JSON.stringify({aggregators:aggregators,groups:groups,cache: false,expired: 0,filters: [],
+        flush: false,nativeQuery: false,orders: [],pageNo: 0,pageSize: 0});
+    $.ajax({
+        url: "/api/v3/views/"+viewId + "/getdata",
+        type: "POST",
+        dataType: "json",
+        data: data,
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                //layer.msg("查询成功", {icon: 1, time: 1000});
+                console.log(data);
+
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+                globalWidgetData = data;
+                return false;
+            } else {
+                layer.msg("查询失败", {icon: 2, time: 1000});
+                return false;
+            }
+        },
+        fail: function (data) {
+            layer.msg("查询失败", {icon: 2, time: 1000});
+            return false;
+        }
+    });
+}
+
+/**
+ * 获取要展示的维度和指标
+ */
+function getCategoriesAndValues(){
+    let aggregators = [],
+        groups=[];
+    let ret={};
+    //取category columns
+    let cateoryNodes = document.getElementById("dragedDimesion").childNodes;
+    let j = 0;
+    for(let i=0;i<cateoryNodes.length;i++){
+        if(i==0) continue;
+        let dataValue = cateoryNodes[i].getAttribute("data-value");
+        if(dataValue != null){
+            groups[j] = dataValue;
+            j++;
+        }
+    }
+    //取 value columns
+    let valueNodes = document.getElementById("dragedValue").childNodes;
+    let k = 0;
+    for(let i=0;i<valueNodes.length;i++){
+        if(i==0) continue;
+        let dataValue = valueNodes[i].getAttribute("data-value");
+        if(dataValue != null){
+            let temp = {};
+            temp.column = dataValue;
+            temp.func = "sum";
+            aggregators[k] = temp;
+            k++;
+        }
+    }
+    ret.aggregators=aggregators;
+    ret.groups = groups;
+    return ret;
+}
+
