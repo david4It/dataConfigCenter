@@ -153,7 +153,9 @@
 <script src="js/display-add.js"></script>
 <script type="text/javascript">
     let catsAndVal,globalViewData;
-    let grid = GridStack.init({column: 10});
+    let grid = GridStack.init({column: 10,  resizable: {
+            handles: 'e, se, s, sw, w'
+        }});
     function addWidget() {
         grid.addWidget(widgetHTML(), {minWidth: 4, minHeight: 6});
 
@@ -374,7 +376,7 @@
         return '<div>' +
             '<div class="grid-stack-item-content" second-widget-id="'+secondWidgetId +'" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
             '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
-            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 50%;">内容</div>' +
+            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style=" height: 90%;">内容</div>' +
             '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
             '</div>' +
             '</div>';

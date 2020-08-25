@@ -314,7 +314,9 @@ window.addEventListener("resize", () => {
     })
 
 });
+function renderMap() {
 
+}
 /**
  * data drill to open window
  * @param param
