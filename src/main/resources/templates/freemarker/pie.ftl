@@ -100,14 +100,17 @@
                         }
                     };
                     myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
-                    myChart.on('mouseover', (params) => {
+                    myChart.on("mouseover", (params) => {
                         resetFun();
                         clearTimeout(myChart.animationTimeout);
                         clearInterval(myChart.animationInterval);
                         myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
                     });
-                    myChart.on('globalout', (params) => {
-                        myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                    myChart.on("globalout", (params) => {
+                        if (!myChart.animationInterval) {
+                            myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                        }
                     });
                     </#if>
                     window.addEventListener("resize", function () {
