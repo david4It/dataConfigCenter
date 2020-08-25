@@ -375,7 +375,7 @@ function dataDrill(dom,param) {
     let title = titleDom.innerText;
     //displayWidget_9
     let domId = dom.id;
-    console.log("##domId = ",domId);
+    //console.log("##domId = ",domId);
     let secondWidgetId = null;
     if(domId.indexOf("_")>0) {//模板大屏
         let widgetId = domId.substring(domId.indexOf("_") + 1);
@@ -389,12 +389,14 @@ function dataDrill(dom,param) {
             }
         });
         console.log("##"+secondWidgetId);
+        if(secondWidgetId == null) return false;
+        execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
 
     }else{//widget
-        secondWidgetId = dom.parentElement.getAttribute("second-widget-id");
-        console.log("secondWidgetId="+ secondWidgetId);
+        secondWidgetId = $(dom).attr("second-widget-id");
+        console.log("secondWidgetId ="+ secondWidgetId);
+        if(secondWidgetId == null) return false;
+        execute_open(name , "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
     }
-    if (secondWidgetId !== null && secondWidgetId !== "") {
-        execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
-    }
+
 }

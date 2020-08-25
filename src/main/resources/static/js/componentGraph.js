@@ -306,6 +306,7 @@ function drawDispWidget(selectedWidgets) {
         let graphType=config.selectedChart;
         let widgetTitle = selectedWidgets[prop].name;
         addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
+        setGraphAxisAndWh(graphId,selectedWidgets[prop].id,grid);
         //渲染图形
         switch (graphType) {
             case 1:
@@ -358,4 +359,26 @@ function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
         '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
         '</div>' +
         '</div>';
+}
+/**
+ * 设置图形位置及大小
+ * @param graphHtmlId
+ * @param widgetId
+ */
+function setGraphAxisAndWh(dbMemWidgets,graphHtmlId,widgetId,gridStack) {
+    let gridDiv = $("#"+graphHtmlId)[0].parentNode.parentNode;
+    //console.log(gridDiv,widgetId);
+    if(dbMemWidgets == null)
+        dbMemWidgets = getMemWidgetsFromDb();
+    $.each(dbMemWidgets,function(index,item){
+        console.log("$(gridDiv): ",$(gridDiv))
+        let params = item.params;
+        if(item.widgetId === widgetId){
+            gridStack.update($(gridDiv),params.positionX, params.positionY, params.width, params.height);
+            gridDiv.setAttribute("data-gs-x",params.positionX);
+            gridDiv.setAttribute("data-gs-y",params.positionY);
+            gridDiv.setAttribute("data-gs-width",params.width);
+            gridDiv.setAttribute("data-gs-height",params.height);
+        }
+    });
 }

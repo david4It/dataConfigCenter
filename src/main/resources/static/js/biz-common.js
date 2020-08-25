@@ -526,7 +526,8 @@ function getMapDataByMapName(mapName){
  * get view data by view id
  * /1/getdata
  */
-function getDataByViewId(layer,form) {
+function getDataByViewId(viewId) {
+    let retData = null ;
     // 构造request data
     let aggregators = [],
         groups=[],
@@ -563,22 +564,19 @@ function getDataByViewId(layer,form) {
             if (data.code == 0) {
                 //layer.msg("查询成功", {icon: 1, time: 1000});
                 console.log(data);
-
                 $.cookie("token",data.token,{
                     expires: 10
                 });
-                globalWidgetData = data;
-                return false;
+                retData = data;
             } else {
                 layer.msg("查询失败", {icon: 2, time: 1000});
-                return false;
             }
         },
         fail: function (data) {
             layer.msg("查询失败", {icon: 2, time: 1000});
-            return false;
         }
     });
+    return retData;
 }
 
 /**
@@ -618,3 +616,42 @@ function getCategoriesAndValues(){
     return ret;
 }
 
+/**
+ * 保存memWidgets data.
+ * @param data[]
+ * @returns {*}
+ */
+function updateMemDispSlideWidget(data) {
+    let retdata = null;
+    let displayId = localStorage.getItem("displayId");
+    let displaySlideId = localStorage.getItem("slideId");
+    $.ajax({
+        url: "/api/v3/displays/"+ displayId +"/slides/"+ displaySlideId + "/widgets",
+        type: "PUT",
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        xhrFields: {
+            withCredentials: true //允许跨域带Cookie
+        },
+        async: false,
+        headers: {
+            "Authorization":$.cookie("token")//此处放置请求到的用户token
+        },
+        success: function (data) {
+            if (data.code == 0) {
+                layer.msg("数据保存成功", {icon: 1, time: 1000});
+                retdata = data.data;
+                $.cookie("token",data.token,{
+                    expires: 10
+                });
+            } else {
+                layer.msg("数据保存失败", {icon: 2, time: 1000});
+            }
+        },
+        fail: function (data) {
+            layer.msg("保存失败", {icon: 2, time: 1000});
+        }
+    });
+    return retdata;
+}

@@ -518,7 +518,7 @@ function renderGraph(obj,type,id){
 	if(type === 'map'){
 
 	}else {
-		getDataByViewId(layer, null);
+		globalWidgetData = getDataByViewId(viewId);
 		let retData = buildPieData(globalWidgetData);
 		bizData = retData.showedData;
 		legendData = retData.legendData;

@@ -153,12 +153,13 @@
 <script src="js/display-add.js"></script>
 <script type="text/javascript">
     let catsAndVal,globalViewData;
-    let grid = GridStack.init({column: 10,  resizable: {
+    let dbMemWidgets = getMemWidgetsFromDb();
+    let grid = GridStack.init({column: 10,disableOneColumnMode: true,  resizable: {
             handles: 'e, se, s, sw, w'
-        }});
+    }});
+
     function addWidget() {
         grid.addWidget(widgetHTML(), {minWidth: 4, minHeight: 6});
-
     }
     function borderDisplay(event) {
         $('.grid-stack-item-content').each((index, item) => {
@@ -249,6 +250,9 @@
     function saveDispWidget(selectedWidgets) {
         //console.log("selected widgets",selectedWidgets)
         //保存数据
+        ///api/v3/displays/1/slides/1/widgets
+        let slideData = saveMemDispSlideWidget(selectedWidgets);
+        dbMemWidgets = getMemWidgetsFromDb();
         // display select widget to canvas
         for(let prop in selectedWidgets){
             //console.log("prop",prop,selectedWidgets[prop]);
@@ -258,6 +262,7 @@
             let graphType=config.selectedChart;
             let widgetTitle = selectedWidgets[prop].name;
             addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
+            setGraphAxisAndWh(dbMemWidgets,grahpId,selectedWidgets[prop].id,grid);
             //渲染图形
             switch (graphType) {
                 case 1:
@@ -286,22 +291,7 @@
                     break;
             }
         }
-        //保存  POST
-        ///api/v3/displays/1/slides/1/widgets
 
-        saveMemDispSlideWidget(selectedWidgets);
-        //save temp gloable file to operate
-        //获取memslidewidgets,views,widgets
-        let displayId = localStorage.getItem("displayId");
-        //获取slide
-        let firstSlideId = localStorage.getItem("slideId");
-        let slidePageData = getWidgets(displayId,firstSlideId);
-        let slideMemWidgets = slidePageData.items;
-        $.each(slideMemWidgets,function (index, item) {
-            slideMemWidgetMap[item.widgetId]=item.id;
-        })
-
-        //修改 PUT  /api/v3/displays/1/slides/7/widgets
     }
 
     /**
@@ -328,6 +318,9 @@
                 }
             });
             addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId);
+            //设置图形大小；
+            setGraphAxisAndWh(dbMemWidgets,grahpId,selectedWidgets[prop].id,grid);
+
             //渲染图形
             switch (graphType) {
                 case 1:
@@ -394,7 +387,6 @@
         }else {
             catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
             getDataByViewId(obj);
-            getDataByViewId(layer, null);
             let graphData = buildGraphData(globalViewData);
             bizData = graphData.showedData;
             legendData = graphData.legendData;
@@ -623,7 +615,7 @@
             let obj = {};
             obj.index = prop;
             obj.type = widget.type;
-            obj.name = getGraphName(widget.type);
+            obj.name = widget.name;
             obj.widgetId = widget.id;
             obj.displaySlideId = displaySlideId;
             obj.params='{"width":460,"height":340,"positionX":16,"positionY":16,"backgroundColor":[255,255,255,0],"borderColor":[0,0,0],"borderWidth":null,"borderStyle":"solid","borderRadius":null,"polling":"false"}';
@@ -632,57 +624,68 @@
         }
         return memDispSlideWidgets;
     }
-    /**
-     * TODO:
-     * save relationship between slide and widgets
-     * [{displaySlideId: 8
-        index: 1
-        name: "饼图"
-        params: "{"width":460,"height":340,"positionX":16,"positionY":16,"backgroundColor":[255,255,255,0],"borderColor":[0,0,0],"borderWidth":null,"borderStyle":"solid","borderRadius":null,"polling":"false"}"
-        type: 1
-        widgetId: 2}]
-     */
-    function editMemDispSlideWidget(widget,index) {
-        let slideWidgets;
-        let displayId = localStorage.getItem("displayId");
-        let displaySlideId = localStorage.getItem("slideId");
-        let obj = {};
-        obj.index = index;
-        obj.type = widget.type;
-        obj.name = getGraphName(widget.type());
-        obj.widgetId = widget.id;
-        obj.displaySlideId = displaySlideId;
-        obj.params='{"width":460,"height":340,"positionX":16,"positionY":16,"backgroundColor":[255,255,255,0],"borderColor":[0,0,0],"borderWidth":null,"borderStyle":"solid","borderRadius":null,"polling":"false"}';
-        $.ajax({
-            url: "/api/v3/displays/"+ displayId +"/slides/"+ $.cookie("slideId"),
-            type: "PUT",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            contentType: "application/json;charset=utf-8",
-            xhrFields: {
-                withCredentials: true //允许跨域带Cookie
-            },
-            async: false,
-            headers: {
-                "Authorization":$.cookie("token")//此处放置请求到的用户token
-            },
-            success: function (data) {
-                if (data.code === 0) {
-                    layer.msg("数据保存成功", {icon: 1, time: 1000});
-                    slideWidgets = data.data;
-                    console.log(slide);
-                    $.cookie("token",data.token,{
-                        expires: 10
-                    });
-                } else {
-                    layer.msg("保存失败", {icon: 2, time: 1000});
-                }
-            },
-            fail: function (data) {
-                layer.msg("保存失败", {icon: 2, time: 1000});
+
+    //保存编辑过的MemWidgets.
+    grid.on('change', function(e, items) {
+        console.log("################")
+        let memWidgets = {};
+        for(let i = 0; i< items.length; i ++){
+            let widgetsObj = {
+                x:items[i].x,
+                y:items[i].y,
+                width:items[i].width,
+                height:items[i].height
             }
+            console.log(items)
+            let obj = $(items[i].el.firstChild).attr("widget-id");
+            console.log(obj)
+            memWidgets[obj]=widgetsObj;
+        }
+        console.log("###############" + localStorage.getItem("slideId") + localStorage.getItem("displayId"))
+        $.each(memWidgets,function(index,item){
+            console.log(index,item);
+            let widgetId = parseInt(index.substr(index.indexOf("_") + 1));
+            //console.log("widgetId = " + widgetId);
+            let changedConfig = item;
+
+            $.each(dbMemWidgets,function(index,item){
+                if(widgetId === item.widgetId){
+                    //update memwidget.
+                    updateMemWidget(item,changedConfig)
+                }
+            });
         });
-        return slideWidgets;
+    });
+
+    /**
+     * update memwidget.
+     * @param dbMemWidget db data
+     * @param changedConfig
+     */
+    function  updateMemWidget(dbMemWidget,changedConfig) {
+        let config = JSON.parse(dbMemWidget.params);
+        //"width":690,"height":464,"positionX":202,"positionY":828
+        config.width=changedConfig.width;
+        config.height=changedConfig.height;
+        config.positionX = changedConfig.x;
+        config.positionY= changedConfig.y;
+        dbMemWidget.params = JSON.stringify(config);
+        let ary = [];
+        ary[0]=dbMemWidget;
+        let newWidget = updateMemDispSlideWidget(ary);
+        console.log("newWidget=",newWidget);
     }
+
+    function getMemWidgetsFromDb(){
+        let displayId = localStorage.getItem("displayId");
+        //获取slide
+        let firstSlideId = localStorage.getItem("slideId");
+        console.log(displayId,firstSlideId);
+        //获取memslidewidgets,views,widgets
+        let slidePageData = getWidgets(displayId,firstSlideId);
+        return slidePageData.items;
+    }
+
+
 </script>
 </html>
