@@ -58,7 +58,6 @@
                                 myChart.setOption(option);
                                 <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                                 myChart.on("click", (param) => {
-                                        console.log(param);
                                         forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
                                 });
                                 </#if>
@@ -66,21 +65,26 @@
                                 myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
                                 myChart.animationMaxIndex = option.series.data.length - 1;
                                 myChart.animationIndex = 0;
-                                let animationFun = () => {
-                                        //重置上一次动画效果
-                                        for (let i = 0; i <= myChart.animationMaxIndex; i++) {
-                                                myChart.dispatchAction({
-                                                        type: 'pieUnSelect',
-                                                        dataIndex: i
-                                                });
-                                                myChart.dispatchAction({
-                                                        type: 'hideTip',
-                                                        seriesIndex: 0,
-                                                        dataIndex: i
-                                                });
+                                let resetFun = () => {
+                                        //重置动画效果，仅当第一次执行动画效果之后才清除动画
+                                        if (myChart.animationTimeout) {
+                                                for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                                                        myChart.dispatchAction({
+                                                                type: 'pieUnSelect',
+                                                                dataIndex: i
+                                                        });
+                                                        myChart.dispatchAction({
+                                                                type: 'hideTip',
+                                                                seriesIndex: 0,
+                                                                dataIndex: i
+                                                        });
+                                                }
                                         }
+                                };
+                                let animationFun = () => {
+                                        resetFun();
                                         let nextAnimationIndex = myChart.animationIndex++;
-                                        setTimeout(() => {
+                                        myChart.animationTimeout = setTimeout(() => {
                                                 myChart.dispatchAction({
                                                         type: 'pieSelect',
                                                         dataIndex: nextAnimationIndex
@@ -96,6 +100,15 @@
                                         }
                                 };
                                 myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                                myChart.on('mouseover', (params) => {
+                                        resetFun();
+                                        clearTimeout(myChart.animationTimeout);
+                                        clearInterval(myChart.animationInterval);
+                                        myChart.animationInterval = null;
+                                });
+                                myChart.on('globalout', (params) => {
+                                        myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                                });
                                 </#if>
                                 window.addEventListener("resize", function () {
                                         myChart.resize();
