@@ -55,22 +55,26 @@
                     myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
                     myChart.animationMaxIndex = option.series.data.length - 1;
                     myChart.animationIndex = 0;
-                    let animationFun = () => {
-                        let nextAnimationIndex = myChart.animationIndex++;
-                        //重置上一次动画效果
-                        for (let i = 0; i <= myChart.animationMaxIndex; i++) {
-                            myChart.dispatchAction({
-                                type: 'downplay',
-                                seriesIndex: 0,
-                                dataIndex: i
-                            });
-                            myChart.dispatchAction({
-                                type: 'hideTip',
-                                seriesIndex: 0,
-                                dataIndex: i
-                            });
+                    let resetFun = () => {
+                        //重置动画效果，仅当第一次执行动画效果之后才清除动画
+                        if (myChart.animationTimeout) {
+                            for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                                myChart.dispatchAction({
+                                    type: 'downplay',
+                                    dataIndex: i
+                                });
+                                myChart.dispatchAction({
+                                    type: 'hideTip',
+                                    seriesIndex: 0,
+                                    dataIndex: i
+                                });
+                            }
                         }
-                        setTimeout(() => {
+                    };
+                    let animationFun = () => {
+                        resetFun();
+                        let nextAnimationIndex = myChart.animationIndex++;
+                        myChart.animationTimeout = setTimeout(() => {
                             myChart.dispatchAction({
                                 type: 'highlight',
                                 dataIndex: nextAnimationIndex
@@ -86,10 +90,21 @@
                         }
                     };
                     myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                    myChart.on("mouseover", (params) => {
+                        resetFun();
+                        clearTimeout(myChart.animationTimeout);
+                        clearInterval(myChart.animationInterval);
+                        myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
+                    });
+                    myChart.on("globalout", (params) => {
+                        if (!myChart.animationInterval) {
+                            myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                        }
+                    });
                     </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
-                        console.log(param);
                         forwardUrl(param.data.extData, "${vo.getLinkUrl()}")
                     });
                     </#if>

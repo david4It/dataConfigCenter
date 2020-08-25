@@ -28,7 +28,6 @@
                     myChart.setOption(option);
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
-                        console.log(param);
                         forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
                     });
                     </#if>
