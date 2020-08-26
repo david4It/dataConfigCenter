@@ -52,3 +52,5 @@ spring:
     check-template-location: true
     content-type: text/html
     suffix: .ftl
+logging:
+  config: classpath:config/logback.xml
