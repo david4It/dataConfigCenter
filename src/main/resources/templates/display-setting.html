@@ -381,12 +381,12 @@
         if(id == null || id  === "")
             id="graphArea";
         let bizData , legendData;
+        catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
+        globalViewData = getDataByViewId(obj);
         //改变颜色  mouseclick-icon
         if(type === 'map'){
 
         }else {
-            catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
-            getDataByViewId(obj);
             let graphData = buildGraphData(globalViewData);
             bizData = graphData.showedData;
             legendData = graphData.legendData;
@@ -406,7 +406,15 @@
                 renderBar(id,"",legendData,bizData);
                 break;
             case "map":
-                renderMap(id,"",legendData,bizData);
+                let config = JSON.parse(obj.config);
+                if(config.map == null) {
+                    let map = {};
+                    map['mapName']='cdArea';
+                    map['areaName']='chengdu';
+                    config.map = map;
+                }
+                let graphData = buildMapData(globalViewData);
+                renderMap(id,"",graphData,config);
                 break;
             default:
                 break;
@@ -417,6 +425,7 @@
      * /1/getdata
      */
     function getDataByViewId(widgetData) {
+        let viewData = null;
         // 构造request data
         let aggregators = [],
             groups=[],
@@ -456,6 +465,7 @@
                     $.cookie("token",data.token,{
                         expires: 10
                     });
+                    viewData = data;
                     globalViewData = data;
                     return false;
                 } else {
@@ -468,6 +478,7 @@
                 return false;
             }
         });
+        return viewData;
     }
 
     /**

@@ -70,14 +70,15 @@ function renderDispGraph(widget,type,id){
             renderBar(id,"",legendData,bizData);
             break;
         case "map":
-            let config = widget.config;
+            let config = JSON.parse(widget.config);
             if(config.map == null) {
                 let map = {};
                 map['mapName']='cdArea';
                 map['areaName']='chengdu';
                 config.map = map;
             }
-            renderMap(id,"",legendData,bizData,config);
+            let graphData = buildMapData(viewData);
+            renderMap(id,"",graphData,config);
             break;
         default:
             break;
@@ -113,7 +114,8 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
                 map['areaName']='chengdu';
                 config.map = map;
             }
-            renderMap(id,title,legendData,bizData,config);
+            let graphData = buildMapData(viewData);
+            renderMap(id,title,graphData,config);
             break;
         default:
             break;
@@ -381,4 +383,32 @@ function setGraphAxisAndWh(dbMemWidgets,graphHtmlId,widgetId,gridStack) {
             gridDiv.setAttribute("data-gs-height",params.height);
         }
     });
+}
+/**
+ * build map legendData & showed data.
+ * @param viewData
+ */
+function buildMapData(viewData) {
+    let mapData = {};
+    let retData =[];
+    let nameMap = {};
+    if(viewData == null ) return ;
+    let bizData = viewData.data.resultList;
+    for(let i in bizData){
+        let showedData={};
+        //console.log(i+ "|bizData" , bizData[i]);
+        $.each(bizData[i],function (index,item) {
+            if(index === 'sum(cnt)'){
+                showedData.value=item;
+            }else{
+                showedData.name=item;
+                nameMap[item]=item;
+            }
+        })
+        retData[i]=showedData;
+    }
+    console.log("retData:",retData)
+    mapData["bizData"]=retData;
+    mapData["nameMap"]=nameMap;
+    return mapData;
 }

@@ -198,7 +198,7 @@ function drawPage() {
 	$.each(slideMemWidgets,function (index, item) {
 		slideMemWidgetMap[item.widgetId]=item.id;
 	})
-	console.log("pageData: ", slidePageData);
+
 	if( slidePageData.widgets !== null && slidePageData.widgets.length > 0)
 		drawDispWidget(slidePageData.widgets);
 }

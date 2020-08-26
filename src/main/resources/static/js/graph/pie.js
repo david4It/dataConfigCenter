@@ -307,14 +307,9 @@ function renderAreaLine(id, title, legendData, data) {
         dataDrill(this.getDom(),param);
     });
 }
-window.addEventListener("resize", () => {
-    $.each(echartMap,function (index,item) {
-       // console.log(item)
-        item.resize();
-    })
 
-});
-function renderMap(id, title, legendData, jsonMap) {
+let color = ['#3682be','#45a776','#7e5ef0','#bd6b08','#334f65','#85c021','#38cb7d','#00686b','#844bb3','#555555'];
+function renderMap(id, title, bizData, jsonMap) {
     let mapCharts = echarts.init(document.getElementById(id));
     echartMap[id]=mapCharts;
     if(jsonMap == null){
@@ -327,21 +322,54 @@ function renderMap(id, title, legendData, jsonMap) {
     let data = getMapDataByMapName(jsonMap['map'].mapName);
     echarts.registerMap(jsonMap['map'].areaName,data);
     let option = {
+        title: {
+            text: '成都地图',
+            subtext: '数据统计'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}<br/>{c}'
+        },
+        toolbox: {
+            show: true,
+            orient: 'vertical',
+            left: 'right',
+            top: 'center',
+            feature: {
+                dataView: {readOnly: false},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataRange: {
+            min: 800,
+            max: 50000,
+            text: ['High', 'Low'],
+            realtime: true,
+            calculable: true,
+            inRange: {
+                color: ['lightskyblue', 'yellow', 'orangered']
+            }
+        },
         series: {
+            name: '成都企业分布',
             type: 'map',
             mapType: jsonMap['map'].areaName,
-            data: data,
-            itemStyle: {
+            label: {
+                show: true
+            },
+            data: bizData.bizData,
+           /* itemStyle: {
                 normal: { //未选中状态
                     borderColor:'#2c2c2c',
-                    areaColor: '#fff',//背景颜色
+                    areaColor: getBackColor(),//背景颜色
                     label: {
-                        show: false,//显示名称
+                        show: true,//显示名称
                         textStyle: {
-                            color: '#2c2c2c'
+                            color: '#fff'
                         }
                     }
-                },
+                },/!*
                 emphasis: {// 也是选中样式
                     borderColor:'#fff',
                     areaColor: '#FF8C00',
@@ -351,17 +379,26 @@ function renderMap(id, title, legendData, jsonMap) {
                             color: '#2c2c2c'
                         }
                     }
-                }
-            }
+                }*!/
+            },*/
+            // 自定义名称映射
+            nameMap:bizData.nameMap
         }
     };
     mapCharts.setOption(option);
 
     //点击事件
     mapCharts.on('click', function (param) {
-        dataDrill(this.getDom(),param);
+        //dataDrill(this.getDom(),param);
     });
 }
+window.addEventListener("resize", () => {
+    $.each(echartMap,function (index,item) {
+        // console.log(item)
+        item.resize();
+    })
+
+});
 /**
  * data drill to open window
  * @param param
@@ -399,4 +436,8 @@ function dataDrill(dom,param) {
         execute_open(name , "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
     }
 
+}
+function getBackColor(){
+    let i = Math.floor(Math.random()*10+1)
+    return color[i];
 }

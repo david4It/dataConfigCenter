@@ -542,7 +542,16 @@ function renderGraph(obj,type,id){
 			break;
 		case "map":
 			selectedChartIndex = 5;
-			renderMap(id,"",legendData,bizData);
+			let config = globalWidgetData.config;
+			if(config.map == null) {
+				let map = {};
+				map['mapName']='cdArea';
+				map['areaName']='chengdu';
+				config.map = map;
+			}
+			let viewData =  getDataByViewId(viewId);
+			let graphData = buildMapData(viewData);
+			renderMap(id,"",graphData,config); //TODO:待修正config 配置参数
 			break;
 		default:
 			break;
