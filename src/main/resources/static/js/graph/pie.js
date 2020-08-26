@@ -1,5 +1,6 @@
 let echartMap={}
 
+let color = ['#3682be','#45a776','#7e5ef0','#bd6b08','#334f65','#85c021','#38cb7d','#00686b','#844bb3','#555555'];
 /**
  * 渲染图片
  * @param id
@@ -36,11 +37,29 @@ function renderPie(id, title, legendData, data) {
                 fontSize: 12,
             },
         },
-        series: [{
+        series: [
+            {
+                name: '半径模式',
+                type: 'pie',
+                radius: [20, 110],
+                center: ['25%', '50%'],
+                roseType: 'radius',
+                label: {
+                    show: false
+                },
+                emphasis: {
+                    label: {
+                        show: true
+                    }
+                },
+                data: data
+            },
+            ,{
             data: data,
             type: 'pie',
-            radius: '55%',
-            center: ['40%', '60%'],
+            radius: [30, 110],
+            center: ['55%', '50%'],
+            roseType: 'area',
             emphasis: {
                 itemStyle: {
                     shadowBlur: 10,
@@ -91,30 +110,59 @@ function renderBar(id, title, legendData, data) {
                     // 设置x轴颜色
                     color: '#ffffff'
                 }
-            },
+            },            // 设置X轴数据旋转倾斜
+            axisLabel: {
+                rotate: 30, // 旋转角度
+                interval: '#ffffff'  //设置X轴数据间隔几个显示一个，为0表示都显示
+            }
         },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                lineStyle: {
-                    // 设置x轴颜色
-                    color: '#ffffff'
-                }
+        yAxis: [
+            {
+                type: 'value',
+                position: 'left',
+                axisLine: {
+                    lineStyle: {
+                        // 设置x轴颜色
+                        color: '#ffffff'
+                    }
+                },
             },
-        },
-        series: [{
-            data: data,
-            type: 'bar',
-            radius: '55%',
-            center: ['50%', '40%'],
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+            {
+                type: 'value',
+                //name: 'cets',
+                position: 'right',
+                axisLine: {
+                    lineStyle: {
+                        color: getBackColor()
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} '
                 }
             }
-        }]
+        ],
+        series: [
+            {
+                data: data,
+                type: 'bar',
+                radius: '55%',
+                center: ['50%', '40%'],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 1,
+                        shadowOffsetX: 0,
+                        shadowColor: getBackColor()
+                    }
+                }
+            },
+            {
+                name: '汇总值',
+                type: 'line',
+                yAxisIndex: 1,
+                data: data,
+                smooth: true
+            }
+        ]
     };
     myCharts2.setOption(option1);
 
@@ -153,7 +201,7 @@ function renderLine(id, title, legendData, data) {
             // 设置X轴数据旋转倾斜
             axisLabel: {
                 rotate: 30, // 旋转角度
-                interval: 3  //设置X轴数据间隔几个显示一个，为0表示都显示
+                interval: getInterval(legendData)  //设置X轴数据间隔几个显示一个，为0表示都显示
             }
         },
         yAxis: {
@@ -308,7 +356,6 @@ function renderAreaLine(id, title, legendData, data) {
     });
 }
 
-let color = ['#3682be','#45a776','#7e5ef0','#bd6b08','#334f65','#85c021','#38cb7d','#00686b','#844bb3','#555555'];
 function renderMap(id, title, bizData, jsonMap) {
     let mapCharts = echarts.init(document.getElementById(id));
     echartMap[id]=mapCharts;
@@ -440,4 +487,9 @@ function dataDrill(dom,param) {
 function getBackColor(){
     let i = Math.floor(Math.random()*10+1)
     return color[i];
+}
+function getInterval(legend) {
+    if(legend.length/15 > 1){
+        return Math.floor(legend.length/15);
+    }
 }

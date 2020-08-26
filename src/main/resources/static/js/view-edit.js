@@ -240,6 +240,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 		let sql = editor.getValue();
 		console.log(sql);
 		//add variables
+		variables=[];
 		let k = variables.length;
 		for(let prop in variablesMap){
 			variables[k] = variablesMap[prop];
@@ -372,7 +373,9 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table','ace.m
 	variables = JSON.parse(viewModel.variable);
 	$.each(variables,function (index,item) {
 		//console.log(index,item);
-		$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + item.name + '</span></li>');
+		//$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + item.name + '</span></li>');
+		$('#varArea').append('<li class="varBoxLi" lay-value="'+item.name+'" onclick="deleteVariable(this,\''+item.name+'\')"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + item.name + '</span></li>');
+
 	})
 
 	//
@@ -502,7 +505,7 @@ function saveModel() {
 	let description = $("#description").val();
 	let sql = editor.getValue();
 	//add variables
-	let k = variables.length;
+	let k = 0;
 	for(let prop in variablesMap){
 		console.log(prop, variablesMap[prop]);
 		variables[k] = variablesMap[prop];
@@ -542,6 +545,44 @@ function saveModel() {
 		}
 	});
 }
-function setDataChecked() {
-	//originalModel
+function addMap(data) {
+	console.log("data: " + data);
+	let defaultValues = [];
+	if(data.defaultValues === "") {
+		data.defaultValues = defaultValues;
+	}
+	else {
+		defaultValues[0] = data.defaultValues;
+		data.defaultValues = defaultValues;
+	}
+	let isExist = false;
+	$.each(variablesMap,function (index,item) {
+		console.log(index,item)
+		if(item.name === data.name) {
+			isExist = true;
+		}
+	})
+	if(!isExist)
+		variablesMap[data.name] = data;
+	$('#varArea').append('<li class="varBoxLi" lay-value="'+data.name+'" onclick="deleteVariable(this,\''+data.name+'\')"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
+
+}
+
+/**
+ * remove variable
+ * @param data
+ */
+function deleteVariable(obj,data) {
+	let newVarMap = {};
+	$.each(variablesMap,function (index,item) {
+		console.log(index,item)
+		if(item.name !== data) {
+			variablesMap[index]=item;
+		}
+	})
+
+	console.log("variableMap: " , variablesMap);
+	variablesMap= newVarMap;
+	let select = 'li[lay-value=\'' + data + '\']';
+	$(select).remove();
 }

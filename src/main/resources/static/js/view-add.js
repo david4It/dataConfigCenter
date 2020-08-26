@@ -643,7 +643,23 @@ function addMap(data) {
 		data.defaultValues = defaultValues;
 	}
 	variablesMap[data.name] = data;
-	$('#varArea').append('<li class="varBoxLi"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
+	$('#varArea').append('<li class="varBoxLi" lay-value="'+data.name+'" onclick="deleteVariable(this,\''+data.name+'\')"><span class="varBox">QUERY</span><span style="margin-left: 1rem;" >' + data.name + '</span></li>');
 
-	console.log(variablesMap);
+}
+
+/**
+ * remove variable
+ * @param data
+ */
+function deleteVariable(obj,data) {
+	let newVarMap = {};
+	$.each(variablesMap,function (index,item) {
+		console.log(index,item)
+		if(index !== data) {
+			variablesMap[index]=item;
+		}
+	})
+	variablesMap= newVarMap;
+	let select = 'li[lay-value=\'' + data + '\']';
+	$(select).remove();
 }
