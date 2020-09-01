@@ -8,9 +8,9 @@ Vue.component('bar_style_form', {
             :close-on-click-modal="false"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
-            <el-form-item label="柱状颜色">
-                <el-color-picker v-model="style.color[0]"></el-color-picker>
-            </el-form-item>
+<!--            <el-form-item label="柱状颜色">-->
+<!--                <el-color-picker v-model="style.color[0]"></el-color-picker>-->
+<!--            </el-form-item>-->
             <el-form-item label="X轴文字颜色">
                 <el-color-picker v-model="style.xAxis.axisLine.lineStyle.color"></el-color-picker>
             </el-form-item>
@@ -19,6 +19,23 @@ Vue.component('bar_style_form', {
             </el-form-item>
             <el-form-item label="Y轴描述名称">
                 <el-input v-model="style.yAxis.name"></el-input>
+            </el-form-item>
+            <el-form-item label="X轴描述名称">
+                <el-input v-model="style.xAxis.name"></el-input>
+            </el-form-item>
+            <el-form-item label="数据显示方向">
+                <el-select v-model="direction" placeholder="请选择" @change="directionChanged">
+                    <el-option
+                      key="horizontal"
+                      label="横向"
+                      value="horizontal">
+                    </el-option>
+                    <el-option
+                      key="vertical"
+                      label="纵向"
+                      value="vertical">
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="动画效果">
                 <el-select v-model="style.cusAnimation.enable" placeholder="请选择">
@@ -62,16 +79,17 @@ Vue.component('bar_style_form', {
     </el-dialog>`,
     data: function() {
         return {
+            direction: 'vertical',
             style: {
-                //柱状颜色
-                color: ['#3297db'],
                 xAxis: {
                     axisLine: {
                         //X轴文字颜色
                         lineStyle: {
                             color: '#ffffff'
                         }
-                    }
+                    },
+                    type: 'category',
+                    name: null
                 },
                 yAxis: {
                     //y轴文字颜色
@@ -80,6 +98,7 @@ Vue.component('bar_style_form', {
                             color: '#ffffff'
                         }
                     },
+                    type: 'value',
                     name: null
                 },
                 cusAnimation: {
@@ -111,6 +130,9 @@ Vue.component('bar_style_form', {
             if (val) {
                 this.resetStyle();
                 mergeRecursive(this.style, this.config);
+                if (this.style.xAxis.type) {
+                    this.direction = this.style.xAxis.type === 'category' ? 'vertical' : 'horizontal';
+                }
             }
         }
     },
@@ -129,16 +151,17 @@ Vue.component('bar_style_form', {
         },
         resetStyle() {
             let me = this;
+            me.direction = 'vertical';
             me.style = {
-                //柱状颜色
-                color: ['#3297db'],
                 xAxis: {
                     axisLine: {
                         //X轴文字颜色
                         lineStyle: {
                             color: '#ffffff'
                         }
-                    }
+                    },
+                    type: 'category',
+                    name: null
                 },
                 yAxis: {
                     //y轴文字颜色
@@ -147,6 +170,7 @@ Vue.component('bar_style_form', {
                             color: '#ffffff'
                         }
                     },
+                    type: 'value',
                     name: null
                 },
                 cusAnimation: {
@@ -161,6 +185,16 @@ Vue.component('bar_style_form', {
                 //     }
                 // }
             };
+        },
+        directionChanged(val) {
+            let me = this;
+            if (val ===  'vertical') {
+                me.style.xAxis.type = 'category';
+                me.style.yAxis.type = 'value';
+            } else {
+                me.style.yAxis.type = 'category';
+                me.style.xAxis.type = 'value';
+            }
         }
     }
 });

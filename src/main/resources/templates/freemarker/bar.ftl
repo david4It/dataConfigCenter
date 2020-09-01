@@ -38,8 +38,7 @@
                     },
                     xAxis:
                         {
-                            name: '',
-                            type: null,
+                            type: 'category',
                             data: [],
                             axisTick: {
                                 alignWithLabel: false
@@ -52,8 +51,7 @@
                         },
                     yAxis:
                         {
-                            name: '',
-                            type: null,
+                            type: 'value',
                             data: [],
                             axisLine: {
                                 lineStyle: {
