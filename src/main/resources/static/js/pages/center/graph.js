@@ -131,7 +131,7 @@ Vue.component('graph', {
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="displayDesField()" label="描述字段" prop="desField"
+            <el-form-item v-if="displayDesField()" label="维度字段" prop="desField"
                 :rules="[{required: true, validator: validateDesField, trigger: 'blur'}]">
                 <el-select v-model="component.desField" placeholder="请选择">
                     <el-option
@@ -145,6 +145,17 @@ Vue.component('graph', {
             <el-form-item v-if="displaySingleValueField()" label="数值字段" prop="valueField"
                 :rules="[{required: true, validator: validateValueField, trigger: 'blur'}]">
                 <el-select v-model="component.valueField" placeholder="请选择">
+                    <el-option
+                      v-for="item in selections"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item v-if="displayLegendField()" label="类别字段" prop="valueField"
+                :rules="[{required: true, validator: validateLegendField, trigger: 'blur'}]">
+                <el-select v-model="component.legendField" placeholder="请选择">
                     <el-option
                       v-for="item in selections"
                       :key="item.value"
@@ -368,9 +379,14 @@ Vue.component('graph', {
             }
             //根据不同图表类型，对数据进行预处理
             switch (c.type) {
+                case 'bar':
+                    c.desField = c.categoryValuePattern.split(":")[0];
+                    c.valueField = c.categoryValuePattern.split(":")[1];
+                    c.legendField = c.categoryValuePattern.split(":")[2];
+                    me.component = deepCopy(c);
+                    break;
                 case 'line':
                 case 'pie':
-                case 'bar':
                 case 'gauge':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     c.valueField = c.categoryValuePattern.split(":")[1];
@@ -434,6 +450,9 @@ Vue.component('graph', {
                                 }
                                 if (me.component.valueField) {
                                     me.component.valueField = null;
+                                }
+                                if (me.component.legendField) {
+                                    me.component.legendField = null;
                                 }
                                 res.data.result.forEach(f => {
                                     me.selections.push({label: f, value: f});
@@ -505,7 +524,14 @@ Vue.component('graph', {
         },
         validateDesField(rule, value, callback) {
             if (!value) {
-                callback(new Error("描述字段不能为空"));
+                callback(new Error("维度字段不能为空"));
+            } else {
+                callback();
+            }
+        },
+        validateLegendField(rule, value, callback) {
+            if (!value) {
+                callback(new Error("类别字段不能为空"));
             } else {
                 callback();
             }
@@ -527,6 +553,10 @@ Vue.component('graph', {
             let me = this;
             return me.selections.length > 0 && (me.component.type === 'line'
                 || me.component.type === 'bar' || me.component.type === 'pie'|| me.component.type === 'gauge');
+        },
+        displayLegendField() {
+            let me = this;
+            return me.selections.length > 0 && (me.component.type === 'bar');
         },
         displayMultiValueField() {
             let me = this;
@@ -646,9 +676,12 @@ Vue.component('graph', {
                         me.component.params = me.params.length > 0 ? me.params.toString() : null;
                     }
                     switch (me.component.type) {
+                        case 'bar':
+                            me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField
+                                + ":" + me.component.legendField;
+                            break;
                         case 'line':
                         case 'pie':
-                        case 'bar':
                         case 'gauge':
                             me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField;
                             break;
