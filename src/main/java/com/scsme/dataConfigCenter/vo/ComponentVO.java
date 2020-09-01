@@ -16,6 +16,7 @@ public class ComponentVO extends Component {
     private String linkEnabled;
     private Boolean sqlValid;
     private Boolean animationEnabled = false;
+    private Boolean isVertical = true;
     public Component trans(){
         Component component = new Component();
         component.setLayoutId(this.getLayoutId());
@@ -61,6 +62,11 @@ public class ComponentVO extends Component {
             JSONObject jsonObject = JSONObject.parseObject(component.getConfigJson());
             if (jsonObject.containsKey("cusAnimation") && "Y".equals(jsonObject.getJSONObject("cusAnimation").getString("enable"))) {
                 this.setAnimationEnabled(true);
+            }
+            if (this.getType().equals("bar")) {
+                if (jsonObject.containsKey("xAxis") && "value".equals(jsonObject.getJSONObject("xAxis").getString("type"))) {
+                    this.setIsVertical(false);
+                }
             }
         }
         return this;

@@ -1,4 +1,5 @@
         //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-bar
+<#--                <script type="text/javascript">-->
         component_${vo.getLocationIndex()}() {
             axios.post("/statistics/preview", {componentId: ${vo.getId()}}).then((res) => {
                 let myChart = echarts.init(document.getElementById("${'component_' + vo.getLocationIndex()}"));

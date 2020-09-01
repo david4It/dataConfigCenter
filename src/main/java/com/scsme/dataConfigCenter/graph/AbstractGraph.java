@@ -21,6 +21,7 @@ public abstract class AbstractGraph {
     static final String LEGEND_DATA = "legendData";
     static final String SERIES_DATA = "seriesData";
     static final String X_AXIS_DATA = "xAxisData";
+    static final String AXIS_DATA = "axisData";
     static final String NAME = "name";
     static final String VALUE = "value";
     static final String MAX = "max";
