@@ -490,12 +490,7 @@ function renderGraph(obj,type,id){
 		case "map":
 			selectedChartIndex = 5;
 			let config = globalWidgetData.config;
-			if(config.map == null) {
-				let map = {};
-				map['mapName']='cdArea';
-				map['areaName']='chengdu';
-				config.map = map;
-			}
+			setConfig("四川省",config);
 			let viewData =  getDataByViewId(viewId);
 			let graphData = buildMapData(viewData);
 			renderMap(id,"",graphData,config);

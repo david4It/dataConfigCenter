@@ -50,13 +50,13 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 		headers: {
 			"Authorization": token //此处放置请求到的用户token
 		}
-		,cellMinWidth: 0.2*w0
+		,cellMinWidth: 0.1*w0
 		,cols: [[
 			{type:'checkbox'}
 			,{field:'id',title: '序号'}
-			,{field:'name', width:0.5*w0, title: '名称'}
+			,{field:'name', width:1.5*w0, title: '名称'}
 			,{field:'description', width:1*w0, title: '描述', sort: true}
-			,{field:'config', width:3*w0, title: '数据描述', sort: true}
+			,{field:'config', width:1*w0, title: '数据描述', sort: true}
 			]]
 		,page: true   //开启分页
 		,response:{

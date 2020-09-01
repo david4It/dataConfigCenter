@@ -71,12 +71,7 @@ function renderDispGraph(widget,type,id){
             break;
         case "map":
             let config = JSON.parse(widget.config);
-            if(config.map == null) {
-                let map = {};
-                map['mapName']='cdArea';
-                map['areaName']='chengdu';
-                config.map = map;
-            }
+            setConfig("四川省",config);
             let graphData = buildMapData(viewData);
             renderMap(id,"",graphData,config);
             break;
@@ -84,16 +79,29 @@ function renderDispGraph(widget,type,id){
             break;
     }
 }
+
+/**
+ * widget 下钻
+ * @param widget
+ * @param type
+ * @param id 绘图所在ID
+ * @param title graph title
+ * @param queryVal 查询参数值
+ * @param param 查询参数, TODO：这个参数暂时没有使用。
+ */
 function renderWidgetGraph(widget,type,id,title,queryVal,param){
     if(id == null || id  === "")
         id="graphArea";
     let config = JSON.parse(widget.config);
     //console.log("config:" , config)
     let viewData = getViewDataByViewId(widget,param,queryVal);
-    let graphData = buildGraphData(viewData,widget);
-    if(graphData == null) return;
-    let bizData = graphData.showedData;
-    let legendData = graphData.legendData;
+    let graphData,bizData,legendData;
+    if(type !== "map") {
+        graphData = buildGraphData(viewData, widget);
+        if (graphData == null) return;
+        bizData = graphData.showedData;
+        legendData = graphData.legendData;
+    }
     switch (type) {
         case "area":
             renderAreaLine(id,title,legendData,bizData);
@@ -108,12 +116,7 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
             renderBar(id,title,legendData,bizData);
             break;
         case "map":
-            if(config.map == null) {
-                let map = {};
-                map['mapName']='cdArea';
-                map['areaName']='chengdu';
-                config.map = map;
-            }
+            setConfig("四川省",config);
             let graphData = buildMapData(viewData);
             renderMap(id,title,graphData,config);
             break;
@@ -147,7 +150,7 @@ function getViewDataByViewId(widget,param,paramVal) {
     let catsAndVal = getCategoriesAndValuesFromWidgetData(widget);
     aggregators = catsAndVal.aggregators;
     groups = catsAndVal.groups;
-    //build params
+    //构建查询参数，因为查询参数可能有多个，这里可能会出现查询参数赋值错误的问题，因为这里是根据view的参数来批量进行的
     let params =[];
     if(paramVal != null) {
         let values = paramVal.split("-");
@@ -296,10 +299,42 @@ function buildGraphData(viewData,widget) {
  * 已知widgets,绘制widget图像 。
  * @param obj
  */
-function drawDispWidget(selectedWidgets) {
+function drawDispWidget(selectedWidgets,memSlideWidgets) {
     //console.log("selected widgets",selectedWidgets)
-    //保存数据
     // display select widget to canvas
+    if(memSlideWidgets != null){
+        // 编辑大屏，从数据库读取的widgets
+        $.each(memSlideWidgets,function (index,item) {
+            let widgetId = item.widgetId;
+            let grahpId = "displayWidget_" + widgetId;
+            //getViewId
+            let widget = null;
+            $.each(selectedWidgets,function (index,item) {
+                if(item.id === widgetId) {
+                    widget = item;
+                    return false;//退出循环
+                }
+            });
+
+            let widgetViewId = widget.viewId;
+            let config = JSON.parse(widget.config);
+            let graphType=config.selectedChart;
+            let widgetTitle = widget.name;
+            let secondWidgetId = "";
+            let secondWidgetAry = config.dataDrill;
+            $.each(secondWidgetAry,function(index,item){
+                if(item.level === "2") {
+                    secondWidgetId = item.widgetId;
+                    return false;
+                }
+            });
+            addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId,JSON.parse(item.params));
+            commonRenderGraph(graphType,item,grahpId);
+        });
+
+        return false;
+    }
+    //新增
     for(let prop in selectedWidgets){
         //console.log("prop",prop,selectedWidgets[prop]);
         let grahpId = "displayWidget_" + selectedWidgets[prop].id;
@@ -307,44 +342,61 @@ function drawDispWidget(selectedWidgets) {
         let config = JSON.parse(selectedWidgets[prop].config)
         let graphType=config.selectedChart;
         let widgetTitle = selectedWidgets[prop].name;
-        addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
-        setGraphAxisAndWh(graphId,selectedWidgets[prop].id,grid);
-        //渲染图形
-        switch (graphType) {
-            case 1:
-                //面积图
-                renderDispGraph(selectedWidgets[prop],"area",grahpId);
-                break;
-            case 2:
-                //柱状图
-                renderDispGraph(selectedWidgets[prop],"bar",grahpId);
-                break;
-            case 3:
-                //折线图
-                renderDispGraph(selectedWidgets[prop],"line",grahpId);
-                break;
-            case 4:
-                //饼图
-                renderDispGraph(selectedWidgets[prop],"pie",grahpId);
-                break;
-            case 5:
-                //地图
-                renderDispGraph(selectedWidgets[prop],"map",grahpId);
-                break;
-            case 6:
-                break;
-            default:
-                break;
-        }
+        let secondWidgetId = "";
+        let secondWidgetAry = config.dataDrill;
+        $.each(secondWidgetAry,function(index,item){
+            if(item.level === "2") {
+                secondWidgetId = item.widgetId;
+                return false;
+            }
+        });
+        addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId,null);
+        commonRenderGraph(graphType,selectedWidgets[prop],grahpId);
     }
 }
-
+function commonRenderGraph(graphType,widget,graphId){
+    //渲染图形
+    switch (graphType) {
+        case 1:
+            //面积图
+            renderDispGraph(widget,"area",graphId);
+            break;
+        case 2:
+            //柱状图
+            renderDispGraph(widget,"bar",graphId);
+            break;
+        case 3:
+            //折线图
+            renderDispGraph(widget,"line",graphId);
+            break;
+        case 4:
+            //饼图
+            renderDispGraph(widget,"pie",graphId);
+            break;
+        case 5:
+            //地图
+            renderDispGraph(widget,"map",graphId);
+            break;
+        case 6:
+            break;
+        default:
+            break;
+    }
+}
 /**
  *
  * @param displayWidgetId
  */
-function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
-    grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle), {minWidth: 5, minHeight: 5});
+function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId,config) {
+    if(config == null){
+        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId), {minWidth: 5, minHeight: 5});
+    }else{
+        let x = config.positionX;
+        let y = config.positionY;
+        let width = config.width;
+        let height = config.height;
+        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId), x,y,width,height,false);
+    }
 
 }
 
@@ -353,36 +405,14 @@ function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
  * @param displayWidgetId
  * @returns {string}
  */
-function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle) {
+function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId) {
     return '<div>' +
-        '<div class="grid-stack-item-content" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
-        '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
-        '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style="text-align: center; height: 90%;">内容</div>' +
+        '<div class="grid-stack-item-content" second-widget-id="'+secondWidgetId +'" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
+        '<div id="title" ondblclick="editTitle(this)" style="text-align: center;color: #fff; height: 30px; border-bottom: solid 0px #ccc">'+widgetTitle+'</div>' +
+        '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style=" height: 85%;">内容</div>' +
         '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
         '</div>' +
         '</div>';
-}
-/**
- * 设置图形位置及大小
- * @param graphHtmlId
- * @param widgetId
- */
-function setGraphAxisAndWh(dbMemWidgets,graphHtmlId,widgetId,gridStack) {
-    let gridDiv = $("#"+graphHtmlId)[0].parentNode.parentNode;
-    //console.log(gridDiv,widgetId);
-    if(dbMemWidgets == null)
-        dbMemWidgets = getMemWidgetsFromDb();
-    $.each(dbMemWidgets,function(index,item){
-        console.log("$(gridDiv): ",$(gridDiv))
-        let params = item.params;
-        if(item.widgetId === widgetId){
-            gridStack.update($(gridDiv),params.positionX, params.positionY, params.width, params.height);
-            gridDiv.setAttribute("data-gs-x",params.positionX);
-            gridDiv.setAttribute("data-gs-y",params.positionY);
-            gridDiv.setAttribute("data-gs-width",params.width);
-            gridDiv.setAttribute("data-gs-height",params.height);
-        }
-    });
 }
 /**
  * build map legendData & showed data.
@@ -407,7 +437,7 @@ function buildMapData(viewData) {
         })
         retData[i]=showedData;
     }
-    console.log("retData:",retData)
+    //console.log("retData:",retData)
     mapData["bizData"]=retData;
     mapData["nameMap"]=nameMap;
     return mapData;

@@ -168,7 +168,7 @@ function getWidgets(displayId, displaySlideId){
             if (data.code == 0) {
                 //layer.msg("查询成功", {icon: 1, time: 1000});
                 ret = data.data;
-                console.log("#### ret = : ",ret)
+                //console.log("#### ret = : ",ret)
                 //end
                 $.cookie("token",data.token,{
                     expires: 10
@@ -490,38 +490,6 @@ function deleteSlideMemWidgit(displayId,slideId,memWidgetId){
    // return ret;
 }
 
-/**
- * get map data by map name, default is chengdu
- * @param mapName
- * @returns {boolean}
- */
-function getMapDataByMapName(mapName){
-    if(mapName === "" || mapName == null) mapName = 'cdArea';
-    let ret = null;
-    $.ajax({
-        url: "/json/"+ mapName + '.json',
-        type: "GET",
-        dataType: "json",
-        contentType: "application/json;charset=utf-8",
-        xhrFields: {
-            withCredentials: true //允许跨域带Cookie
-        },
-        async: false,
-        success: function (data) {
-            if (data != null ) {
-                //layer.msg("查询成功", {icon: 1, time: 1000});
-                console.log(data);
-                ret = data;
-            } else {
-                layer.msg("查询失败", {icon: 2, time: 1000});
-            }
-        },
-        fail: function (data) {
-            layer.msg("查询失败", {icon: 2, time: 1000});
-        }
-    });
-    return ret;
-}
 /**
  * get view data by view id
  * /1/getdata

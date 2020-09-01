@@ -70,16 +70,16 @@
         }
         .contain-arrange{
             float: left;
-            margin-left: 0.2rem;
+            margin-left: 0.02rem;
         }
         .grid-stack {
-            height: 100%;
+            height: auto;
             /*border: 1px solid #bfbfbf;*/
-            background-image: linear-gradient(90deg, rgba(173, 178, 183, 0.15) 10%, rgba(0, 0, 0, 0) 10%),
+           /* background-image: linear-gradient(90deg, rgba(173, 178, 183, 0.15) 10%, rgba(0, 0, 0, 0) 10%),
             linear-gradient(rgba(145, 182, 232, 0.15) 10%, rgba(0, 0, 0, 0) 10%);
-            background-size: 10px 10px;
+            background-size: 10px 10px;*/
         }
-        .grid-stack-item-content { background-color: whitesmoke; }
+        .grid-stack-item-content { background-color: transparent; }
     </style>
 
 </head>
@@ -119,16 +119,19 @@
 
     </div>
 
-    <div class="contain-arrange" style="width: 70%;height: 100%; ">
-        <div id="graphArea" class="grid-stack grid-stack-10" style="min-height: 100%">
+    <div class="contain-arrange" style="width: 70%;height: 100%;background:url('\\images\\display\\bluestar.jpg') no-repeat;background-size:100% 100%;  ">
 
-        </div>
+            <div id="graphArea" class="grid-stack grid-stack-instance-372"
+                 style="min-height: 100%;">
+
+            </div>
+
     </div>
     <div class="contain-arrange"  style="width: 9%;height: 97.5%; border-left: solid 1px #bfbfbf; ">
-        <div class="grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)"></div>
+        <div class="grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)">仪表盘</div>
     </div>
     <div class="contain-arrange"  style="width: 9%;height: 97.5%; border-left: solid 1px #bfbfbf; ">
-        <div class=" grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)"></div>
+        <div class=" grid-stack-10" style="min-height: 100%;background-color: rgba(0, 0, 0, 0)">屏幕设置</div>
     </div>
 <!--    <div  style="float: left;width: 97.8%;min-height: 3rem;margin-top:0.2rem; border: solid 1px #bfbfbf; ">
     </div>-->
@@ -138,28 +141,40 @@
 
 <script type="text/javascript" src="/js/framework/axios.js"></script>
 <script type="text/javascript" src="/js/framework/vue.js"></script>
-<!--<script type="text/javascript" src="/js/framework/httpVueLoader.js"></script>
-<script type="text/javascript" src="/js/framework/datav.min.vue.js"></script>-->
+<script type="text/javascript" src="/js/framework/datav.min.vue.js"></script>
 <script type="text/javascript" src="/js/pages/request.js"></script>
 <script type="text/javascript" src="/js/pages/global.js"></script>
 <script src="js/jquery-3.4.1.min.js"></script>
+<script src="js/framework/echarts.min.js"></script>
 <script src="lib/layui/layui.js"></script>
 <script src="js/jquery.cookie.min.js"></script>
 <script src="js/common.js"></script>
 <script src="js/biz-common.js"></script>
-<script src="js/framework/echarts.min.js"></script>
 <script src="js/graph/pie.js"></script>
+<script src="js/graph/map2d.js"></script>
+<script src="json/draw-citymap.js"></script>
+<script src="json/china.js"></script>
 <script src="js/componentGraph.js"></script>
 <script src="js/display-add.js"></script>
 <script type="text/javascript">
+    let app = new Vue({
+        el: '#graphArea',
+        mounted: function() {
+            //应该注意的是，使用mounted 并不能保证钩子函数中的 this.$el 在 document 中。为此还应该引入       Vue.nextTick/vm.$nextTick
+
+        },
+        methods: {
+
+        }
+        //end method
+
+    });
     let catsAndVal,globalViewData;
     let dbMemWidgets = getMemWidgetsFromDb();
-    let grid = GridStack.init({column: 10,disableOneColumnMode: true,  resizable: {
-            handles: 'e, se, s, sw, w'
-    }});
+    let grid = GridStack.init({float:true});
 
     function addWidget() {
-        grid.addWidget(widgetHTML(), {minWidth: 4, minHeight: 6});
+        grid.addWidget(widgetHTML(), {minWidth: 4, minHeight: 5});
     }
     function borderDisplay(event) {
         $('.grid-stack-item-content').each((index, item) => {
@@ -198,12 +213,12 @@
         deleteSlideMemWidgit(displayId,displaySlideId,dispMemWidgetId);
     }
     function widgetHTML() {
-        return '<div>' +
+        return '<div><dv-border-box-8>' +
             '<div class="grid-stack-item-content" onclick="borderDisplay(this)">' +
-            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">标题</div>' +
+            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px;color:#fff; border-bottom: solid 1px #ffffff">标题</div>' +
             '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
             '</div>' +
-            '</div>';
+            '</dv-border-box-8></div>';
     }
     function saveLayout() {
         let title =  $("#title").val();
@@ -262,7 +277,6 @@
             let graphType=config.selectedChart;
             let widgetTitle = selectedWidgets[prop].name;
             addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle);
-            setGraphAxisAndWh(dbMemWidgets,grahpId,selectedWidgets[prop].id,grid);
             //渲染图形
             switch (graphType) {
                 case 1:
@@ -298,9 +312,40 @@
      * 一致widgets,绘制widget图像 。
      * @param obj
      */
-    function drawDispWidget(selectedWidgets) {
+    function drawDispWidget(selectedWidgets,dbMemWidgets) {
         //console.log("selected widgets",selectedWidgets)
-        //保存数据
+        if(dbMemWidgets != null){
+            // 编辑大屏，从数据库读取的widgets
+            $.each(dbMemWidgets,function (index,item) {
+                let widgetId = item.widgetId;
+                let grahpId = "displayWidget_" + widgetId;
+                //getViewId
+                let widget = null;
+                $.each(selectedWidgets,function (index,item) {
+                    if(item.id === widgetId) {
+                        widget = item;
+                        return false;//退出循环
+                    }
+                })
+
+                let widgetViewId = widget.viewId;
+                let config = JSON.parse(widget.config)
+                let graphType=config.selectedChart;
+                let widgetTitle = widget.name;
+                let secondWidgetId = "";
+                let secondWidgetAry = config.dataDrill;
+                $.each(secondWidgetAry,function(index,item){
+                    if(item.level === "2") {
+                        secondWidgetId = item.widgetId;
+                        return false;
+                    }
+                });
+                addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId,JSON.parse(item.params));
+                commonRenderGraph(graphType,widget,grahpId);
+            })
+
+            return false;
+        }
         // display select widget to canvas
         for(let prop in selectedWidgets){
             //console.log("prop",prop,selectedWidgets[prop]);
@@ -318,62 +363,10 @@
                 }
             });
             addGraphWidget(grahpId,widgetViewId,graphType,widgetTitle,secondWidgetId);
-            //设置图形大小；
-            setGraphAxisAndWh(dbMemWidgets,grahpId,selectedWidgets[prop].id,grid);
-
-            //渲染图形
-            switch (graphType) {
-                case 1:
-                    //面积图
-                    renderDispGraph(selectedWidgets[prop],"area",grahpId);
-                    break;
-                case 2:
-                    //柱状图
-                    renderDispGraph(selectedWidgets[prop],"bar",grahpId);
-                    break;
-                case 3:
-                    //折线图
-                    renderDispGraph(selectedWidgets[prop],"line",grahpId);
-                    break;
-                case 4:
-                    //饼图
-                    renderDispGraph(selectedWidgets[prop],"pie",grahpId);
-                    break;
-                case 5:
-                    //地图
-                    renderDispGraph(selectedWidgets[prop],"map",grahpId);
-                    break;
-                case 6:
-                    break;
-                default:
-                    break;
-            }
+            commonRenderGraph(graphType,selectedWidgets[prop],grahpId)
         }
     }
 
-    /**
-     *
-     * @param displayWidgetId
-     */
-    function addGraphWidget(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId) {
-        grid.addWidget(widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId), {minWidth: 3, minHeight: 4});
-
-    }
-
-    /**
-     *
-     * @param displayWidgetId
-     * @returns {string}
-     */
-    function widgetGraphHTML(displayWidgetId,widgetViewId,widgetType,widgetTitle,secondWidgetId) {
-        return '<div>' +
-            '<div class="grid-stack-item-content" second-widget-id="'+secondWidgetId +'" widget-id="'+ displayWidgetId  +'"  view-id="'+ widgetViewId +'" widget-type="'+ widgetType +'" onclick="borderDisplay(this)">' +
-            '<div id="title" ondblclick="editTitle(this)" style="text-align: center; height: 30px; border-bottom: solid 1px black">'+widgetTitle+'</div>' +
-            '<div id="' + displayWidgetId + '" ondblclick="editTitle(this)" style=" height: 90%;">内容</div>' +
-            '<button style="position: absolute; left: 5px; bottom: 5px;" onclick="remove(this)">删除</button>' +
-            '</div>' +
-            '</div>';
-    }
     /**
      * render graphics
      */
@@ -381,6 +374,7 @@
         if(id == null || id  === "")
             id="graphArea";
         let bizData , legendData;
+        //console.log(obj,type,id)
         catsAndVal = getCategoriesAndValuesFromWidgetData(obj);
         globalViewData = getDataByViewId(obj);
         //改变颜色  mouseclick-icon
@@ -407,12 +401,7 @@
                 break;
             case "map":
                 let config = JSON.parse(obj.config);
-                if(config.map == null) {
-                    let map = {};
-                    map['mapName']='cdArea';
-                    map['areaName']='chengdu';
-                    config.map = map;
-                }
+                setConfig("四川省",config);
                 let graphData = buildMapData(globalViewData);
                 renderMap(id,"",graphData,config);
                 break;
@@ -489,7 +478,7 @@
             groups=[];
         let ret={};
         //console.log("#### widgetData.config : ",widgetData.config)
-        let config = JSON.parse(widgetData.config)
+        let config = JSON.parse(widgetData.config);
         //取category columns
         let cateoryNodes = config.cols;
         let j = 0;
@@ -629,7 +618,7 @@
             obj.name = widget.name;
             obj.widgetId = widget.id;
             obj.displaySlideId = displaySlideId;
-            obj.params='{"width":460,"height":340,"positionX":16,"positionY":16,"backgroundColor":[255,255,255,0],"borderColor":[0,0,0],"borderWidth":null,"borderStyle":"solid","borderRadius":null,"polling":"false"}';
+            obj.params='{"width":6,"height":6,"positionX":0,"positionY":0,"backgroundColor":[255,255,255,0],"borderColor":[0,0,0],"borderWidth":null,"borderStyle":"solid","borderRadius":null,"polling":"false"}';
             memDispSlideWidgets[k]=obj;
             k++;
         }
@@ -647,12 +636,11 @@
                 width:items[i].width,
                 height:items[i].height
             }
-            console.log(items)
+            console.log("grid change: " + items)
             let obj = $(items[i].el.firstChild).attr("widget-id");
             console.log(obj)
             memWidgets[obj]=widgetsObj;
         }
-        console.log("###############" + localStorage.getItem("slideId") + localStorage.getItem("displayId"))
         $.each(memWidgets,function(index,item){
             console.log(index,item);
             let widgetId = parseInt(index.substr(index.indexOf("_") + 1));

@@ -513,7 +513,8 @@ function moniteChartsChange(){
  */
 function renderGraph(obj,type,id){
 	if(id == null || id  === "") id="graphArea";
-	console.log("type = "  + type);
+	console.log("widgetId = "  + localStorage.getItem("widgetId"));
+	$("#"+id).attr("widget-id",localStorage.getItem("widgetId"))
 	let bizData , legendData;
 	if(type === 'map'){
 
@@ -542,13 +543,11 @@ function renderGraph(obj,type,id){
 			break;
 		case "map":
 			selectedChartIndex = 5;
-			let config = globalWidgetData.config;
-			if(config.map == null) {
-				let map = {};
-				map['mapName']='cdArea';
-				map['areaName']='chengdu';
-				config.map = map;
-			}
+			let widgetId = localStorage.getItem("widgetId");
+			let widget = getWidgetByWidgetID(widgetId);
+			let config = JSON.parse(widget.config);
+			setConfig("四川",config);
+
 			let viewData =  getDataByViewId(viewId);
 			let graphData = buildMapData(viewData);
 			renderMap(id,"",graphData,config); //TODO:待修正config 配置参数

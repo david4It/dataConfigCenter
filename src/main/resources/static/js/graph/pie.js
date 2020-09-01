@@ -1,6 +1,6 @@
-let echartMap={}
+let echartMap = {};
+let color = ['#3682be', '#45a776', '#7e5ef0', '#bd6b08', '#334f65', '#85c021', '#38cb7d', '#00686b', '#844bb3', '#555555'];
 
-let color = ['#3682be','#45a776','#7e5ef0','#bd6b08','#334f65','#85c021','#38cb7d','#00686b','#844bb3','#555555'];
 /**
  * 渲染图片
  * @param id
@@ -10,7 +10,7 @@ let color = ['#3682be','#45a776','#7e5ef0','#bd6b08','#334f65','#85c021','#38cb7
  */
 function renderPie(id, title, legendData, data) {
     let myCharts1 = echarts.init(document.getElementById(id));
-    echartMap[id]=myCharts1;
+    echartMap[id] = myCharts1;
     let option1 = {
 
         title: {
@@ -23,15 +23,12 @@ function renderPie(id, title, legendData, data) {
         },
         tooltip: {
             trigger: 'item',
-            // formatter: "{a} <br/>{b} : {d}%"
+            formatter: "{a} <br/>{b}"
         },
         legend: {
-            //orient: 'vertical',
-            //left: 'right',
+            left: 'center',
+            top: 'bottom',
             data: legendData,
-            top: "10%",
-            right: "2%",
-            width: "20%",
             textStyle: {
                 color: '#f2f2f2',
                 fontSize: 12,
@@ -39,7 +36,7 @@ function renderPie(id, title, legendData, data) {
         },
         series: [
             {
-                name: '半径模式',
+                name: '',
                 type: 'pie',
                 radius: [20, 110],
                 center: ['25%', '50%'],
@@ -54,30 +51,30 @@ function renderPie(id, title, legendData, data) {
                 },
                 data: data
             },
-            ,{
-            data: data,
-            type: 'pie',
-            radius: [30, 110],
-            center: ['55%', '50%'],
-            roseType: 'area',
-            emphasis: {
-                itemStyle: {
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowColor: 'rgba(255,255,255,0.55)'
-                }
-            },
-            textStyle: {
-                fontSize: 12,
-                fontWeight: 'bolder',
-                color: '#cccccc'
-            },
-        }]
+            , {
+                data: data,
+                type: 'pie',
+                radius: [30, 110],
+                center: ['75%', '50%'],
+                roseType: 'area',
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(255,255,255,0.55)'
+                    }
+                },
+                textStyle: {
+                    fontSize: 12,
+                    fontWeight: 'bolder',
+                    color: '#cccccc'
+                },
+            }]
     };
     myCharts1.setOption(option1);
     //点击事件
     myCharts1.on('click', function (param) {
-        dataDrill(this.getDom(),param);
+        dataDrill(this.getDom(), param);
     });
 }
 
@@ -90,7 +87,7 @@ function renderPie(id, title, legendData, data) {
  */
 function renderBar(id, title, legendData, data) {
     let myCharts2 = echarts.init(document.getElementById(id));
-    echartMap[id]=myCharts2;
+    echartMap[id] = myCharts2;
     let option1 = {
         title: {
             text: title,
@@ -168,7 +165,7 @@ function renderBar(id, title, legendData, data) {
 
     //点击事件
     myCharts2.on('click', function (param) {
-        dataDrill(this.getDom(),param);
+        dataDrill(this.getDom(), param);
     });
 }
 
@@ -181,7 +178,7 @@ function renderBar(id, title, legendData, data) {
  */
 function renderLine(id, title, legendData, data) {
     let myCharts3 = echarts.init(document.getElementById(id));
-    echartMap[id]=myCharts3;
+    echartMap[id] = myCharts3;
     let option1 = {
         title: {
             text: title,
@@ -236,7 +233,7 @@ function renderLine(id, title, legendData, data) {
 
     //点击事件
     myCharts3.on('click', function (param) {
-        dataDrill(this.getDom(),param);
+        dataDrill(this.getDom(), param);
     });
 }
 
@@ -258,12 +255,12 @@ function buildPieData(data) {
         let key = "";
         let oneData = bizData[i];
         for (let prop in categories) {
-            if(prop === "0"){
-                key = oneData[categories[prop]]==null?"":oneData[categories[prop]];
-            }else{
-                if(oneData[categories[prop]]==null || oneData[categories[prop]]==="") continue;
+            if (prop === "0") {
+                key = oneData[categories[prop]] == null ? "" : oneData[categories[prop]];
+            } else {
+                if (oneData[categories[prop]] == null || oneData[categories[prop]] === "") continue;
                 key += "-";
-                key += oneData[categories[prop]]==null?"":oneData[categories[prop]];
+                key += oneData[categories[prop]] == null ? "" : oneData[categories[prop]];
             }
             catI++;
         }
@@ -287,7 +284,7 @@ function buildPieData(data) {
     let retData = {};
     retData.legendData = legendData;
     retData.showedData = showedData;
-    console.log("retData",retData);
+    console.log("retData", retData);
     return retData;
 }
 
@@ -300,7 +297,7 @@ function buildPieData(data) {
  */
 function renderAreaLine(id, title, legendData, data) {
     let myCharts4 = echarts.init(document.getElementById(id));
-    echartMap[id]=myCharts4;
+    echartMap[id] = myCharts4;
     let option1 = {
         title: {
             text: title,
@@ -352,144 +349,88 @@ function renderAreaLine(id, title, legendData, data) {
 
     //点击事件
     myCharts4.on('click', function (param) {
-        dataDrill(this.getDom(),param);
+        dataDrill(this.getDom(), param);
     });
 }
 
-function renderMap(id, title, bizData, jsonMap) {
+function renderMap(id, title, bizData, mapParamJson) {
     let mapCharts = echarts.init(document.getElementById(id));
-    echartMap[id]=mapCharts;
-    if(jsonMap == null){
-        jsonMap = {};
-        let map = {};
-        map['mapName']='cdArea';
-        map['areaName']='chengdu';
-        jsonMap.map = map;
+    echartMap[id] = mapCharts;
+    if (mapParamJson == null) {
+        mapParamJson = {};
+        setConfig(mapParamJson['map'].areaName,mapParamJson)
     }
-    let data = getMapDataByMapName(jsonMap['map'].mapName);
-    echarts.registerMap(jsonMap['map'].areaName,data);
-    let option = {
-        title: {
-            text: '成都地图',
-            subtext: '数据统计'
-        },
-        tooltip: {
-            trigger: 'item',
-            formatter: '{b}<br/>{c}'
-        },
-        toolbox: {
-            show: true,
-            orient: 'vertical',
-            left: 'right',
-            top: 'center',
-            feature: {
-                dataView: {readOnly: false},
-                restore: {},
-                saveAsImage: {}
-            }
-        },
-        dataRange: {
-            min: 800,
-            max: 50000,
-            text: ['High', 'Low'],
-            realtime: true,
-            calculable: true,
-            inRange: {
-                color: ['lightskyblue', 'yellow', 'orangered']
-            }
-        },
-        series: {
-            name: '成都企业分布',
-            type: 'map',
-            mapType: jsonMap['map'].areaName,
-            label: {
-                show: true
-            },
-            data: bizData.bizData,
-           /* itemStyle: {
-                normal: { //未选中状态
-                    borderColor:'#2c2c2c',
-                    areaColor: getBackColor(),//背景颜色
-                    label: {
-                        show: true,//显示名称
-                        textStyle: {
-                            color: '#fff'
-                        }
-                    }
-                },/!*
-                emphasis: {// 也是选中样式
-                    borderColor:'#fff',
-                    areaColor: '#FF8C00',
-                    label: {
-                        show: true,
-                        textStyle: {
-                            color: '#2c2c2c'
-                        }
-                    }
-                }*!/
-            },*/
-            // 自定义名称映射
-            nameMap:bizData.nameMap
-        }
-    };
+
+    let data = getMapDataByMapName(mapParamJson['map'].areaName,mapParamJson['map'].level);
+    console.log( "mapParamJson['map'].mapName:",mapParamJson['map'].mapName );
+    console.log( "mapParamJson['map'].level:",mapParamJson['map'].level );
+    echarts.registerMap(mapParamJson['map'].mapName, data);
+
+    let option = buildOption(mapCharts,bizData,mapParamJson);
     mapCharts.setOption(option);
 
     //点击事件
     mapCharts.on('click', function (param) {
-        //dataDrill(this.getDom(),param);
+        //mapDrill(this.getDom(),param);
+        mapDrillAction(this.getDom(),param);
     });
 }
+
 window.addEventListener("resize", () => {
-    $.each(echartMap,function (index,item) {
+    $.each(echartMap, function (index, item) {
         // console.log(item)
         item.resize();
     })
 
 });
+
 /**
  * data drill to open window
  * @param param
  */
-function dataDrill(dom,param) {
+function dataDrill(dom, param) {
     console.log(param);
     let queryName = param.name;
     let titleDom = dom.previousElementSibling;
-    console.log("this dom: " ,dom);
-    console.log("title" ,titleDom);
+    console.log("this dom: ", dom);
+    console.log("title", titleDom);
     let title = titleDom.innerText;
     //displayWidget_9
     let domId = dom.id;
     //console.log("##domId = ",domId);
     let secondWidgetId = null;
-    if(domId.indexOf("_")>0) {//模板大屏
+    if (domId.indexOf("_") > 0) {//模板大屏
         let widgetId = domId.substring(domId.indexOf("_") + 1);
         let widget = getWidgetByWidgetID(widgetId);
         let config = JSON.parse(widget.config);
         let secondWidgetAry = config.dataDrill;
-        $.each(secondWidgetAry,function(index,item){
-            if(item.level === "2") {
+        $.each(secondWidgetAry, function (index, item) {
+            if (item.level === "2") {
                 secondWidgetId = item.widgetId;
                 return false;
             }
         });
-        console.log("##"+secondWidgetId);
-        if(secondWidgetId == null) return false;
-        execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
+        console.log("### " + secondWidgetId);
+        if (secondWidgetId != null && secondWidgetId !== "")
+            execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
 
-    }else{//widget
+    } else {//widget
         secondWidgetId = $(dom).attr("second-widget-id");
-        console.log("secondWidgetId ="+ secondWidgetId);
-        if(secondWidgetId == null) return false;
-        execute_open(name , "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
+        console.log("#### secondWidgetId =" + secondWidgetId);
+
+        if (secondWidgetId != null && secondWidgetId !== "")
+            execute_open(name, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
     }
 
 }
-function getBackColor(){
-    let i = Math.floor(Math.random()*10+1)
+
+function getBackColor() {
+    let i = Math.floor(Math.random() * 10 + 1)
     return color[i];
 }
+
 function getInterval(legend) {
-    if(legend.length/15 > 1){
-        return Math.floor(legend.length/15);
+    if (legend.length / 15 > 1) {
+        return Math.floor(legend.length / 15);
     }
 }

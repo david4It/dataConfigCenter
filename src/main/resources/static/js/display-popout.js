@@ -27,28 +27,29 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 	let title = getUrlParam("title");
 	let queryName = getUrlParam("queryName");
 	let widgetId = getUrlParam("widgetId");
-	let widget = getWidgetByWidgetID(widgetId);
-	let viewObj = getViewByViewID(widget.viewId);
-	let variableAry = JSON.parse(viewObj.variable);
-	console.log("view",variableAry)
-	let firstParam = null;
-	console.log("title",title)
-	if(variableAry.length > 0){
-		$.each(variableAry,function (index , item) {
-			//$('#varDiv').append('<label><select id="sel_'+item.name+'" name="paramId"  lay-filter="paramId"></select>');
-			//if(firstParam == null) firstParam = item.name;
-		})
-		/*if(variableAry.length > 1)
-			$("#varDiv").show();*/
+	if(widgetId != null && widgetId !== "") {
+		let widget = getWidgetByWidgetID(widgetId);
+		let viewObj = getViewByViewID(widget.viewId);
+		let variableAry = JSON.parse(viewObj.variable);
+		console.log("view", variableAry)
+		let firstParam = null;
+		console.log("title", title)
+		if (variableAry.length > 0) {
+			$.each(variableAry, function (index, item) {
+				//$('#varDiv').append('<label><select id="sel_'+item.name+'" name="paramId"  lay-filter="paramId"></select>');
+				//if(firstParam == null) firstParam = item.name;
+			})
+			/*if(variableAry.length > 1)
+                $("#varDiv").show();*/
+		}
+		//console
+		generateWidgetGraph(widgetId, title, queryName, "graphId", firstParam);
+
+		//trigger select
+		/*	$('#selectVariable').change(() => {
+                generateWidgetGraph(widgetId,title,queryName,"graphId",$("#selectVariable").val());
+            });*/
 	}
-	//console
-	generateWidgetGraph(widgetId, title, queryName, "graphId",firstParam);
-
-	//trigger select
-/*	$('#selectVariable').change(() => {
-		generateWidgetGraph(widgetId,title,queryName,"graphId",$("#selectVariable").val());
-	});*/
-
 
 
 });

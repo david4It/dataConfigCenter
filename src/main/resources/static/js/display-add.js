@@ -39,7 +39,7 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'colorpicker','table'], func
 		localStorage.setItem('displayId',displayId )
 		//set first slide
 		let slides = querySlidesByDisplayId(displayId);
-		console.log("slides",slides);
+		//console.log("slides",slides);
 		if(slides.length > 0){
 			localStorage.setItem("slideId",slides[0].id);
 		}
@@ -200,5 +200,5 @@ function drawPage() {
 	})
 
 	if( slidePageData.widgets !== null && slidePageData.widgets.length > 0)
-		drawDispWidget(slidePageData.widgets);
+		drawDispWidget(slidePageData.widgets,slideMemWidgets);
 }
