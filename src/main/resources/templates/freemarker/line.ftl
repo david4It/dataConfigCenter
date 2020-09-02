@@ -81,69 +81,69 @@
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
                     myChart.resize();
                     myChart.setOption(option);
-<#--                    <#if vo.getAnimationEnabled()>-->
-<#--                    myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;-->
-<#--                    myChart.animationMaxIndex = option.series.data.length - 1;-->
-<#--                    myChart.animationIndex = 0;-->
-<#--                    let showLine = (opacity) => {-->
-<#--                        let option = myChart.getOption();-->
-<#--                        if (option.tooltip[0].axisPointer && option.tooltip[0].axisPointer.lineStyle) {-->
-<#--                            option.tooltip[0].axisPointer.lineStyle.opacity = opacity;-->
-<#--                            myChart.setOption(option);-->
-<#--                        }-->
-<#--                    };-->
-<#--                    let resetFun = () => {-->
-<#--                        //重置动画效果，仅当第一次执行动画效果之后才清除动画-->
-<#--                        if (myChart.animationTimeout) {-->
-<#--                            for (let i = 0; i <= myChart.animationMaxIndex; i++) {-->
-<#--                                myChart.dispatchAction({-->
-<#--                                    type: 'downplay',-->
-<#--                                    seriesIndex: 0,-->
-<#--                                    dataIndex: i-->
-<#--                                });-->
-<#--                                myChart.dispatchAction({-->
-<#--                                    type: 'hideTip',-->
-<#--                                    seriesIndex: 0,-->
-<#--                                    dataIndex: i-->
-<#--                                });-->
-<#--                            }-->
-<#--                        }-->
-<#--                    };-->
-<#--                    let animationFun = () => {-->
-<#--                        resetFun();-->
-<#--                        showLine(0);-->
-<#--                        let nextAnimationIndex = myChart.animationIndex++;-->
-<#--                        myChart.animationTimeout = setTimeout(() => {-->
-<#--                            showLine(1);-->
-<#--                            myChart.dispatchAction({-->
-<#--                                type: 'highlight',-->
-<#--                                dataIndex: nextAnimationIndex-->
-<#--                            });-->
-<#--                            myChart.dispatchAction({-->
-<#--                                type: 'showTip',-->
-<#--                                seriesIndex: 0,-->
-<#--                                dataIndex: nextAnimationIndex-->
-<#--                            });-->
-<#--                        }, myChart.animationDuration / 2);-->
-<#--                        if (myChart.animationIndex > myChart.animationMaxIndex) {-->
-<#--                            myChart.animationIndex = 0;-->
-<#--                        }-->
-<#--                    };-->
-<#--                    myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);-->
-<#--                    myChart.on("mouseover", (params) => {-->
-<#--                        resetFun();-->
-<#--                        clearTimeout(myChart.animationTimeout);-->
-<#--                        clearInterval(myChart.animationInterval);-->
-<#--                        myChart.animationInterval = null;-->
-<#--                        myChart.animationTimeout = null;-->
-<#--                        showLine(1);-->
-<#--                    });-->
-<#--                    myChart.on("globalout", (params) => {-->
-<#--                        if (!myChart.animationInterval) {-->
-<#--                            myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);-->
-<#--                        }-->
-<#--                    });-->
-<#--                    </#if>-->
+                    <#if vo.getAnimationEnabled()>
+                    myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
+                    myChart.animationMaxIndex = option.series[0].data.length - 1;
+                    myChart.animationIndex = 0;
+                    let showLine = (opacity) => {
+                        let option = myChart.getOption();
+                        if (option.tooltip[0].axisPointer && option.tooltip[0].axisPointer.lineStyle) {
+                            option.tooltip[0].axisPointer.lineStyle.opacity = opacity;
+                            myChart.setOption(option);
+                        }
+                    };
+                    let resetFun = () => {
+                        //重置动画效果，仅当第一次执行动画效果之后才清除动画
+                        if (myChart.animationTimeout) {
+                            for (let i = 0; i <= myChart.animationMaxIndex; i++) {
+                                myChart.dispatchAction({
+                                    type: 'downplay',
+                                    seriesIndex: 0,
+                                    dataIndex: i
+                                });
+                                myChart.dispatchAction({
+                                    type: 'hideTip',
+                                    seriesIndex: 0,
+                                    dataIndex: i
+                                });
+                            }
+                        }
+                    };
+                    let animationFun = () => {
+                        resetFun();
+                        showLine(0);
+                        let nextAnimationIndex = myChart.animationIndex++;
+                        myChart.animationTimeout = setTimeout(() => {
+                            showLine(1);
+                            myChart.dispatchAction({
+                                type: 'highlight',
+                                dataIndex: nextAnimationIndex
+                            });
+                            myChart.dispatchAction({
+                                type: 'showTip',
+                                seriesIndex: 0,
+                                dataIndex: nextAnimationIndex
+                            });
+                        }, myChart.animationDuration / 2);
+                        if (myChart.animationIndex > myChart.animationMaxIndex) {
+                            myChart.animationIndex = 0;
+                        }
+                    };
+                    myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                    myChart.on("mouseover", (params) => {
+                        resetFun();
+                        clearTimeout(myChart.animationTimeout);
+                        clearInterval(myChart.animationInterval);
+                        myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
+                        showLine(1);
+                    });
+                    myChart.on("globalout", (params) => {
+                        if (!myChart.animationInterval) {
+                            myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
+                        }
+                    });
+                    </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
                         forwardUrl(param.data.extData, "${vo.getLinkUrl()}")

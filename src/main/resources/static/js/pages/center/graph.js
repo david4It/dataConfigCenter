@@ -380,12 +380,12 @@ Vue.component('graph', {
             //根据不同图表类型，对数据进行预处理
             switch (c.type) {
                 case 'bar':
+                case 'line':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     c.valueField = c.categoryValuePattern.split(":")[1];
                     c.legendField = c.categoryValuePattern.split(":")[2];
                     me.component = deepCopy(c);
                     break;
-                case 'line':
                 case 'pie':
                 case 'gauge':
                     c.desField = c.categoryValuePattern.split(":")[0];
@@ -556,7 +556,7 @@ Vue.component('graph', {
         },
         displayLegendField() {
             let me = this;
-            return me.selections.length > 0 && (me.component.type === 'bar');
+            return me.selections.length > 0 && (me.component.type === 'bar' || me.component.type === 'line');
         },
         displayMultiValueField() {
             let me = this;
@@ -677,10 +677,10 @@ Vue.component('graph', {
                     }
                     switch (me.component.type) {
                         case 'bar':
+                        case 'line':
                             me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField
                                 + ":" + me.component.legendField;
                             break;
-                        case 'line':
                         case 'pie':
                         case 'gauge':
                             me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField;

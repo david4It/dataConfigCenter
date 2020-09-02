@@ -2,13 +2,9 @@ package com.scsme.dataConfigCenter.graph;
 
 import com.alibaba.fastjson.JSONObject;
 import com.scsme.dataConfigCenter.pojo.Component;
-import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
