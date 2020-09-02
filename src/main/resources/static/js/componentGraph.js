@@ -71,7 +71,7 @@ function renderDispGraph(widget,type,id){
             break;
         case "map":
             let config = JSON.parse(widget.config);
-            setConfig("四川省",config);
+            setConfig("四川",config);
             let graphData = buildMapData(viewData);
             renderMap(id,"",graphData,config);
             break;
@@ -116,7 +116,7 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
             renderBar(id,title,legendData,bizData);
             break;
         case "map":
-            setConfig("四川省",config);
+            setConfig("四川",config);
             let graphData = buildMapData(viewData);
             renderMap(id,title,graphData,config);
             break;

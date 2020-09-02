@@ -10,16 +10,18 @@ let maxSize4Pin = 100,
  * @param mapCharts
  * @param bizData
  * @param jsonMap
+ * @param mapSvgData
  */
-function buildOption(mapCharts, bizData, jsonMap) {
+function buildMapOption(mapCharts, bizData, jsonMap,mapSvgData) {
     let map = jsonMap['map'].mapName;
+    geoCoordMap = geoCoordMap = buildGeoCoordMap(mapSvgData,bizData);
    // map = "china";
     let convertedData = convertData(bizData.bizData);
     console.log("convertedData=" + convertedData);
     let option ={
         backgroundColor: 'transparent',
         title : {
-            text: '数据分布图',
+            text: '',
             subtext: '',
             left: 'center',
             textStyle:{
@@ -58,10 +60,6 @@ function buildOption(mapCharts, bizData, jsonMap) {
             // color: ['#23074d', '#cc5333'] // 紫红
             color: ['#00467F', '#A5CC82'] // 蓝绿
             // color: ['#1488CC', '#2B32B2'] // 浅蓝
-            // color: ['#00467F', '#A5CC82'] // 蓝绿
-            // color: ['#00467F', '#A5CC82'] // 蓝绿
-            // color: ['#00467F', '#A5CC82'] // 蓝绿
-            // color: ['#00467F', '#A5CC82'] // 蓝绿
 
         }
     },
@@ -78,7 +76,7 @@ function buildOption(mapCharts, bizData, jsonMap) {
         },
         itemStyle: {
             normal: {
-                areaColor: '#ffffff',
+                areaColor: '#05C3F9',
                 borderColor: '#3B5077',
             },
             emphasis: {
@@ -234,7 +232,7 @@ function mapDrillAction(dom, param) {
     //console.log("##domId = ",domId);
     let widgetId = null;
     if (domId.indexOf("_") > 0) {//模板大屏
-        let widgetId = domId.substring(domId.indexOf("_") + 1);
+        widgetId = domId.substring(domId.indexOf("_") + 1);
         let widget = getWidgetByWidgetID(widgetId);
         let config = JSON.parse(widget.config);
 
@@ -256,6 +254,7 @@ function mapDrillAction(dom, param) {
         map['areaName']=param.name;
         map['level']= 1;//省
         mapConfig.map = map;
+        mapStack.push(param.name)
         renderMap(domId,title,graphData,mapConfig);
     } else if (param.name in cityMap) {
         //如果是【直辖市/特别行政区】只有二级下钻
@@ -265,6 +264,7 @@ function mapDrillAction(dom, param) {
             map['areaName']=param.name;
             map['level']= 2;//地市
             mapConfig.map = map;
+            mapStack.push(param.name)
             renderMap(domId,title,graphData,mapConfig);
         } else {
             //显示县级地图
@@ -273,6 +273,7 @@ function mapDrillAction(dom, param) {
             map['areaName']=param.name;
             map['level']= 2;//区县
             mapConfig.map = map;
+            mapStack.push(param.name)
             renderMap(domId,title,graphData,mapConfig);
         }
         console.log(geoCoordMap)
@@ -331,4 +332,36 @@ function setConfig(name,config) {
     map['level'] =0;
     config.map = map;
     return config;
+}
+
+/**
+ * 构建地理坐标和对应地区的业务数据键值对
+ * @param mapSvgData
+ * @param bizData
+ * @returns {Array}
+ */
+function buildGeoCoordMap(mapSvgData, bizData) {
+    let tmpGeoCoordMap = {};
+    for( let i=0;i<mapSvgData.features.length;i++ ){
+        if(mapSvgData.features[i].properties.cp === undefined || mapSvgData.features[i].properties.cp == null){
+            tmpGeoCoordMap[mapSvgData.features[i].properties.name] = mapSvgData.features[i].geometry.coordinates[0][0][0];
+        }else{
+            tmpGeoCoordMap[mapSvgData.features[i].properties.name] = mapSvgData.features[i].properties.cp;
+        }
+
+    }
+    return tmpGeoCoordMap;
+}
+
+/**
+ * 根据地理位置名称获取对应的值
+ * @param bizData
+ * @param key
+ * @returns {number}
+ */
+function getBizDataValue(bizData,key) {
+    $.each(bizData,function (index,item) {
+        if(item.name === key) return item.value;
+    })
+    return 0;
 }

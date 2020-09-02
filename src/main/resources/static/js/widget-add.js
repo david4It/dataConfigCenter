@@ -489,8 +489,8 @@ function renderGraph(obj,type,id){
 			break;
 		case "map":
 			selectedChartIndex = 5;
-			let config = globalWidgetData.config;
-			setConfig("四川省",config);
+			let config = {};
+			setConfig("四川",config);
 			let viewData =  getDataByViewId(viewId);
 			let graphData = buildMapData(viewData);
 			renderMap(id,"",graphData,config);

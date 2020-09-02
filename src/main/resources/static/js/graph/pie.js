@@ -366,7 +366,7 @@ function renderMap(id, title, bizData, mapParamJson) {
     console.log( "mapParamJson['map'].level:",mapParamJson['map'].level );
     echarts.registerMap(mapParamJson['map'].mapName, data);
 
-    let option = buildOption(mapCharts,bizData,mapParamJson);
+    let option = buildMapOption(mapCharts,bizData,mapParamJson,data);
     mapCharts.setOption(option);
 
     //点击事件
@@ -377,11 +377,7 @@ function renderMap(id, title, bizData, mapParamJson) {
 }
 
 window.addEventListener("resize", () => {
-    $.each(echartMap, function (index, item) {
-        // console.log(item)
-        item.resize();
-    })
-
+    graphResize();
 });
 
 /**
@@ -433,4 +429,11 @@ function getInterval(legend) {
     if (legend.length / 15 > 1) {
         return Math.floor(legend.length / 15);
     }
+}
+
+function graphResize() {
+    $.each(echartMap, function (index, item) {
+        // console.log(item)
+        item.resize();
+    })
 }
