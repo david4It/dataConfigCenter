@@ -1,4 +1,5 @@
         //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-line
+<#--        <script type="text/javascript">-->
         component_${vo.getLocationIndex()}() {
             axios.post("/statistics/preview", {componentId: ${vo.getId()}}).then((res) => {
                 let myChart = echarts.init(document.getElementById("${'component_' + vo.getLocationIndex()}"));
@@ -13,7 +14,11 @@
                             fontWeight: 'border'
                         }
                     },
-                    color: ['#3398DB'],
+                    legend: {
+                        textStyle: { //图例文字的样式
+                            color: '#fff' },
+                        data: ['预览数据']
+                    },
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -55,7 +60,7 @@
                         },
                     series:
                         {
-                            name: '',
+                            name: '预览数据',
                             type: 'line',
                             data: [820, 932, 901, 934],
                         }

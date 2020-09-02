@@ -14,7 +14,7 @@ public class Map extends AbstractGraph {
     }
 
     @Override
-    void transMap(ResultSet resultSet, Component component, java.util.Map<String, Object> result) throws Exception {
+    void transMap(ResultSet resultSet, java.util.Map<String, Object> result) throws Exception {
         String configJson = component.getConfigJson();
         if (StringUtils.hasText(configJson)) {
             result.put(CONFIG_JSON, new ObjectMapper().readValue(configJson, Object.class));
@@ -24,7 +24,7 @@ public class Map extends AbstractGraph {
     @Override
     java.util.Map<String, Object> getGraphicalData() throws Exception {
        java.util.Map<String, Object> result = new HashMap<>();
-       transMap(null, component, result);
+       transMap(null, result);
        return result;
     }
 }

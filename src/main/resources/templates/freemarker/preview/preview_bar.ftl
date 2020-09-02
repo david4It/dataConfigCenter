@@ -14,6 +14,11 @@
                             fontWeight: 'border'
                         }
                     },
+                    legend: {
+                        textStyle: { //图例文字的样式
+                            color: '#fff' },
+                        data: ['访问量']
+                    },
                     color: ['#3398DB'],
                     tooltip: {
                         trigger: 'axis',

@@ -15,10 +15,10 @@ public class Pie extends AbstractGraph {
     }
 
     @Override
-    void transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
+    void transMap(ResultSet resultSet, Map<String, Object> result) throws Exception {
         List<Map<String, Object>> pieSeriesData = new ArrayList<>();
         List<String> pieLegendData = new ArrayList<>();
-        arrangement(component, resultSet, pieSeriesData, pieLegendData);
+        arrangement(resultSet, pieSeriesData, pieLegendData);
         result.put(LEGEND_DATA, pieLegendData);
         result.put(SERIES_DATA, pieSeriesData);
     }

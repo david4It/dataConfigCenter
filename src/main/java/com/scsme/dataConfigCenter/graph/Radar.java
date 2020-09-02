@@ -23,7 +23,7 @@ public class Radar extends AbstractGraph {
     }
 
     @Override
-    void transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
+    void transMap(ResultSet resultSet, Map<String, Object> result) throws Exception {
         List<String> radarLegendData = new ArrayList<>();
         List<Map<String, Object>> radarIndicatorData = new ArrayList<>();
         //indicatorMaxMap用于保存各个维度的最大值

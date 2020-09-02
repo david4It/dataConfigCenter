@@ -15,9 +15,9 @@ public class Gauge extends AbstractGraph {
     }
 
     @Override
-    void transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
+    void transMap(ResultSet resultSet, Map<String, Object> result) throws Exception {
         List<Map<String,Object>> gaugeSeriesData = new ArrayList<>();
-        arrangement(component, resultSet, gaugeSeriesData, new ArrayList<>());
+        arrangement(resultSet, gaugeSeriesData, new ArrayList<>());
         result.put(SERIES_DATA, gaugeSeriesData);
     }
 }

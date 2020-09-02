@@ -22,7 +22,7 @@ public class Table extends AbstractGraph {
     }
 
     @Override
-    void transMap(ResultSet resultSet, Component component, Map<String, Object> result) throws Exception {
+    void transMap(ResultSet resultSet, Map<String, Object> result) throws Exception {
         Set<String> tableLegendData = new LinkedHashSet<>();
         List<List<Object>> tableSeriesData = new ArrayList<>();
         List<Map<String, String>> extData = new ArrayList<>();

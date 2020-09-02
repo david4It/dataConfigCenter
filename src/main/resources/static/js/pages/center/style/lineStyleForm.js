@@ -8,8 +8,8 @@ Vue.component('line_style_form', {
             :close-on-click-modal="false"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
-            <el-form-item label="折线颜色">
-                <el-color-picker v-model="style.color[0]"></el-color-picker>
+            <el-form-item label="类别文字颜色">
+                <el-color-picker v-model="style.legend.textStyle.color"></el-color-picker>
             </el-form-item>
             <el-form-item label="X轴文字颜色">
                 <el-color-picker v-model="style.xAxis.axisLine.lineStyle.color"></el-color-picker>
@@ -63,8 +63,6 @@ Vue.component('line_style_form', {
     data: function() {
         return {
             style: {
-                //折线颜色
-                color: ['#3297db'],
                 xAxis: {
                     axisLine: {
                         //X轴文字颜色
@@ -81,6 +79,11 @@ Vue.component('line_style_form', {
                         }
                     },
                     name: null
+                },
+                legend: {
+                    textStyle: {
+                        color: '#fff'
+                    }
                 },
                 series: {
                     //平滑折线
@@ -131,8 +134,6 @@ Vue.component('line_style_form', {
         resetStyle() {
             let me = this;
             me.style = {
-                //折线颜色
-                color: ['#3297db'],
                 xAxis: {
                     axisLine: {
                         //X轴文字颜色
@@ -149,6 +150,11 @@ Vue.component('line_style_form', {
                         }
                     },
                     name: null
+                },
+                legend: {
+                    textStyle: {
+                        color: '#fff'
+                    }
                 },
                 series: {
                     //平滑折线

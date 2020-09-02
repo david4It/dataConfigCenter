@@ -8,9 +8,9 @@ Vue.component('bar_style_form', {
             :close-on-click-modal="false"
             :show-close="false">
         <el-form ref="dataForm" :model="style" label-width="140px">
-<!--            <el-form-item label="柱状颜色">-->
-<!--                <el-color-picker v-model="style.color[0]"></el-color-picker>-->
-<!--            </el-form-item>-->
+            <el-form-item label="类别文字颜色">
+                <el-color-picker v-model="style.legend.textStyle.color"></el-color-picker>
+            </el-form-item>
             <el-form-item label="X轴文字颜色">
                 <el-color-picker v-model="style.xAxis.axisLine.lineStyle.color"></el-color-picker>
             </el-form-item>
@@ -101,6 +101,11 @@ Vue.component('bar_style_form', {
                     type: 'value',
                     name: null
                 },
+                legend: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
                 cusAnimation: {
                     enable: 'N',
                     duration: 5
@@ -172,6 +177,11 @@ Vue.component('bar_style_form', {
                     },
                     type: 'value',
                     name: null
+                },
+                legend: {
+                    textStyle: {
+                        color: '#fff'
+                    }
                 },
                 cusAnimation: {
                     enable: 'N',
