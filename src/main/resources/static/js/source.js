@@ -162,7 +162,8 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
             layer.msg(e.responseText, {icon: 2, time: 1000});
         }
     });
-
+	let screenWith = document.body.clientWidth;
+	let w0 = (screenWith-44) / 5;
 	table.render({
 		elem: '#orgList'  //绑定table id
 		,url:'/api/v3/sources?projectId=' + localStorage.getItem("projectId")  //数据请求路径
@@ -174,11 +175,11 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 		}
 		,cellMinWidth: 80
 		,cols: [[
-			{field:'id', width:50, title: 'ID', sort: true}
-			,{field:'name', width:280, title: '名称'}
-			,{field:'description', width:320, title: '描述', sort: true}
-			,{field:'type', width:120, title: '类型', sort: true}
-			,{fixed: 'right',title: '操作', width:180, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
+			{field:'id', width:0.2*w0, title: 'ID', sort: true}
+			,{field:'name', width:1*w0, title: '名称'}
+			,{field:'description', width:3*w0, title: '描述', sort: true}
+			,{field:'type', width:0.5*w0, title: '类型', sort: true}
+			,{fixed: 'right',title: '操作', width:1*w0, align:'center', toolbar: '#toolBar'}//一个工具栏  具体请查看layui官网
 		]]
 		,page: true   //开启分页
 		,response:{

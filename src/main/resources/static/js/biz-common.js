@@ -623,3 +623,41 @@ function updateMemDispSlideWidget(data) {
     });
     return retdata;
 }
+
+/**
+ * 操作管理--数据删除
+ * @param object obj 当前操作对象
+ * @param int id 操作ID
+ * @param String url 访问路径
+ * @return json code 0:操作成功；1:操作失败
+ */
+function deleteObj(obj, url) {
+    layer.confirm('确认要删除吗？', function(index) {
+        layer.load();
+        $.ajax({
+            url:''+ url +'',
+            type:'Delete',
+            contentType: "application/json;charset=utf-8",
+            xhrFields: {
+                withCredentials: true //允许跨域带Cookie
+            },
+            async: false,
+            headers: {
+                "Authorization":$.cookie("token")//此处放置请求到的用户token
+            },
+            success:function(data) {
+                layer.closeAll('loading');
+                if (data.code == 0) {
+                    $(obj).parents("tr").remove();
+                    layer.msg(data.msg,{icon:1,time:1000});return false;
+                } else {
+                    layer.msg(data.msg,{icon:2,time:1000});return false;
+                }
+            },
+            error : function(e){
+                layer.closeAll('loading');
+                layer.msg(e.responseText, {icon: 2, time: 1000});
+            }
+        });
+    });
+}

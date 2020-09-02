@@ -166,5 +166,5 @@ file:
 ## jwt config cannot be null or empty
 jwtToken:
   secret: secret
-  timeout: 1800000
+  timeout: 28800000
   algorithm: HS512

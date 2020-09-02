@@ -166,7 +166,10 @@ layui.use(['element', 'form', 'layedit', 'laydate', 'upload', 'colorpicker','tab
 			layer.alert('编辑行：<br>'+ JSON.stringify(data))
 		}
 	});
-
+	window.deleteWidget=function(obj,id){
+		let url = "/api/v3/organizations/"+ id;
+		deleteObj(layer,url);
+	}
 });
 
 /**
@@ -270,13 +273,20 @@ function testDbConnetion() {
 		}
 	});
 }
-function jump(op,id) {
+
+/**
+ * user operator
+ * @param op
+ * @param id
+ * @param obj
+ */
+function jump(op,id,obj) {
 	//console.log("data=",id)
 	if(op === 'detail'){
 		layer.msg('ID：'+ id + ' 的查看操作');
 	} else if(op === 'del'){
-		//let state = execute_del(obj,obj.id,"/api/v3/organizations/"+ id);
-		//if(state) obj.del();
+		let state = execute_del(obj,obj.id,"/api/v3/widgets/"+ id);
+		if(state) obj.del();
 	} else if(op === 'edit'){
 		layer.alert('编辑行：<br>'+ id)
 		window.location.href = "widget-edit.html?widgetId=" + id;

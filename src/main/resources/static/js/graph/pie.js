@@ -284,7 +284,7 @@ function buildPieData(data) {
     let retData = {};
     retData.legendData = legendData;
     retData.showedData = showedData;
-    console.log("retData", retData);
+    //console.log("retData", retData);
     return retData;
 }
 
@@ -362,8 +362,8 @@ function renderMap(id, title, bizData, mapParamJson) {
     }
 
     let data = getMapDataByMapName(mapParamJson['map'].areaName,mapParamJson['map'].level);
-    console.log( "mapParamJson['map'].mapName:",mapParamJson['map'].mapName );
-    console.log( "mapParamJson['map'].level:",mapParamJson['map'].level );
+    //console.log( "mapParamJson['map'].mapName:",mapParamJson['map'].mapName );
+    //console.log( "mapParamJson['map'].level:",mapParamJson['map'].level );
     echarts.registerMap(mapParamJson['map'].mapName, data);
 
     let option = buildMapOption(mapCharts,bizData,mapParamJson,data);
@@ -385,11 +385,11 @@ window.addEventListener("resize", () => {
  * @param param
  */
 function dataDrill(dom, param) {
-    console.log(param);
+    //console.log(param);
     let queryName = param.name;
     let titleDom = dom.previousElementSibling;
-    console.log("this dom: ", dom);
-    console.log("title", titleDom);
+    //console.log("this dom: ", dom);
+    //console.log("title", titleDom);
     let title = titleDom.innerText;
     //displayWidget_9
     let domId = dom.id;
@@ -406,13 +406,13 @@ function dataDrill(dom, param) {
                 return false;
             }
         });
-        console.log("### " + secondWidgetId);
+        //console.log("### " + secondWidgetId);
         if (secondWidgetId != null && secondWidgetId !== "")
             execute_open(name + "" + title, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');
 
     } else {//widget
         secondWidgetId = $(dom).attr("second-widget-id");
-        console.log("#### secondWidgetId =" + secondWidgetId);
+        //console.log("#### secondWidgetId =" + secondWidgetId);
 
         if (secondWidgetId != null && secondWidgetId !== "")
             execute_open(name, "display-popout.html?queryName=" + encodeURI(queryName) + "&title=" + encodeURI(title) + "&widgetId=" + secondWidgetId, '1000', '750');

@@ -13,11 +13,12 @@ let maxSize4Pin = 100,
  * @param mapSvgData
  */
 function buildMapOption(mapCharts, bizData, jsonMap,mapSvgData) {
+    mapStack.push(jsonMap['map']);
     let map = jsonMap['map'].mapName;
     geoCoordMap = geoCoordMap = buildGeoCoordMap(mapSvgData,bizData);
    // map = "china";
     let convertedData = convertData(bizData.bizData);
-    console.log("convertedData=" + convertedData);
+    //console.log("convertedData=" + convertedData);
     let option ={
         backgroundColor: 'transparent',
         title : {
@@ -222,10 +223,10 @@ function getMapDataByMapName(mapName,level) {
  * @param param get by echarts click action
  */
 function mapDrillAction(dom, param) {
-    console.log(param);
+    //console.log(param);
     let titleDom = dom.previousElementSibling;
-    console.log("this dom: ", dom);
-    console.log("title", titleDom);
+    //console.log("this dom: ", dom);
+    //console.log("title", titleDom);
     let title = titleDom.innerText;
     //displayWidget_9
     let domId = dom.id;
@@ -254,7 +255,7 @@ function mapDrillAction(dom, param) {
         map['areaName']=param.name;
         map['level']= 1;//省
         mapConfig.map = map;
-        mapStack.push(param.name)
+        mapStack.push(map)
         renderMap(domId,title,graphData,mapConfig);
     } else if (param.name in cityMap) {
         //如果是【直辖市/特别行政区】只有二级下钻
@@ -264,7 +265,7 @@ function mapDrillAction(dom, param) {
             map['areaName']=param.name;
             map['level']= 2;//地市
             mapConfig.map = map;
-            mapStack.push(param.name)
+            mapStack.push(map)
             renderMap(domId,title,graphData,mapConfig);
         } else {
             //显示县级地图
@@ -273,17 +274,24 @@ function mapDrillAction(dom, param) {
             map['areaName']=param.name;
             map['level']= 2;//区县
             mapConfig.map = map;
-            mapStack.push(param.name)
+            mapStack.push(map)
             renderMap(domId,title,graphData,mapConfig);
         }
-        console.log(geoCoordMap)
+        //console.log(geoCoordMap)
     } else {
-        let map = {};
-        map['mapName']="china";
-        map['areaName']="中国";
-        map['level']= 0;//中国
-        mapConfig.map = map;
-        renderMap(domId,title,graphData,mapConfig);
+        if(mapStack.length > 0){
+            let lastMap = mapStack.shift();
+            mapConfig.map = lastMap;
+            renderMap(domId,title,graphData,mapConfig);
+        }else{
+            let map = {};
+            map['mapName']="china";
+            map['areaName']="中国";
+            map['level']= 0;//中国
+            mapConfig.map = map;
+            renderMap(domId,title,graphData,mapConfig);
+        }
+
     }
 }
 
@@ -307,7 +315,7 @@ let convertData = function(data) {
  * @param config
  */
 function setConfig(name,config) {
-    console.log("config.map",config.map);
+    //console.log("config.map",config.map);
     if(config.map !== null && config.map !== undefined) return config;
     if(name === "成都市") {
         let map = {};
