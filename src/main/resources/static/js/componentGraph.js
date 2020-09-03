@@ -378,6 +378,8 @@ function commonRenderGraph(graphType,widget,graphId){
             renderDispGraph(widget,"map",graphId);
             break;
         case 6:
+            //地图
+            renderDispGraph(widget,"table",graphId);
             break;
         default:
             break;

@@ -400,7 +400,8 @@ function moniteChartsChange(){
 			//表格，富文本
 			switch (values) {
 				case 0:
-					//饼图, 地图，表格
+					//表格
+					$(".fa-table").addClass("display-icon");
 					break;
 				case 1:
 					//折线图，柱状图，饼图, 地图，表格
@@ -420,6 +421,7 @@ function moniteChartsChange(){
 			switch (values) {
 				case 0:
 					//饼图, 地图，表格
+					$(".fa-table").addClass("display-icon");
 					break;
 				case 1:
 					//饼图, 地图，表格
@@ -437,6 +439,7 @@ function moniteChartsChange(){
 			switch (values) {
 				case 0:
 					//饼图, 地图，表格
+					$(".fa-table").addClass("display-icon");
 					break;
 				case 1:
 					//饼图, 地图，表格
@@ -494,6 +497,10 @@ function renderGraph(obj,type,id){
 			let viewData =  getDataByViewId(viewId);
 			let graphData = buildMapData(viewData);
 			renderMap(id,"",graphData,config);
+			break;
+		case "table":
+			selectedChartIndex = 6;
+			renderRotationTable(id,"",legendData,globalWidgetData);
 			break;
 		default:
 			break;

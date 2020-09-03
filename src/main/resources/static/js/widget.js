@@ -203,6 +203,13 @@ function execute_del(obj, id, url) {
         $.ajax({
             url:''+ url +'',
             type:'Delete',
+			xhrFields: {
+				withCredentials: true //允许跨域带Cookie
+			},
+			async: false,
+			headers: {
+				"Authorization":$.cookie("token")//此处放置请求到的用户token
+			},
             success:function(data) {
 				layer.closeAll('loading');
                 if (data.code == 0) {

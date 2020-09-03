@@ -9,6 +9,8 @@ let color = ['#3682be', '#45a776', '#7e5ef0', '#bd6b08', '#334f65', '#85c021', '
  * @param data
  */
 function renderPie(id, title, legendData, data) {
+    //清理子元素
+    removeGraphElements(id);
     let myCharts1 = echarts.init(document.getElementById(id));
     echartMap[id] = myCharts1;
     let option1 = {
@@ -86,6 +88,8 @@ function renderPie(id, title, legendData, data) {
  * @param data
  */
 function renderBar(id, title, legendData, data) {
+    //清理子元素
+    removeGraphElements(id);
     let myCharts2 = echarts.init(document.getElementById(id));
     echartMap[id] = myCharts2;
     let option1 = {
@@ -177,6 +181,8 @@ function renderBar(id, title, legendData, data) {
  * @param data
  */
 function renderLine(id, title, legendData, data) {
+    //清理子元素
+    removeGraphElements(id);
     let myCharts3 = echarts.init(document.getElementById(id));
     echartMap[id] = myCharts3;
     let option1 = {
@@ -296,6 +302,8 @@ function buildPieData(data) {
  * @param data
  */
 function renderAreaLine(id, title, legendData, data) {
+    //清理子元素
+    removeGraphElements(id);
     let myCharts4 = echarts.init(document.getElementById(id));
     echartMap[id] = myCharts4;
     let option1 = {
@@ -354,6 +362,8 @@ function renderAreaLine(id, title, legendData, data) {
 }
 
 function renderMap(id, title, bizData, mapParamJson) {
+    //清理子元素
+    removeGraphElements(id);
     let mapCharts = echarts.init(document.getElementById(id));
     echartMap[id] = mapCharts;
     if (mapParamJson == null) {

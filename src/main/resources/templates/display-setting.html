@@ -151,24 +151,14 @@
 <script src="js/common.js"></script>
 <script src="js/biz-common.js"></script>
 <script src="js/graph/pie.js"></script>
+<script src="js/graph/scsme-table.js"></script>
 <script src="js/graph/map2d.js"></script>
 <script src="json/draw-citymap.js"></script>
 <script src="json/china.js"></script>
 <script src="js/componentGraph.js"></script>
 <script src="js/display-add.js"></script>
 <script type="text/javascript">
-    let app = new Vue({
-        el: '#graphArea',
-        mounted: function() {
-            //应该注意的是，使用mounted 并不能保证钩子函数中的 this.$el 在 document 中。为此还应该引入       Vue.nextTick/vm.$nextTick
 
-        },
-        methods: {
-
-        }
-        //end method
-
-    });
     let catsAndVal,globalViewData;
     let dbMemWidgets = getMemWidgetsFromDb();
     let grid = GridStack.init({float:true});
@@ -300,6 +290,8 @@
                     renderDispGraph(selectedWidgets[prop],"map",grahpId);
                     break;
                 case 6:
+                    //地图
+                    renderDispGraph(selectedWidgets[prop],"table",grahpId);
                     break;
                 default:
                     break;
@@ -404,6 +396,9 @@
                 setConfig("四川",config);
                 let graphData = buildMapData(globalViewData);
                 renderMap(id,"",graphData,config);
+                break;
+            case "table":
+                renderRotationTable(id,"",legendData,globalViewData);
                 break;
             default:
                 break;

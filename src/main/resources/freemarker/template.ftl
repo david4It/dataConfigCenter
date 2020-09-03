@@ -20,6 +20,7 @@
     <script src="/js/pages/china.js"></script>
     <script src="js/jquery.cookie.min.js"></script>
     <script src="js/graph/pie.js"></script>
+    <script src="js/graph/scsme-table.js"></script>
     <script src="js/graph/map2d.js"></script>
     <script src="json/draw-citymap.js"></script>
     <script src="js/componentGraph.js"></script>
