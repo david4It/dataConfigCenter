@@ -98,6 +98,7 @@
                     <#case "table"><#include "preview_table.ftl"><#break>
                     <#case "map"><#include "preview_map.ftl"><#break>
                     <#case "gauge"><#include "preview_gauge.ftl"><#break>
+                    <#case "mix_line_bar"><#include "preview_mix_line_bar.ftl"><#break>
                 </#switch>
             </#list>
         }

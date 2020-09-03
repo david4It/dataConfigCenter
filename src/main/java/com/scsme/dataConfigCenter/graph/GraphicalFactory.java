@@ -41,6 +41,9 @@ public class GraphicalFactory {
             case GAUGE:
                 graphical = new Gauge(dataSource, component, valueMap);
                 break;
+            case MIX_LINE_BAR:
+                graphical = new MixLineBar(dataSource, component, valueMap);
+                break;
             case MAP:
                 graphical = new com.scsme.dataConfigCenter.graph.Map(dataSource, component, valueMap);
         }
@@ -58,7 +61,7 @@ public class GraphicalFactory {
 
     private enum GraphicalType {
         BAR("bar"), PIE("pie"), LINE("line"), TABLE("table"), RADAR("radar"),
-        GAUGE("gauge"), MAP("map");
+        GAUGE("gauge"), MAP("map"), MIX_LINE_BAR("mix_line_bar");
 
         GraphicalType(String value) {
             this.value = value;

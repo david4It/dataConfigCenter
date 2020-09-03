@@ -204,6 +204,8 @@ Vue.component('graph', {
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></bar_style_form>
     <pie_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'pie'" 
                         @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></pie_style_form>
+    <mix_line_bar_style_form :config="component.configJson" :visible="styleDialogVisible && component.type === 'mix_line_bar'" 
+                        @cancel="cancelStyleEdit" @save_component_style="saveComponentStyle"></mix_line_bar_style_form>
     </grid-layout>`,
     data: function () {
         return {
@@ -223,6 +225,7 @@ Vue.component('graph', {
                 {label: '表格图', value: 'table'},
                 {label: '雷达图', value: 'radar'},
                 {label: '仪表盘', value: 'gauge'},
+                {label: '折线&柱状图', value: 'mix_line_bar'},
                 {label: '地图', value: 'map'}
             ],
             tips: '页面参数可以直接在SQL中进行使用，使用方式为${}，如${param}',
@@ -381,6 +384,7 @@ Vue.component('graph', {
             switch (c.type) {
                 case 'bar':
                 case 'line':
+                case 'mix_line_bar':
                     c.desField = c.categoryValuePattern.split(":")[0];
                     c.valueField = c.categoryValuePattern.split(":")[1];
                     c.legendField = c.categoryValuePattern.split(":")[2];
@@ -547,16 +551,18 @@ Vue.component('graph', {
             let me = this;
             return me.selections.length > 0 && (me.component.type === 'line'
                 || me.component.type === 'bar' || me.component.type === 'pie'
-                || me.component.type === 'radar' || me.component.type === 'gauge');
+                || me.component.type === 'radar' || me.component.type === 'gauge' || me.component.type === 'mix_line_bar');
         },
         displaySingleValueField() {
             let me = this;
             return me.selections.length > 0 && (me.component.type === 'line'
-                || me.component.type === 'bar' || me.component.type === 'pie'|| me.component.type === 'gauge');
+                || me.component.type === 'bar' || me.component.type === 'pie'|| me.component.type === 'gauge'
+                || me.component.type === 'mix_line_bar');
         },
         displayLegendField() {
             let me = this;
-            return me.selections.length > 0 && (me.component.type === 'bar' || me.component.type === 'line');
+            return me.selections.length > 0 && (me.component.type === 'bar' || me.component.type === 'line'
+                || me.component.type === 'mix_line_bar');
         },
         displayMultiValueField() {
             let me = this;
@@ -678,6 +684,7 @@ Vue.component('graph', {
                     switch (me.component.type) {
                         case 'bar':
                         case 'line':
+                        case 'mix_line_bar':
                             me.component.categoryValuePattern = me.component.desField + ":" + me.component.valueField
                                 + ":" + me.component.legendField;
                             break;

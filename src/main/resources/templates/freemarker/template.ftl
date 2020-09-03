@@ -98,6 +98,7 @@
                     <#case "table"><#include "table.ftl"><#break>
                     <#case "map"><#include "map.ftl"><#break>
                     <#case "gauge"><#include "gauge.ftl"><#break>
+                    <#case "mix_line_bar"><#include "mix_line_bar.ftl"><#break>
                 </#switch>
             </#list>
         }

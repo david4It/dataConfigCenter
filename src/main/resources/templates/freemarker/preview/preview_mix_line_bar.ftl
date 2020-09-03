@@ -1,8 +1,7 @@
-        //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-line
+        //此组件自定义配置，请参照https://echarts.apache.org/examples/en/editor.html?c=mix-line-bar
 <#--        <script type="text/javascript">-->
         component_${vo.getLocationIndex()}() {
-            axios.post("/statistics/common", {componentId: ${vo.getId()}, valueMap: getRequestParams()}).then((res) => {
-                // 基于准备好的dom，初始化echarts实例
+            axios.post("/statistics/preview", {componentId: ${vo.getId()}}).then((res) => {
                 let myChart = echarts.init(document.getElementById("${'component_' + vo.getLocationIndex()}"));
                 let option = {
                     title: {
@@ -15,6 +14,11 @@
                             fontWeight: 'border'
                         }
                     },
+                    legend: {
+                        textStyle: { //图例文字的样式
+                            color: '#fff' },
+                        data: ['预览数据A', '预览数据B']
+                    },
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
@@ -23,11 +27,6 @@
                                 opacity: 1
                             }
                         }
-                    },
-                    legend: {
-                        textStyle: { //图例文字的样式
-                            color: '#fff' },
-                        data: []
                     },
                     grid: {
                         left: '3%',
@@ -39,7 +38,7 @@
                     xAxis:
                         {
                             type: 'category',
-                            data: [],
+                            data: ['预览类别A', '预览类别B', '预览类别C', '预览类别D'],
                             axisTick: {
                                 alignWithLabel: false
                             },
@@ -59,30 +58,29 @@
                                 }
                             }
                         },
-                    series:[]
+                    series: [
+                        {
+                            name: '预览数据A',
+                            type: 'line',
+                            data: [820, 932, 901, 934],
+                        },
+                        {
+                            name: '预览数据B',
+                            type: 'bar',
+                            data: [430, 1022, 788, 1300],
+                        },
+                        ]
                 };
                 if (res.data.success) {
                     let result = res.data.result;
-                    if (result.xAxisData) {
-                        option.xAxis.data = result.xAxisData;
-                    }
                     if (result.configJson) {
                         mergeRecursive(option, result.configJson);
                     }
-                    if (result.seriesData) {
-                        for (let key in result.seriesData) {
-                            let data = {type: 'line', name: key, data: result.seriesData[key]};
-                            if (option.series.smooth) {
-                                data.smooth = option.series.smooth;
-                            }
-                            if (option.series.areaStyle && option.series.areaStyle.color) {
-                                data.areaStyle = {color: option.series.areaStyle.color};
-                            }
-                            option.series.push(data);
-                        }
+                    if (option.series.smooth) {
+                            option.series[0].smooth = option.series.smooth;
                     }
-                    if (result.legendData) {
-                        option.legend.data = result.legendData;
+                    if (option.series.areaStyle && option.series.areaStyle.color) {
+                            option.series[0].areaStyle = {color: option.series.areaStyle.color};
                     }
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().css("display", "block");
                     $('${'#component_' + vo.getLocationIndex()}').parent().parent().next().css("display", "none");
@@ -153,7 +151,7 @@
                     </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {
-                        forwardUrl(param.data.extData, "${vo.getLinkUrl()}")
+                        forwardUrl({type: 'preview'}, "${vo.getLinkUrl()}")
                     });
                     </#if>
                     window.addEventListener("resize", function () {
