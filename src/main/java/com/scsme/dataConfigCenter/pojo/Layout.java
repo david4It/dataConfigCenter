@@ -16,8 +16,10 @@ public class Layout {
     @TableId(type = IdType.AUTO)
     private Long id;
     private String title;
+    private String templateName;
     private String url;
     private String enabled;
+    private String root;
     @Lazy
     private byte[] file;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")

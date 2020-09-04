@@ -11,6 +11,12 @@ spring:
     view:
       prefix: /
       suffix: .html
+  thymeleaf:
+    cache: false
+    encoding: utf-8
+    check-template-location: false
+    enabled: true
+    prefix: classpath:/templates/
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -168,3 +174,6 @@ jwtToken:
   secret: secret
   timeout: 28800000
   algorithm: HS512
+
+logging:
+  config: classpath:config/logback.xml

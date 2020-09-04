@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <title>布局配置中心</title>
+    <script type="text/javascript" src="/js/pages/global.js"></script>
+</head>
+<body>
+    <div th:fragment="top_header">
+        <div id="header" v-cloak>
+            <div style="float: left; padding: 10px 0 0 100px; color: #B0C4DE;"> 今天是：{{ dateInfo }} </div>
+<!--            <div style="padding: 10px 120px 0 0;float: right;color: #AFEEEE;"><a v-if="!isIndex" href="/index">首页</a>&nbsp;&nbsp;&nbsp;&nbsp;您好 {{username}}&nbsp;&nbsp;&nbsp;&nbsp;<a href="/logout">退出</a></div>-->
+        </div>
+        <div style="padding: 100px 0 0 0;text-align: center;">
+            <span style="color: #B0C4DE;font-size: 50px;">布局配置中心</span>
+        </div>
+    </div>
+</body>
+</html>

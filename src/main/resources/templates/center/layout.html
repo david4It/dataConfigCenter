@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <script type="text/javascript" src="/js/framework/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="/css/framework/index.css">
+    <!-- 引入组件库 -->
+    <script src="/js/framework/index.js"></script>
+    <script type="text/javascript" src="/js/framework/axios.js"></script>
+    <script type="text/javascript" src="/js/pages/global.js"></script>
+    <script type="text/javascript" src="/js/pages/request.js"></script>
+    <script type="text/javascript" src="/js/framework/vue-grid-layout.umd.min.js"></script>
+    <script type="text/javascript" src="/js/pages/center/graph.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/lineStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/barStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/pieStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/radarStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/tableStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/mapStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/gaugeStyleForm.js"></script>
+    <script type="text/javascript" src="/js/pages/center/style/mixLineBarStyleForm.js"></script>
+    <title>布局配置中心</title>
+    <style>
+        [v-cloak]{
+            display: none !important;
+        }
+        .container {
+            background-color: #283c55;
+            height: 720px;
+            margin: 50px 0 0 0;
+            padding: 10px;
+            /*text-align: center;*/
+        }
+
+        .el-select-dropdown .el-scrollbar .el-scrollbar__wrap{
+            overflow: scroll;
+        }
+
+        .el-scrollbar .el-scrollbar__wrap {
+            overflow-x: hidden;
+        }
+        .el-tree {
+            display: inline-block;
+            min-width: 100%;
+        }
+        .el-pagination__total {
+            color: #ffffff;
+        }
+        .vue-grid-item.vue-grid-placeholder {
+            background: darkgrey;
+        }
+        .el-tag+.el-tag {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body bgcolor="#283c55">
+<!--header start-->
+<div th:include="center/header::top_header"></div>
+<!--header end-->
+<div  id="main" v-cloak>
+    <div class="container">
+        <div style="float: left; width: 300px; height: 660px; text-align: center;">
+            <div style="height: 35px; width: 100%; margin-top: 5px; text-align: right">
+                <el-button size="mini" type="success" @click="dialogVisible=true; isUpdate=false">新增页面</el-button>
+            </div>
+            <div style="height: 620px; width: 100%; border: solid 1px #D3D3D3; background-color: white;">
+                <el-scrollbar style="height:100%;">
+                    <el-tree ref="tree"
+                             node-key="id"
+                             highlight-current
+                             :expand-on-click-node="false"
+                             :default-expanded-keys="defaultExpandKeys"
+                             :data="layoutList"
+                             :props="defaultProps"
+                             @node-click="handleNodeClick">
+                        <span class="custom-tree-node" slot-scope="{ node, data }">
+                            <span :style="data.enabled === 'Y' ? 'font-size: 14px;color: green;': 'font-size: 14px;color: orange;'">{{ data.title }}</span>
+                            <span style="padding:0 10px 0 10px">
+                              <el-button
+                                      style="color: #4682B4"
+                                      title="编辑"
+                                      type="text"
+                                      icon="el-icon-edit-outline"
+                                      @click="() => handleEdit(data)">
+                              </el-button>
+                              <el-button
+                                      style="color: #CD5C5C"
+                                      title="删除"
+                                      type="text"
+                                      icon="el-icon-delete"
+                                      @click="() => handleDelete(data)">
+                              </el-button>
+                              <el-button
+                                      v-show="data.enabled==='N'"
+                                      style="color: green"
+                                      title="启用"
+                                      type="text"
+                                      icon="el-icon-document-checked"
+                                      @click="() => handleStatusChange(data, 'Y')">
+                              </el-button>
+                              <el-button
+                                      v-show="data.enabled==='Y'"
+                                      style="color: orange"
+                                      title="禁用"
+                                      type="text"
+                                      icon="el-icon-document-delete"
+                                      @click="() => handleStatusChange(data, 'N')">
+                              </el-button>
+                              <el-button
+                                      style="color: blue"
+                                      title="预览"
+                                      type="text"
+                                      icon="el-icon-view"
+                                      @click="() => preview(data)">
+                              </el-button>
+                            </span>
+                        </span>
+                    </el-tree>
+                </el-scrollbar>
+            </div>
+        </div>
+        <div style="float: right; width: calc(100% - 330px); height: 40px;">
+            <div style="color: #adc1da; font-size: 18px; font-weight: bold; text-align: center">{{ graphLayoutTitle }}</div>
+        </div>
+        <div style="float:right; width: calc(100% - 330px); height: calc(100% - 100px); overflow-y: auto; border: solid 1px #D3D3D3; background-color: #f9fcfc">
+            <graph ref="graph" @refresh_layout_list="getLayoutList" @load_sub_layout="loadSubLayout" :layout_id="graphLayoutId" :sql_params="sqlParams"></graph>
+        </div>
+    </div>
+
+    <el-dialog
+            :title="isUpdate ? '更新' : '新增'"
+            :visible.sync="dialogVisible"
+            width="30%"
+            @closed="handleClose">
+        <el-form ref="dataForm" :model="layout" label-width="140px" :rules="rules">
+            <el-form-item label="标题" prop="title">
+                <el-input v-model="layout.title"></el-input>
+            </el-form-item>
+            <el-form-item label="模板" prop="templateName"
+                          :rules="[{required: true, validator: validateCheckbox}]">
+                <div style="overflow: hidden; height: 150px; overflow-y:scroll;">
+                    <el-checkbox v-model="thumb.checked" v-for="thumb in thumbnails" :key="thumb.value" @change="checkboxChanged(thumb.value)" bordar>
+                        <el-popover
+                                placement="right"
+                                trigger="hover">
+                            <img style="width: 400px" :src="'/img/center/template/' + thumb.value"/>
+                            <img slot="reference" :src="'/img/center/template/' + thumb.value"  style="width: 200px">
+                        </el-popover>
+                    </el-checkbox>
+                </div>
+            </el-form-item>
+            <el-form-item label="URL" prop="url" :rules="[{required: true, validator: validateUrl, trigger: 'blur'}]">
+                <el-input v-model="layout.url" onkeyup="value=value.replace(/[^\w_]/g,'')"></el-input>
+            </el-form-item>
+            <el-form-item label="创建时间" v-show="isUpdate">
+                <el-input v-model="layout.createTime" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="更新时间" v-show="isUpdate">
+                <el-input v-model="layout.lastUpdateTime" disabled></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button v-if="!isUpdate" type="primary" @click="createLayout">创 建</el-button>
+                <el-button v-if="isUpdate" type="primary" @click="updateLayout">更 新</el-button>
+            </span>
+    </el-dialog>
+</div>
+<script type="text/javascript" src="/js/pages/center/header.js"></script>
+<script type="text/javascript" src="/js/pages/center/layout.js"></script>
+</body>
+</html>
