@@ -2,30 +2,30 @@
  * according to DATAV, generate tables of big scream
  * @param id
  * @param title
- * @param bizData
- * @param mapParamJson
+ * @param legendData
+ * @param data
  */
 function renderRotationTable(id, title, legendData, data) {
-    let header = [], tableData = [];
     let bizData = convertTableData(data);
     let newDiv = document.createElement("div");
     newDiv.id="dvTable";
-    newDiv.style ='width: 100%;height:100%;float:left;margin-left: 1rem;';
+    //newDiv.style ='width: 100%;height:100%;margin-left: 1rem;margin-right: 2px;';
     //清理子元素
     let doc = document.getElementById(id);
     removeGraphElements(id);
     doc.appendChild(newDiv);
-    let html = '<dv-scroll-board :config="config" style="width:100%;height:100%" />';
+    let html = '<dv-scroll-board :config="config" style="font-size:0.8rem;width:90%;height:90%;margin:1rem 1rem 2rem 1rem;" />';
     let res = Vue.compile(html)
     new Vue({
         data() {
             return{
                 config: {
-                    header: bizData.header,
+                    //header: bizData.header,
                     data: bizData.bizData,
                     index: true,
-                    columnWidth: [50],
-                    align: ['center']
+                    columnWidth: [40],
+                    align: ['center'],
+                    headerHeight:5
                 }
             }
         },
@@ -33,33 +33,145 @@ function renderRotationTable(id, title, legendData, data) {
         staticRenderFns: res.staticRenderFns
     }).$mount("#dvTable");
 
+
 }
-
 /**
- * js 调用vue组件
- * @param component
- * @param parent
+ * according to DATAV, generate tables of big scream
+ * data format(data: [{name: '周口',value: 55 }]
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
  */
-/**注册组件 */
-function registerComponent(name){
-    dm[name] = {};
-    Vue.component(name + '-component', function(resolve, reject){
-        $.get('./modules/' + name + '.vue').then(function(rv){
-            var temp = rv.match(/<template[^>]*>([\s\S]*?)<\/template>/)[1].replace(/(^\s+)|\n/g, ''),
-                script = rv.match(/<script[^>]*>([\s\S]*?)<\/script>/)[1].replace(/(^\s+)|\n/g, '');
-            script = (new Function('return ' + script))();
-            script.template = temp;
-            script.props || (script.props=["param"]);
-            script.data || (script.data=function(){ return JSON.parse(JSON.stringify(this.param))});
+function renderRankTable(id, title, legendData, data) {
+    let bizData = convertMapData(data);
+    let newDiv = document.createElement("div");
+    newDiv.id="dvRankTable";
+    newDiv.style ='width: 100%;height:100%;float:left;margin-left: 1rem;';
+    //清理子元素
+    let doc = document.getElementById(id);
+    removeGraphElements(id);
+    doc.appendChild(newDiv);
+    let html = '<dv-scroll-ranking-board :config="config"  style="font-size:0.8rem;width:90%;height:90%;margin:1rem 0.5rem 1rem 1rem;"  />';
+    let res = Vue.compile(html)
+    new Vue({
+        data() {
+            return{
+                config: {
+                    data: bizData.bizData
+                }
+            }
+        },
+        render: res.render,
+        staticRenderFns: res.staticRenderFns
+    }).$mount("#dvRankTable");
 
-            resolve(script);
-        }).catch(function(err){
-            console.error(err);
-            resolve({
-                template: '<div style="text-align:center; line-height:5em;">NOT FOUND</div>'
-            });
-        });
-    });
+}
+/**
+ * according to DATAV, generate tables of big scream
+ * data format(data: [{name: '周口',value: 55 }]
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderWaterPond(id, title, legendData, data) {
+    let bizData = convertWaterPondData(data);
+    let newDiv = document.createElement("div");
+    newDiv.id="dvRankTable";
+    newDiv.style ='width: 90%;height:90%;float:left;margin-left: 1rem;';
+    //清理子元素
+    let doc = document.getElementById(id);
+    removeGraphElements(id);
+    doc.appendChild(newDiv);
+    let html = '<dv-water-level-pond :config="config"  style="font-size:0.8rem;width:90%;height:90%;margin:1rem 0.5rem 1rem 1rem;"  />';
+    let res = Vue.compile(html)
+    new Vue({
+        data() {
+            return{
+                config: {
+                    data: bizData.bizData,
+                    shape: 'roundRect'
+                }
+            }
+        },
+        render: res.render,
+        staticRenderFns: res.staticRenderFns
+    }).$mount("#dvRankTable");
+
+}
+/**
+ * according to DATAV, generate Capsule
+ * data format(data: [{name: '周口',value: 55 }]
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderCapsule(id, title, legendData, data) {
+    let bizData = convertMapData(data);
+    let newDiv = document.createElement("div");
+    newDiv.id="dvRankTable";
+    newDiv.style ='width: 100%;height:100%;float:left;margin-left: 1rem;';
+    //清理子元素
+    let doc = document.getElementById(id);
+    removeGraphElements(id);
+    doc.appendChild(newDiv);
+    let html = '<dv-capsule-chart :config="config" style="width:100%;height:100%" />';
+    let res = Vue.compile(html)
+    new Vue({
+        data() {
+            return{
+                config: {
+                    data: bizData.bizData,
+                    //colors: ['#e062ae', '#fb7293', '#e690d1', '#32c5e9', '#96bfff'],
+                    unit: '单位',
+                    showValue: true
+                }
+            }
+        },
+        render: res.render,
+        staticRenderFns: res.staticRenderFns
+    }).$mount("#dvRankTable");
+
+}
+/**
+ * according to DATAV, generate ring
+ * data format(data: [{name: '周口',value: 55 }]
+ * @param id
+ * @param title
+ * @param legendData
+ * @param data
+ */
+function renderRing(id, title, legendData, data) {
+    let bizData = convertMapData(data);
+    let newDiv = document.createElement("div");
+    newDiv.id="dvRankTable";
+    newDiv.style ='width: 100%;height:100%;float:left;margin-left: 1rem;';
+    //清理子元素
+    let doc = document.getElementById(id);
+    removeGraphElements(id);
+    doc.appendChild(newDiv);
+    let html = '<dv-active-ring-chart :config="config" style="width:100%;height:100%" />';
+    let res = Vue.compile(html)
+    new Vue({
+        data() {
+            return{
+                config: {
+                    radius: '60%',
+                    activeRadius: '70%',
+                    data: bizData.bizData,
+                    digitalFlopStyle: {
+                        fontSize: 20
+                    },
+                    showOriginValue: true
+                }
+            }
+        },
+        render: res.render,
+        staticRenderFns: res.staticRenderFns
+    }).$mount("#dvRankTable");
+
 }
 function removeGraphElements(id) {
     let doc = document.getElementById(id);
@@ -96,6 +208,59 @@ function convertTableData(data) {
             one[index2]= item[col];
         })
         tableData[index]=one;
+    })
+    console.log("tableData",tableData);
+    ret["header"] = header;
+    ret["bizData"] = tableData;
+    return ret;
+}
+/**
+ * 转换表格数据
+ * @param data
+ */
+function convertMapData(data) {
+    let header = [], tableData = [],ret={};
+    let columns = data.data.columns;
+    let bizData = data.data.resultList;
+    $.each(columns,function (index,item) {
+        console.log(index,item);
+        header[index]=item.name;
+    })
+    console.log("header:",header);
+    $.each(bizData,function (index,item) {
+        let one = {};
+        $.each(header,function (index2,col) {
+            if(index2 ===0)
+                one["name"]=item[col]
+            if(index2 ===1)
+                one["value"]=item[col]
+        })
+        tableData[index]=one;
+    })
+    console.log("tableData",tableData);
+    ret["header"] = header;
+    ret["bizData"] = tableData;
+    return ret;
+}
+
+/**
+ * build water level pond data
+ * @param data
+ */
+function convertWaterPondData(data) {
+    let header = [], tableData = [],ret={};
+    let columns = data.data.columns;
+    let bizData = data.data.resultList;
+    $.each(columns,function (index,item) {
+        console.log(index,item);
+        header[index]=item.name;
+    })
+    console.log("header:",header);
+    $.each(bizData,function (index,item) {
+        $.each(header,function (index2,col) {
+            if(index2 ===1)
+                tableData[index]=item[col]
+        })
     })
     console.log("tableData",tableData);
     ret["header"] = header;

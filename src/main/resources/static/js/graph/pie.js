@@ -37,7 +37,7 @@ function renderPie(id, title, legendData, data) {
             },
         },
         series: [
-            {
+            /*{
                 name: '',
                 type: 'pie',
                 radius: [20, 110],
@@ -52,12 +52,12 @@ function renderPie(id, title, legendData, data) {
                     }
                 },
                 data: data
-            },
-            , {
+            },*/
+            {
                 data: data,
                 type: 'pie',
-                radius: [30, 110],
-                center: ['75%', '50%'],
+                radius: [50, 60],
+                center: ['45%', '50%'],
                 roseType: 'area',
                 emphasis: {
                     itemStyle: {

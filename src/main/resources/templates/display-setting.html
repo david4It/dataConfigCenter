@@ -293,6 +293,22 @@
                     //地图
                     renderDispGraph(selectedWidgets[prop],"table",grahpId);
                     break;
+                case 7:
+                    //排名
+                    renderDispGraph(selectedWidgets[prop],"rank",grahpId);
+                    break;
+                case 8:
+                    //排名
+                    renderDispGraph(selectedWidgets[prop],"capsule",grahpId);
+                    break;
+                case 9:
+                    //排名
+                    renderDispGraph(selectedWidgets[prop],"ring",grahpId);
+                    break;
+                case 10:
+                    //排名
+                    renderWaterPond(selectedWidgets[prop],"water",grahpId);
+                    break;
                 default:
                     break;
             }
@@ -399,6 +415,22 @@
                 break;
             case "table":
                 renderRotationTable(id,"",legendData,globalViewData);
+                break;
+            case "rank":
+                //地图
+                renderRankTable(id,"",legendData,globalViewData);
+                break;
+            case "capsule":
+                //排名
+                renderCapsule(id,"",legendData,globalViewData);
+                break;
+            case "ring":
+                //排名
+                renderRing(id,"",legendData,globalViewData);
+                break;
+            case "water":
+                //排名
+                renderWaterPond(id,"",legendData,globalViewData);
                 break;
             default:
                 break;

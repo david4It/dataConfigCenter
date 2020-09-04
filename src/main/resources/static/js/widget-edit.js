@@ -559,6 +559,26 @@ function renderGraph(obj,type,id){
             selectedChartIndex = 6;
             renderRotationTable(id,"",legendData,globalWidgetData);
             break;
+        case "rank":
+            //排名
+			selectedChartIndex = 7;
+            renderRankTable(id,"",legendData,globalWidgetData);
+            break;
+		case "capsule":
+			//排名
+			selectedChartIndex = 8;
+			renderCapsule(id,"",legendData,globalWidgetData);
+			break;
+		case "ring":
+			//排名
+			selectedChartIndex = 9;
+			renderRing(id,"",legendData,globalWidgetData);
+			break;
+		case "water":
+			//排名
+			selectedChartIndex = 10;
+			renderWaterPond(id,"",legendData,globalWidgetData);
+			break;
 		default:
 			break;
 	}

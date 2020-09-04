@@ -35,6 +35,24 @@ function generateWidgetGraph(widgetId,title,queryVal,htmlTargetId,param) {
             renderWidgetGraph(widget,"map",grahpId,title,queryVal,param);
             break;
         case 6:
+            //列表
+            renderWidgetGraph(widget,"table",grahpId,title,queryVal,param);
+            break;
+        case 7:
+            //排名
+            renderRankTable(widget,"rank",grahpId,title,queryVal,param);
+            break;
+        case 8:
+            //胶囊柱图
+            renderCapsule(widget,"capsule",grahpId,title,queryVal,param);
+            break;
+        case 9:
+            //排名
+            renderRing(id,"ring",legendData,bizData);
+            break;
+        case 10:
+            //排名
+            renderWaterPond(id,"water",legendData,bizData);
             break;
         default:
             break;
@@ -74,6 +92,26 @@ function renderDispGraph(widget,type,id){
             setConfig("四川",config);
             let graphData = buildMapData(viewData);
             renderMap(id,"",graphData,config);
+            break;
+        case "table":
+            //地图
+            renderRotationTable(id,"",legendData,viewData);
+            break;
+        case "rank":
+            //
+            renderRankTable(id,"",legendData,viewData);
+            break;
+        case "capsule":
+            //排名
+            renderCapsule(id,"",legendData,viewData);
+            break;
+        case "ring":
+            //排名
+            renderRing(id,"",legendData,viewData);
+            break;
+        case "water":
+            //排名
+            renderWaterPond(id,"",legendData,viewData);
             break;
         default:
             break;
@@ -119,6 +157,26 @@ function renderWidgetGraph(widget,type,id,title,queryVal,param){
             setConfig("四川",config);
             let graphData = buildMapData(viewData);
             renderMap(id,title,graphData,config);
+            break;
+        case "table":
+            //地图
+            renderRotationTable(id,title,legendData,bizData);
+            break;
+        case "rank":
+            //地图
+            renderRankTable(id,title,legendData,viewData);
+            break;
+        case "capsule":
+            //排名
+            renderCapsule(id,title,legendData,viewData);
+            break;
+        case "ring":
+            //排名
+            renderRing(id,title,legendData,viewData);
+            break;
+        case "water":
+            //排名
+            renderWaterPond(id,title,legendData,bizData);
             break;
         default:
             break;
@@ -380,6 +438,22 @@ function commonRenderGraph(graphType,widget,graphId){
         case 6:
             //地图
             renderDispGraph(widget,"table",graphId);
+            break;
+        case 7:
+            //排名
+            renderDispGraph(widget,"rank",graphId);
+            break;
+        case 8:
+            //排名
+            renderDispGraph(widget,"capsule",graphId);
+            break;
+        case 9:
+            //排名
+            renderDispGraph(widget,"ring",graphId);
+            break;
+        case 10:
+            //排名
+            renderDispGraph(widget,"water",graphId);
             break;
         default:
             break;

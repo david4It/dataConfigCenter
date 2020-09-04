@@ -146,6 +146,24 @@
                 renderDispGraph(widget,"map",grahpId);
                 break;
             case 6:
+                //地图
+                renderDispGraph(widget,"table",grahpId);
+                break;
+            case 7:
+                //排名
+                renderDispGraph(widget,"rank",grahpId);
+                break;
+            case 8:
+                //排名
+                renderDispGraph(widget,"capsule",grahpId);
+                break;
+            case 9:
+                //排名
+                renderDispGraph(widget,"ring",grahpId);
+                break;
+            case 10:
+                //排名
+                renderDispGraph(widget,"water",grahpId);
                 break;
             default:
                 break;
