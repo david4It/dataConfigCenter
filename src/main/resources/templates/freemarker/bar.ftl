@@ -147,6 +147,14 @@
                             myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
                         }
                     });
+                    $("${'#component_' + vo.getLocationIndex()}").mouseover(() => {
+                        resetFun();
+                        clearTimeout(myChart.animationTimeout);
+                        clearInterval(myChart.animationInterval);
+                        myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
+                        showShadow(1);
+                    });
                     </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
                     myChart.on("click", (param) => {

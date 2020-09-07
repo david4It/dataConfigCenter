@@ -1,4 +1,5 @@
         //此组件自定义配置，请参照https://echarts.apache.org/examples/en/index.html#chart-type-pie
+<#--        <script type="text/javascript">-->
         component_${vo.getLocationIndex()}() {
             axios.post("/statistics/common", {componentId: ${vo.getId()}, valueMap: getRequestParams()}).then((res) => {
                 // 基于准备好的dom，初始化echarts实例
@@ -111,6 +112,13 @@
                         if (!myChart.animationInterval) {
                             myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
                         }
+                    });
+                    $("${'#component_' + vo.getLocationIndex()}").mouseover(() => {
+                        resetFun();
+                        clearTimeout(myChart.animationTimeout);
+                        clearInterval(myChart.animationInterval);
+                        myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
                     });
                     </#if>
                     window.addEventListener("resize", function () {

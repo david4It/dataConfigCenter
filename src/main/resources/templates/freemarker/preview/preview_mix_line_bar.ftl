@@ -22,7 +22,7 @@
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                            type: 'line',        // 默认为直线，可选为：'line' | 'shadow'
+                            type: 'shadow',        // 默认为直线，可选为：'line' | 'shadow'
                             lineStyle: {
                                 opacity: 1
                             }
@@ -90,10 +90,10 @@
                     myChart.animationDuration = result.configJson.cusAnimation.duration * 1000;
                     myChart.animationMaxIndex = option.series[0].data.length - 1;
                     myChart.animationIndex = 0;
-                    let showLine = (opacity) => {
+                    let showShadow = (opacity) => {
                         let option = myChart.getOption();
-                        if (option.tooltip[0].axisPointer && option.tooltip[0].axisPointer.lineStyle) {
-                            option.tooltip[0].axisPointer.lineStyle.opacity = opacity;
+                        if (option.tooltip[0].axisPointer && option.tooltip[0].axisPointer.shadowStyle) {
+                            option.tooltip[0].axisPointer.shadowStyle.opacity = opacity;
                             myChart.setOption(option);
                         }
                     };
@@ -116,10 +116,10 @@
                     };
                     let animationFun = () => {
                         resetFun();
-                        showLine(0);
+                        showShadow(0);
                         let nextAnimationIndex = myChart.animationIndex++;
                         myChart.animationTimeout = setTimeout(() => {
-                            showLine(1);
+                            showShadow(1);
                             myChart.dispatchAction({
                                 type: 'highlight',
                                 dataIndex: nextAnimationIndex
@@ -141,12 +141,20 @@
                         clearInterval(myChart.animationInterval);
                         myChart.animationInterval = null;
                         myChart.animationTimeout = null;
-                        showLine(1);
+                        showShadow(1);
                     });
                     myChart.on("globalout", (params) => {
                         if (!myChart.animationInterval) {
                             myChart.animationInterval = setInterval(animationFun, myChart.animationDuration);
                         }
+                    });
+                    $("${'#component_' + vo.getLocationIndex()}").mouseover(() => {
+                        resetFun();
+                        clearTimeout(myChart.animationTimeout);
+                        clearInterval(myChart.animationInterval);
+                        myChart.animationInterval = null;
+                        myChart.animationTimeout = null;
+                        showShadow(1);
                     });
                     </#if>
                     <#if vo.getLinkEnabled()?? && vo.getLinkEnabled()=="Y">
